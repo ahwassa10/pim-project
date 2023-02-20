@@ -3,7 +3,7 @@ package model;
 public class Name extends Entity {
 	private String name;
 	
-	public Name(String name) {
+	Name(String name) {
 		this.name = name;
 	}
 	

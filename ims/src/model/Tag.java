@@ -20,7 +20,7 @@ public class Tag extends Entity {
 		return true;
 	}
 	
-	public Tag(String tagName) {
+	Tag(String tagName) {
 		this.tagName = tagName;
 	}
 	
