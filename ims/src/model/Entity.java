@@ -1,19 +1,15 @@
 package model;
 
+import java.util.UUID;
+
 public class Entity {
-	private String name;
-	private String value;
+	private UUID id;
 	
-	public Entity(String name, String value) {
-		this.name = name;
-		this.value = value;
+	public Entity() {
+		id = UUID.randomUUID();
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	public String getValue() {
-		return value;
+	public UUID getID() {
+		return this.id;
 	}
 }
