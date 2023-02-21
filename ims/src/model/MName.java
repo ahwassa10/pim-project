@@ -1,9 +1,9 @@
 package model;
 
-public class Name extends Entity {
+public class MName extends MEntity {
 	private String name;
 	
-	Name(String name) {
+	MName(String name) {
 		this.name = name;
 	}
 	

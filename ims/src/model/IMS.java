@@ -5,20 +5,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class IMS {
-	private Set<Entity> entities = new HashSet<>();
-	private Set<Tag> tags        = new HashSet<>();
-	private Set<Name> names      = new HashSet<>();
-	private HashMap<Tag, Set<Entity>> taggedEntities  = new HashMap<>();
+	private Set<MEntity> entities = new HashSet<>();
+	private Set<MTag> tags        = new HashSet<>();
+	private Set<MName> names      = new HashSet<>();
+	private HashMap<MTag, Set<MEntity>> taggedEntities  = new HashMap<>();
 	
-	public Entity createEntity() {
-		Entity newEntity = new Entity();
+	public MEntity createEntity() {
+		MEntity newEntity = new MEntity();
 		entities.add(newEntity);
 		return newEntity;
 	}
 	
-	public Tag createTag(String tag_name) {
-		if (Tag.isValidTagName(tag_name)) {
-			Tag newTag = new Tag(tag_name);
+	public MTag createTag(String tag_name) {
+		if (MTag.isValidTagName(tag_name)) {
+			MTag newTag = new MTag(tag_name);
 			tags.add(newTag);
 			return newTag;
 		} else {
@@ -26,20 +26,20 @@ public class IMS {
 		}
 	}
 	
-	public Name createName(String name) {
-		Name newName = new Name(name);
+	public MName createName(String name) {
+		MName newName = new MName(name);
 		names.add(newName);
 		return newName;
 	}
 	
-	public void addTagToEntity(Tag t, Entity e) {
+	public void addTagToEntity(MTag t, MEntity e) {
 		if (!taggedEntities.containsKey(t)) {
-			taggedEntities.put(t, new HashSet<Entity>());
+			taggedEntities.put(t, new HashSet<MEntity>());
 		}
 		taggedEntities.get(t).add(e);
 	}
 	
-	public Set<Entity> getEntitiesByTag(Tag t) {
+	public Set<MEntity> getEntitiesByTag(MTag t) {
 		if (taggedEntities.containsKey(t)) {
 			return taggedEntities.get(t);
 		} else {

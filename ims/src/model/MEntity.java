@@ -2,10 +2,10 @@ package model;
 
 import java.util.UUID;
 
-public class Entity {
+public class MEntity {
 	private UUID id;
 	
-	Entity() {
+	public MEntity() {
 		id = UUID.randomUUID();
 	}
 	

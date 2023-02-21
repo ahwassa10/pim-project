@@ -2,7 +2,7 @@ package model;
 
 import java.util.Set;
 
-public class Tag extends Entity {
+public class MTag extends MEntity {
 	private String tagName;
 	
 	private static Set<Character> valid_tag_name_characters = 
@@ -20,7 +20,7 @@ public class Tag extends Entity {
 		return true;
 	}
 	
-	Tag(String tagName) {
+	MTag(String tagName) {
 		this.tagName = tagName;
 	}
 	
