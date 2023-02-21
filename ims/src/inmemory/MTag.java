@@ -1,4 +1,4 @@
-package model;
+package inmemory;
 
 import java.util.Set;
 

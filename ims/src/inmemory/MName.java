@@ -1,4 +1,4 @@
-package model;
+package inmemory;
 
 public class MName extends MEntity {
 	private String name;

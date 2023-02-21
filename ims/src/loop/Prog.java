@@ -2,9 +2,9 @@ package loop;
 
 import java.util.Set;
 
-import model.MEntity;
-import model.IMS;
-import model.MTag;
+import inmemory.IMS;
+import inmemory.MEntity;
+import inmemory.MTag;
 
 public class Prog {
 	public static void main(String[] arg) {

@@ -1,4 +1,4 @@
-package model.puppets;
+package model;
 
 import java.util.UUID;
 
