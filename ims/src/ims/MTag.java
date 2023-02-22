@@ -1,8 +1,10 @@
-package inmemory;
+package ims;
 
 import java.util.Set;
 
-public class MTag extends MEntity {
+import ims.inmemory.MemEntity;
+
+public class MTag extends MemEntity {
 	private String tagName;
 	
 	private static Set<Character> valid_tag_name_characters = 
