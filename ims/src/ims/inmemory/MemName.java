@@ -2,8 +2,18 @@ package ims.inmemory;
 
 import model.Name;
 
-public class MemName extends MemEntity implements Name {
+class MemName extends MemEntity implements Name {
+	private String name;
+	
+	MemName(String name) {
+		this.name = name;
+	}
+	
 	public String getName() {
-		return null;
+		return this.name;
+	}
+	
+	public String toString() {
+		return name;
 	}
 }

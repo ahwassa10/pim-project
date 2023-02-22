@@ -1,10 +1,14 @@
 package ims.inmemory;
 
-import java.util.List;
+import java.util.Set;
 import model.Entity;
 
-public class MemEntity implements Entity{
-	public List<Entity> getRelationships() {
-		return null;
+class MemEntity implements Entity{
+	static MemTable owner;
+	
+	MemEntity() {}
+	
+	public Set<Entity> getRelationships() {
+		return MemEntity.owner.getRelationship(this);
 	}
 }

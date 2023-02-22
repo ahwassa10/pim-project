@@ -1,7 +1,7 @@
 package model;
 
-import java.util.List;
+import java.util.Set;
 
 public interface Entity {
-	public List<Entity> getRelationships();
+	public Set<Entity> getRelationships();
 }
