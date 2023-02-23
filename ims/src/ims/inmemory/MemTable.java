@@ -24,7 +24,9 @@ public class MemTable {
 	}
 	
 	Entity addEntity(Entity subject) {
-		memTable.put(subject, new HashSet<>());
+		if (!memTable.containsKey(subject)) {
+			memTable.put(subject, new HashSet<>());
+		}
 		return subject;
 	}
 	

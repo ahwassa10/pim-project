@@ -1,11 +1,15 @@
-package ims;
+package ims.inmemory;
 
 import java.util.Set;
 
-import ims.inmemory.MemEntity;
+import model.Tag;
 
-public class MTag extends MemEntity {
+public class MTag extends MemEntity implements Tag {
 	private String tagName;
+	
+	MTag(String tagName) {
+		this.tagName = tagName;
+	}
 	
 	private static Set<Character> valid_tag_name_characters = 
 			Set.of('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -20,10 +24,6 @@ public class MTag extends MemEntity {
 			}
 		}
 		return true;
-	}
-	
-	MTag(String tagName) {
-		this.tagName = tagName;
 	}
 	
 	public String getTagName() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Entity;
+import model.Tag;
 
 public class EntityCreator {
 	private List<Entity> registrationQueue = new ArrayList<>();
@@ -27,6 +28,16 @@ public class EntityCreator {
 	
 	public EntityCreator setName(String name) {
 		registrationQueue.add(new MemName(name));
+		return this;
+	}
+	
+	public EntityCreator addTag(Tag tag) {
+		if (tag == null) {
+			throw new IllegalArgumentException("Tag cannot be null");
+		}
+		
+		registrationQueue.add(tag);
+		
 		return this;
 	}
 }
