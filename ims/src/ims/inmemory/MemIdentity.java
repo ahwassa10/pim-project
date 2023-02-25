@@ -2,7 +2,7 @@ package ims.inmemory;
 
 import java.util.UUID;
 
-import model.Identity;
+import model.properties.Identity;
 
 class MemIdentity extends MemEntity implements Identity {
 	private UUID id = UUID.randomUUID();

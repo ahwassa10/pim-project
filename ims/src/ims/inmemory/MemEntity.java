@@ -1,7 +1,8 @@
 package ims.inmemory;
 
 import java.util.Set;
-import model.Entity;
+
+import model.entities.Entity;
 
 class MemEntity implements Entity{
 	static MemTable owner;

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import model.Entity;
+import model.entities.Entity;
 
 public class MemTable {
 	private Map<Entity, Set<Entity>> memTable = new HashMap<>();

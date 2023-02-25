@@ -1,6 +1,6 @@
 package ims.inmemory;
 
-import model.Entity;
+import model.entities.Entity;
 
 public class MemTablePrinter {
 	private MemTablePrinter() {}

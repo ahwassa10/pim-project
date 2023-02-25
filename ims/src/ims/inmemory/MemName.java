@@ -1,6 +1,6 @@
 package ims.inmemory;
 
-import model.Name;
+import model.properties.Name;
 
 class MemName extends MemEntity implements Name {
 	private String name;

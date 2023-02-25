@@ -2,7 +2,7 @@ package ims;
 
 import ims.inmemory.MemTable;
 import ims.inmemory.MemTablePrinter;
-import model.Entity;
+import model.entities.Entity;
 
 public class IMS {
 	public static void main(String[] args) {

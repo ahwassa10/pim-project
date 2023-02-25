@@ -2,7 +2,7 @@ package ims.inmemory;
 
 import java.util.Set;
 
-import model.Tag;
+import model.entities.Tag;
 
 public class MTag extends MemEntity implements Tag {
 	private String tagName;

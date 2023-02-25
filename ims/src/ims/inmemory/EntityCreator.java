@@ -3,8 +3,8 @@ package ims.inmemory;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Entity;
-import model.Tag;
+import model.entities.Entity;
+import model.entities.Tag;
 
 public class EntityCreator {
 	private List<Entity> registrationQueue = new ArrayList<>();
