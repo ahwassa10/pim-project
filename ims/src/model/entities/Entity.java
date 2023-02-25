@@ -1,12 +1,12 @@
 package model.entities;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 import model.properties.Property;
 
 public interface Entity {
-	public UUID getUUID();
+	public Set<Link> getLinks();
 	
 	public List<Property> getProperties();
 }

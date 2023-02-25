@@ -1,5 +1,7 @@
 package model.entities;
 
-public interface Tag extends Entity{
-	public String getTagName();
+import model.properties.Keyword;
+
+public interface Tag extends Entity {
+	public Keyword getKeyword();
 }
