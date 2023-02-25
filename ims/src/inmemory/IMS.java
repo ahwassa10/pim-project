@@ -15,7 +15,7 @@ public class IMS {
 	
 	public Entity createEntity() {
 		Identity i = new Identity() {
-			private UUID uuid;
+			private UUID uuid = UUID.randomUUID();
 			public UUID getIdentity() {
 				return this.uuid;
 			}
