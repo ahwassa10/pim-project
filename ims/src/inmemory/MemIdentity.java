@@ -7,7 +7,7 @@ import model.properties.Identity;
 public class MemIdentity implements Identity {
 	private UUID uuid;
 	
-	public UUID getID() {
+	public UUID getIdentity() {
 		return this.uuid;
 	}
 }

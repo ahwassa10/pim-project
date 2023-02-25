@@ -3,7 +3,7 @@ package model.properties;
 import java.util.UUID;
 
 public interface Identity extends Property {
-	public UUID getID();
+	public UUID getIdentity();
 	
 	public default String getPropertyName() {
 		return "Identity";
