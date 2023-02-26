@@ -1,7 +1,7 @@
 package model.properties;
 
-public interface Property {
+public interface Property<T> {
 	public String getPropertyName();
 	
-	public Object getPropertyValue();
+	public T getPropertyValue();
 }

@@ -4,7 +4,7 @@ public interface Name extends Property {
 	public String getName();
 	
 	public default String getPropertyName() {
-		return "Name";
+		return "name";
 	}
 	
 	public default String getPropertyValue() {

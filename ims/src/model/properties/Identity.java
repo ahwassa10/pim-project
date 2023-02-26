@@ -6,7 +6,7 @@ public interface Identity extends Property {
 	public UUID getIdentity();
 	
 	public default String getPropertyName() {
-		return "Identity";
+		return "identity";
 	}
 	
 	public default UUID getPropertyValue() {
