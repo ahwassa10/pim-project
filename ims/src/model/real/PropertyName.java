@@ -13,10 +13,9 @@ public class PropertyName {
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
 	public static boolean isValidPropertyName(String test_string) {
-		if (test_string == null) {
-			return false;
-		}
-		if (test_string.length() > MAX_LENGTH) {
+		if ((test_string == null) ||
+			(test_string.length() <= 0) ||
+			(test_string.length() > MAX_LENGTH)) {
 			return false;
 		}
 		for (char c : test_string.toCharArray()) {
