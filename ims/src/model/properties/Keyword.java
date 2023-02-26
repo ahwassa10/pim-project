@@ -6,4 +6,8 @@ public interface Keyword extends Property {
 	public default String getPropertyName() {
 		return "Keyword";
 	}
+	
+	public default String getPropertyValue() {
+		return getKeyword();
+	}
 }

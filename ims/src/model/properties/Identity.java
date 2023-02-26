@@ -8,4 +8,8 @@ public interface Identity extends Property {
 	public default String getPropertyName() {
 		return "Identity";
 	}
+	
+	public default UUID getPropertyValue() {
+		return getIdentity();
+	}
 }

@@ -6,4 +6,8 @@ public interface Name extends Property {
 	public default String getPropertyName() {
 		return "Name";
 	}
+	
+	public default String getPropertyValue() {
+		return getName();
+	}
 }

@@ -9,6 +9,6 @@ public class Testing {
 		Entity test = ims.createEntity();
 		
 		System.out.println(test.getProperties().get(0).getPropertyName());
-		System.out.println(((Identity) test.getProperties().get(0)).getIdentity());
+		System.out.println(test.getProperties().get(0).getPropertyValue());
 	}
 }

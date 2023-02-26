@@ -6,4 +6,8 @@ public interface Comment extends Property {
 	public default String getPropertyName() {
 		return "Comment";
 	}
+	
+	public default String getPropertyValue() {
+		return getComment();
+	}
 }
