@@ -1,11 +1,11 @@
 package model2;
 
 import model.real.NameValue;
-import model.real.PropertyName;
+import model.real.MetadataName;
 
 public interface Name extends Metadata<NameValue>{
-	public default PropertyName getName() {
-		return new PropertyName("name");
+	public default MetadataName getName() {
+		return new MetadataName("name");
 	}
 	
 	public NameValue getValue();

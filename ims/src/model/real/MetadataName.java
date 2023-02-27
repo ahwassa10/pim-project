@@ -2,8 +2,8 @@ package model.real;
 
 import java.util.Arrays;
 
-public class PropertyName {
-	private String propertyName;
+public class MetadataName {
+	private String metadataName;
 	
 	private static final int MAX_LENGTH = 128;
 	
@@ -26,15 +26,15 @@ public class PropertyName {
 		return true;
 	}
 	
-	public PropertyName(String pn) {
-		if (isValidPropertyName(pn)) {
+	public MetadataName(String mn) {
+		if (isValidPropertyName(mn)) {
 			throw new IllegalArgumentException("Invalid property name");
 		} else {
-			this.propertyName = pn;
+			this.metadataName = mn;
 		}
 	}
 	
 	public String getPropertyName() {
-		return propertyName;
+		return metadataName;
 	}
 }

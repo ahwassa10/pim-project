@@ -1,10 +1,10 @@
 package model2;
 
-import model.real.PropertyName;
+import model.real.MetadataName;
 
 public interface Metadata<T> {
 	
-	public PropertyName getName();
+	public MetadataName getName();
 	
 	public T getValue();
 }
