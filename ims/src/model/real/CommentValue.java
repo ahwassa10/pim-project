@@ -1,9 +1,9 @@
 package model.real;
 
-public class NameValue {
-	private String nameValue;
+public class CommentValue {
+	private String commentValue;
 	
-	private static final int MAX_LENGTH = 128;
+	private static final int MAX_LENGTH = 1024;
 	
 	public static boolean isValidNameValue(String test_string) {
 		if ((test_string == null) ||
@@ -20,15 +20,15 @@ public class NameValue {
 		return true;
 	}
 	
-	public NameValue(String nn) {
-		if (isValidNameValue(nn)) {
-			throw new IllegalArgumentException("Invalid name value");
+	public CommentValue(String cv) {
+		if (isValidNameValue(cv)) {
+			throw new IllegalArgumentException("Invalid comment value");
 		} else {
-			this.nameValue = nn;
+			this.commentValue = cv;
 		}
 	}
 	
 	public String getValue() {
-		return nameValue;
+		return commentValue;
 	}
 }
