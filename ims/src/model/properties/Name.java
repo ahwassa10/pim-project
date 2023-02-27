@@ -1,6 +1,6 @@
 package model.properties;
 
-public interface Name extends Property {
+public interface Name extends Property<String> {
 	public String getName();
 	
 	public default String getPropertyName() {
