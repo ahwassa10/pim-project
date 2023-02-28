@@ -21,7 +21,7 @@ public class CommentValue {
 	}
 	
 	public CommentValue(String cv) {
-		if (isValidCommentValue(cv)) {
+		if (!isValidCommentValue(cv)) {
 			throw new IllegalArgumentException("Invalid comment value");
 		} else {
 			this.commentValue = cv;

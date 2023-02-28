@@ -27,14 +27,14 @@ public class MetadataName {
 	}
 	
 	public MetadataName(String mn) {
-		if (isValidMetadataName(mn)) {
-			throw new IllegalArgumentException("Invalid property name");
+		if (!isValidMetadataName(mn)) {
+			throw new IllegalArgumentException("Invalid metadata name");
 		} else {
 			this.metadataName = mn;
 		}
 	}
 	
-	public String getPropertyName() {
+	public String toString() {
 		return metadataName;
 	}
 }

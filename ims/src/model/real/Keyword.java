@@ -27,7 +27,7 @@ public class Keyword {
 	}
 	
 	public Keyword(String k) {
-		if (isValidKeyword(k)) {
+		if (!isValidKeyword(k)) {
 			throw new IllegalArgumentException("Invalid tag name");
 		} else {
 			this.keyword = k;

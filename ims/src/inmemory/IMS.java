@@ -1,37 +1,38 @@
 package inmemory;
 
-import model.properties.Identity;
-import model.properties.Property;
-
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import model.entities.Entity;
-import model.entities.Link;
+import model.entities.SystemEntity;
+import model2.Identity;
+import model2.Metadata;
+import model2.Tag;
 
 public class IMS {
 	private IdentityTable identityTable = new IdentityTable();
 	
-	public Entity createEntity() {
+	public SystemEntity createEntity() {
 		Identity i = new Identity() {
 			private UUID uuid = UUID.randomUUID();
-			public UUID getIdentity() {
+			public UUID getValue() {
 				return this.uuid;
 			}
 		};
 		
-		Entity e = new Entity() {
-			public List<Property> getProperties() {
-				return List.of(i);
+		SystemEntity se = new SystemEntity() {
+			public Identity getIdentity() {
+				return i;
 			}
-			public Set<Link> getLinks() {
+			public List<Tag> getTags() {
+				return null;
+			}
+			public List<Metadata<Object>> getAttributes() {
 				return null;
 			}
 		};
 		
-		identityTable.set(i, e);
-		return e;
+		identityTable.set(i, se);
+		return se;
 	}
 	
 }
