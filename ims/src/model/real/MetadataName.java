@@ -12,7 +12,7 @@ public class MetadataName {
 					    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
-	public static boolean isValidPropertyName(String test_string) {
+	public static boolean isValidMetadataName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -27,7 +27,7 @@ public class MetadataName {
 	}
 	
 	public MetadataName(String mn) {
-		if (isValidPropertyName(mn)) {
+		if (isValidMetadataName(mn)) {
 			throw new IllegalArgumentException("Invalid property name");
 		} else {
 			this.metadataName = mn;

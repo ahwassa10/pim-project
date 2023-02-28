@@ -5,7 +5,7 @@ public class CommentValue {
 	
 	private static final int MAX_LENGTH = 1024;
 	
-	public static boolean isValidNameValue(String test_string) {
+	public static boolean isValidCommentValue(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -21,7 +21,7 @@ public class CommentValue {
 	}
 	
 	public CommentValue(String cv) {
-		if (isValidNameValue(cv)) {
+		if (isValidCommentValue(cv)) {
 			throw new IllegalArgumentException("Invalid comment value");
 		} else {
 			this.commentValue = cv;
