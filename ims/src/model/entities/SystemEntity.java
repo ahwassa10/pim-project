@@ -2,9 +2,9 @@ package model.entities;
 
 import java.util.List;
 
-import model2.Identity;
-import model2.Metadata;
-import model2.Tag;
+import model.metadata.Identity;
+import model.metadata.Metadata;
+import model.metadata.Tag;
 
 public interface SystemEntity extends Entity {
 	public Identity getIdentity();

@@ -1,4 +1,4 @@
-package model2;
+package model.metadata;
 
 import model.real.Keyword;
 import model.real.MetadataName;
