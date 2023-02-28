@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import model.entities.Entity;
-import model.properties.Identity;
 
 public class IdentityTable {
 	private Map<UUID, Entity> map = new HashMap<>();
