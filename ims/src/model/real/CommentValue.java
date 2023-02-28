@@ -28,7 +28,7 @@ public class CommentValue {
 		}
 	}
 	
-	public String getValue() {
+	public String getCommentValue() {
 		return commentValue;
 	}
 }

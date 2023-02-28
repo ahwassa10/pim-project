@@ -34,7 +34,7 @@ public class Keyword {
 		}
 	}
 	
-	public String getTagName() {
+	public String getKeyword() {
 		return keyword;
 	}
 }
