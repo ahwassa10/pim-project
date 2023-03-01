@@ -5,7 +5,7 @@ import model.real.MetadataName;
 
 public interface Comment extends Metadata<CommentValue>{
 	public default MetadataName getName() {
-		return new MetadataName("comment");
+		return MetadataName.from("comment");
 	}
 	
 	public CommentValue getValue();

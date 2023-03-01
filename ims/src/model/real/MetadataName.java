@@ -26,12 +26,16 @@ public class MetadataName {
 		return true;
 	}
 	
-	public MetadataName(String mn) {
+	private MetadataName(String mn) {
 		if (!isValidMetadataName(mn)) {
 			throw new IllegalArgumentException("Invalid metadata name");
 		} else {
 			this.metadataName = mn;
 		}
+	}
+	
+	public static MetadataName from(String mn) {
+		return new MetadataName(mn);
 	}
 	
 	public String toString() {

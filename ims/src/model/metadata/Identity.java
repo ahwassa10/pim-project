@@ -6,7 +6,7 @@ import model.real.MetadataName;
 
 public interface Identity extends Metadata<UUID>{
 	public default MetadataName getName() {
-		return new MetadataName("identity");
+		return MetadataName.from("identity");
 	}
 	
 	public UUID getValue();

@@ -5,7 +5,7 @@ import model.real.MetadataName;
 
 public interface Name extends Metadata<NameValue>{
 	public default MetadataName getName() {
-		return new MetadataName("name");
+		return MetadataName.from("name");
 	}
 	
 	public NameValue getValue();

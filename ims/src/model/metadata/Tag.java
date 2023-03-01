@@ -5,7 +5,7 @@ import model.real.MetadataName;
 
 public interface Tag extends Metadata<Keyword> {
 	public default MetadataName getName() {
-		return new MetadataName("Tag");
+		return MetadataName.from("tag");
 	}
 	
 	public Keyword getValue();

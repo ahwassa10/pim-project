@@ -20,12 +20,16 @@ public class NameValue {
 		return true;
 	}
 	
-	public NameValue(String nn) {
+	private NameValue(String nn) {
 		if (!isValidNameValue(nn)) {
 			throw new IllegalArgumentException("Invalid name value");
 		} else {
 			this.nameValue = nn;
 		}
+	}
+	
+	public static NameValue from(String nn) {
+		return new NameValue(nn);
 	}
 	
 	public String getValue() {
