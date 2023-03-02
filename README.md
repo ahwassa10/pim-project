@@ -1,3 +1,3 @@
 # pim-project
 
-Repository for independent study
+A collection of programs to take control of your personal information
