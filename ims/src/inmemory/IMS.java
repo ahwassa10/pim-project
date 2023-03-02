@@ -26,6 +26,11 @@ public class IMS {
 			public List<Tag> getTags() {
 				return null;
 			}
+			
+			public List<Metadata<Object>> getProperties() {
+				return null;
+			}
+			
 			public List<Metadata<Object>> getAttributes() {
 				return null;
 			}
