@@ -20,7 +20,7 @@ public class CommentValue {
 		return true;
 	}
 	
-	public CommentValue(String cv) {
+	private CommentValue(String cv) {
 		if (!isValidCommentValue(cv)) {
 			throw new IllegalArgumentException("Invalid comment value");
 		} else {
@@ -28,7 +28,11 @@ public class CommentValue {
 		}
 	}
 	
-	public String getCommentValue() {
+	public CommentValue from(String cv) {
+		return new CommentValue(cv);
+	}
+	
+	public String toString() {
 		return commentValue;
 	}
 }

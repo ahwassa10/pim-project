@@ -26,7 +26,7 @@ public class Keyword {
 		return true;
 	}
 	
-	public Keyword(String k) {
+	private Keyword(String k) {
 		if (!isValidKeyword(k)) {
 			throw new IllegalArgumentException("Invalid tag name");
 		} else {
@@ -34,7 +34,11 @@ public class Keyword {
 		}
 	}
 	
-	public String getKeyword() {
+	public Keyword from(String k) {
+		return new Keyword(k);
+	}
+	
+	public String toString() {
 		return keyword;
 	}
 }

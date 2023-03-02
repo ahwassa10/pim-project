@@ -32,7 +32,7 @@ public class NameValue {
 		return new NameValue(nn);
 	}
 	
-	public String getValue() {
+	public String toString() {
 		return nameValue;
 	}
 }
