@@ -2,7 +2,7 @@ package generics;
 
 import java.util.List;
 
-// The most basic generic features.
+// The most basic generic features
 public class Test1 {
 	// T is a type parameter
 	public static class Capsule<T> {

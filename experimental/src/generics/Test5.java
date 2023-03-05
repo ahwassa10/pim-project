@@ -2,6 +2,7 @@ package generics;
 
 import java.util.List;
 
+// Basic wildcard features
 public class Test5 {
 	// Note that we can specify the type bounds for a List, even though we 
 	// didn't write the list interface.

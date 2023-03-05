@@ -1,6 +1,6 @@
 package generics;
 
-// Generic static methods.
+// Generic static methods
 public class Test2 {
 	public static class Pair<K, V> {
 		private K key;
