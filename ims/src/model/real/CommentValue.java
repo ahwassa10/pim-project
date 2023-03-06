@@ -28,7 +28,7 @@ public class CommentValue {
 		}
 	}
 	
-	public CommentValue from(String cv) {
+	public static CommentValue from(String cv) {
 		return new CommentValue(cv);
 	}
 	

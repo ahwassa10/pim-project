@@ -34,7 +34,7 @@ public class Keyword {
 		}
 	}
 	
-	public Keyword from(String k) {
+	public static Keyword from(String k) {
 		return new Keyword(k);
 	}
 	
