@@ -30,10 +30,6 @@ public class IMS {
 			public List<Metadata<Object>> getProperties() {
 				return null;
 			}
-			
-			public List<Metadata<Object>> getAttributes() {
-				return null;
-			}
 		};
 		
 		identityTable.set(i, se);
