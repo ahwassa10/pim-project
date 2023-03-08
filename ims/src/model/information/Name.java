@@ -5,7 +5,7 @@ import java.util.List;
 
 import model.real.InformationName;
 
-public class Name implements Information {
+public class Name implements InformationType {
 	public InformationName getName() {
 		return InformationName.from("name");
 	}

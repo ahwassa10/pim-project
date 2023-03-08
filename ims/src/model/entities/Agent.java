@@ -2,8 +2,8 @@ package model.entities;
 
 import java.util.List;
 
-import model.information.Information;
+import model.information.InformationType;
 
 public interface Agent extends Entity {
-	List<Information> getAttributes();
+	List<InformationType> getAttributes();
 }

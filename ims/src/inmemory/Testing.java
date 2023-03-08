@@ -1,7 +1,7 @@
 package inmemory;
 
+import model.entities.Identity;
 import model.information.Comment;
-import model.information.Identity;
 
 public class Testing {
 	public static void main(String[] args) {
