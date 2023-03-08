@@ -1,4 +1,4 @@
-package model.entities;
+package model.information;
 
 public interface Piece<T> {
 	String getName();

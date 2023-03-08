@@ -2,8 +2,8 @@ package model.real;
 
 import java.util.Arrays;
 
-public class InformationType {
-	private String metadataName;
+public class InformationName {
+	private String informationName;
 	
 	private static final int MAX_LENGTH = 128;
 	
@@ -12,7 +12,7 @@ public class InformationType {
 					    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
-	public static boolean isValidMetadataName(String test_string) {
+	public static boolean isValidInformationName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -26,19 +26,19 @@ public class InformationType {
 		return true;
 	}
 	
-	private InformationType(String mn) {
-		if (!isValidMetadataName(mn)) {
-			throw new IllegalArgumentException("Invalid metadata name");
+	private InformationName(String in) {
+		if (!isValidInformationName(in)) {
+			throw new IllegalArgumentException("Invalid information name");
 		} else {
-			this.metadataName = mn;
+			this.informationName = in;
 		}
 	}
 	
-	public static InformationType from(String mn) {
-		return new InformationType(mn);
+	public static InformationName from(String in) {
+		return new InformationName(in);
 	}
 	
 	public String toString() {
-		return metadataName;
+		return informationName;
 	}
 }

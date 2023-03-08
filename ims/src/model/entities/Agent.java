@@ -2,7 +2,7 @@ package model.entities;
 
 import java.util.List;
 
-import model.metadata.Information;
+import model.information.Information;
 
 public interface Agent extends Entity {
 	List<Information> getAttributes();

@@ -1,13 +1,11 @@
 package inmemory;
 
-import model.entities.*;
+import model.information.Comment;
+import model.information.Identity;
 
 public class Testing {
 	public static void main(String[] args) {
-		IMS ims = new IMS();
-		SystemEntity test = ims.createEntity();
-		
-		System.out.println(test.getIdentity().getName());
-		System.out.println(test.getIdentity().getValue());
+		System.out.println(Identity.getName());
+		System.out.println(Comment.getName());
 	}
 }
