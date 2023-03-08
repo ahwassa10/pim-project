@@ -2,7 +2,7 @@ package model.real;
 
 import java.util.Arrays;
 
-public class MetadataName {
+public class InformationType {
 	private String metadataName;
 	
 	private static final int MAX_LENGTH = 128;
@@ -26,7 +26,7 @@ public class MetadataName {
 		return true;
 	}
 	
-	private MetadataName(String mn) {
+	private InformationType(String mn) {
 		if (!isValidMetadataName(mn)) {
 			throw new IllegalArgumentException("Invalid metadata name");
 		} else {
@@ -34,8 +34,8 @@ public class MetadataName {
 		}
 	}
 	
-	public static MetadataName from(String mn) {
-		return new MetadataName(mn);
+	public static InformationType from(String mn) {
+		return new InformationType(mn);
 	}
 	
 	public String toString() {

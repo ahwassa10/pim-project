@@ -2,8 +2,8 @@ package model.entities;
 
 import java.util.List;
 
-import model.metadata.Metadata;
+import model.metadata.Information;
 
 public interface Agent extends Entity {
-	public List<Metadata<Object>> getAttributions();
+	List<Information> getAttributes();
 }

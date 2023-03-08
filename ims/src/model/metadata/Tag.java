@@ -1,11 +1,11 @@
 package model.metadata;
 
 import model.real.Keyword;
-import model.real.MetadataName;
+import model.real.InformationType;
 
-public interface Tag extends Metadata<Keyword> {
-	public default MetadataName getName() {
-		return MetadataName.from("tag");
+public interface Tag extends Information {
+	public default InformationType getName() {
+		return InformationType.from("tag");
 	}
 	
 	public Keyword getValue();

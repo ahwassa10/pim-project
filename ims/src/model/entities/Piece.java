@@ -1,4 +1,4 @@
-package altmodel;
+package model.entities;
 
 public interface Piece<T> {
 	String getName();

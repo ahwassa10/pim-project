@@ -1,11 +1,11 @@
 package model.metadata;
 
 import model.real.CommentValue;
-import model.real.MetadataName;
+import model.real.InformationType;
 
-public interface Comment extends Metadata<CommentValue>{
-	public default MetadataName getName() {
-		return MetadataName.from("comment");
+public interface Comment extends Information {
+	public default InformationType getName() {
+		return InformationType.from("comment");
 	}
 	
 	public CommentValue getValue();
