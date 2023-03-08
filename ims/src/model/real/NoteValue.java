@@ -1,11 +1,11 @@
 package model.real;
 
-public class CommentValue {
-	private String commentValue;
+public class NoteValue {
+	private String noteValue;
 	
 	private static final int MAX_LENGTH = 1024;
 	
-	public static boolean isValidCommentValue(String test_string) {
+	public static boolean isValidNoteValue(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -20,19 +20,19 @@ public class CommentValue {
 		return true;
 	}
 	
-	private CommentValue(String cv) {
-		if (!isValidCommentValue(cv)) {
-			throw new IllegalArgumentException("Invalid comment value");
+	private NoteValue(String nv) {
+		if (!isValidNoteValue(nv)) {
+			throw new IllegalArgumentException("Invalid note value");
 		} else {
-			this.commentValue = cv;
+			this.noteValue = nv;
 		}
 	}
 	
-	public static CommentValue from(String cv) {
-		return new CommentValue(cv);
+	public static NoteValue from(String nv) {
+		return new NoteValue(nv);
 	}
 	
 	public String toString() {
-		return commentValue;
+		return noteValue;
 	}
 }
