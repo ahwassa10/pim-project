@@ -1,6 +1,6 @@
 package inmemory;
 
-import model.entities.Identity;
+import model.qualities.Identity;
 import model.qualities.Note;
 
 public class Testing {
