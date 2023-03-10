@@ -2,8 +2,8 @@ package model.real;
 
 import java.util.Arrays;
 
-public class InformationName {
-	private String informationName;
+public class QualityName {
+	private String name;
 	
 	private static final int MAX_LENGTH = 128;
 	
@@ -12,7 +12,7 @@ public class InformationName {
 					    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
-	public static boolean isValidInformationName(String test_string) {
+	public static boolean isValidQualityName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -26,19 +26,19 @@ public class InformationName {
 		return true;
 	}
 	
-	private InformationName(String in) {
-		if (!isValidInformationName(in)) {
-			throw new IllegalArgumentException("Invalid information name");
+	private QualityName(String in) {
+		if (!isValidQualityName(in)) {
+			throw new IllegalArgumentException("Invalid quality name");
 		} else {
-			this.informationName = in;
+			this.name = in;
 		}
 	}
 	
-	public static InformationName from(String in) {
-		return new InformationName(in);
+	public static QualityName from(String name) {
+		return new QualityName(name);
 	}
 	
 	public String toString() {
-		return informationName;
+		return name;
 	}
 }

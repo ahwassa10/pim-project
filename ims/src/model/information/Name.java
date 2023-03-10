@@ -3,11 +3,11 @@ package model.information;
 
 import java.util.List;
 
-import model.real.InformationName;
+import model.real.QualityName;
 
 public class Name implements InformationType {
-	public InformationName getName() {
-		return InformationName.from("name");
+	public QualityName getName() {
+		return QualityName.from("name");
 	}
 	
 	public List<Piece<?>> getProperties() {
