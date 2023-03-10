@@ -1,6 +1,6 @@
 package model.qualities;
 
-public class Name implements Quality {
+public final class Name implements Quality {
 	
 	private static final int MAX_NAME_LENGTH = 128;
 	
@@ -36,8 +36,20 @@ public class Name implements Quality {
 		return new Name(nameValue);
 	}
 	
+	public boolean equals(Object o) {
+		if (o == this) {return true;}
+		if (!(o instanceof Name)) { return false;}
+		
+		Name n = (Name) o;
+		return nameValue.equals(n.toString());
+	}
+	
 	public QualityType getQualityType() {
 		return qualityType;
+	}
+	
+	public int hashCode() {
+		return nameValue.hashCode();
 	}
 	
 	public String toString() {

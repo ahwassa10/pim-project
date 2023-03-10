@@ -1,6 +1,6 @@
 package model.qualities;
 
-public class Note implements Quality {
+public final class Note implements Quality {
 	
 	private static final int MAX_NOTE_LENGTH = 1024;
 	
@@ -35,9 +35,21 @@ public class Note implements Quality {
 	public static Note from(String noteValue) {
 		return new Note(noteValue);
 	}
+	
+	public boolean equals(Object o) {
+		if (o == this) {return true;}
+		if (!(o instanceof Note)) {return false;}
+		
+		Note n = (Note) o;
+		return noteValue.equals(n.toString());
+	}
 
 	public QualityType getQualityType() {
 		return qualityType;
+	}
+	
+	public int hashCode() {
+		return noteValue.hashCode();
 	}
 	
 	public String toString() {
