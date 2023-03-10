@@ -1,13 +1,11 @@
-package model.information;
+package model.qualities;
 
 
 import java.util.List;
 
-import model.real.QualityName;
-
 public class Name implements InformationType {
-	public QualityName getName() {
-		return QualityName.from("name");
+	public QualityType getName() {
+		return QualityType.from("name");
 	}
 	
 	public List<Piece<?>> getProperties() {

@@ -2,7 +2,7 @@ package model.entities;
 
 import java.util.List;
 
-import model.information.Piece;
+import model.qualities.Piece;
 
 public interface Entity {
 	List<Piece<?>> getProperties();

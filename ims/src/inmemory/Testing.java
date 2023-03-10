@@ -1,7 +1,7 @@
 package inmemory;
 
 import model.entities.Identity;
-import model.information.Note;
+import model.qualities.Note;
 
 public class Testing {
 	public static void main(String[] args) {

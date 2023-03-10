@@ -1,9 +1,9 @@
-package model.real;
+package model.qualities;
 
 import java.util.Arrays;
 
-public class QualityName {
-	private String name;
+public class QualityType {
+	private String qualityType;
 	
 	private static final int MAX_LENGTH = 128;
 	
@@ -12,7 +12,7 @@ public class QualityName {
 					    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
-	public static boolean isValidQualityName(String test_string) {
+	public static boolean isValidQualityType(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -26,19 +26,19 @@ public class QualityName {
 		return true;
 	}
 	
-	private QualityName(String in) {
-		if (!isValidQualityName(in)) {
-			throw new IllegalArgumentException("Invalid quality name");
+	private QualityType(String in) {
+		if (!isValidQualityType(in)) {
+			throw new IllegalArgumentException("Invalid quality type");
 		} else {
-			this.name = in;
+			this.qualityType = in;
 		}
 	}
 	
-	public static QualityName from(String name) {
-		return new QualityName(name);
+	public static QualityType from(String qualityType) {
+		return new QualityType(qualityType);
 	}
 	
 	public String toString() {
-		return name;
+		return qualityType;
 	}
 }
