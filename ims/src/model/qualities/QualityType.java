@@ -3,14 +3,23 @@ package model.qualities;
 import java.util.Arrays;
 
 public class QualityType {
-	private String qualityType;
-	
-	private static final int MAX_LENGTH = 128;
 	
 	private static final char[] ALLOWED_CHARACTERS =
 			new char[] {'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 					    'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 					    'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+	
+	private static final int MAX_LENGTH = 128;
+	
+	private String qualityType;
+	
+	private QualityType(String in) {
+		if (!isValidQualityType(in)) {
+			throw new IllegalArgumentException("Invalid quality type");
+		} else {
+			this.qualityType = in;
+		}
+	}
 	
 	public static boolean isValidQualityType(String test_string) {
 		if ((test_string == null) ||
@@ -24,14 +33,6 @@ public class QualityType {
 			}
 		}
 		return true;
-	}
-	
-	private QualityType(String in) {
-		if (!isValidQualityType(in)) {
-			throw new IllegalArgumentException("Invalid quality type");
-		} else {
-			this.qualityType = in;
-		}
 	}
 	
 	public static QualityType from(String qualityType) {
