@@ -3,13 +3,14 @@ package model.entities;
 import model.qualities.QualityType;
 
 public final class Property<V> {
-	private final Pair<QualityType, V> quality;
+	private final Pair<QualityType, V> property;
 	
 	private Property(QualityType qualityType, V propertyValue) {
-		quality = Pair.of(qualityType, propertyValue);
+		property = Pair.of(qualityType, propertyValue);
 	}
 	
-	public static <V> Property<V> from(QualityType qualityType, V propertyValue) {
+	public static <V> Property<V> from(QualityType qualityType,
+									   V propertyValue) {
 		return new Property<V>(qualityType, propertyValue);
 	}
 	
@@ -18,19 +19,19 @@ public final class Property<V> {
 		if (!(o instanceof Property<?>)) {return false;}
 		
 		Property<?> p = (Property<?>) o;
-		return quality.equals(p.quality); 
+		return property.equals(p.property); 
 	}
 	
 	public QualityType getQualityType() {
-		return quality.getKey();
+		return property.getKey();
 	}
 	
-	public V getQualityValue() {
-		return quality.getValue();
+	public V getPropertyValue() {
+		return property.getValue();
 	}
 	
 	public int hashCode() {
-		return quality.hashCode();
+		return property.hashCode();
 	}
 	
 }
