@@ -18,7 +18,7 @@ public final class Pair<K, V> {
 		if (!(o instanceof Pair<?, ?>)) {return false;}
 		
 		Pair<?, ?> p = (Pair<?, ?>) o;
-		return key.equals(p.getKey()) && value.equals(p.getValue());
+		return key.equals(p.key) && value.equals(p.value);
 	}
 	
 	public K getKey() {

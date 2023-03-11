@@ -1,6 +1,9 @@
 package inmemory;
 
+import java.util.List;
+
 import model.entities.Pair;
+import model.entities.Triple;
 import model.qualities.Name;
 import model.qualities.Note;
 
@@ -32,5 +35,19 @@ public class Testing {
 		System.out.println(p4.equals(p1));
 		System.out.println(p4.equals(p5));
 		System.out.println(p6.equals(p5));
+		
+		Triple<String, String, String> t1 =
+				Triple.of("Hello", "there", "general");	
+		Triple<String, String, Note> t2 =
+				Triple.of("Owner", "note", Note.from("hello!"));
+		Triple<String, String, String> t3 =
+				Triple.of("Hello", "there", "general");
+		
+		System.out.println(t1);
+		System.out.println(t2);
+		
+		List<Triple<String, String, String>> list = List.of(t1);
+		System.out.println(list.contains(t3));
+		// Should print true since Triples are value objects.
 	}
 }
