@@ -15,6 +15,10 @@ public class Triple<K, Q, V> {
 		return new Triple<K, Q, V>(key, qualifier, value);
 	}
 	
+	public Pair<K, Pair<Q, V>> asPairs() {
+		return Pair.of(key, Pair.of(qualifier, value));
+	}
+	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
 		if (!(o instanceof Triple<?, ?, ?>)) {return false;}

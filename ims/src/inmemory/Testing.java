@@ -49,5 +49,9 @@ public class Testing {
 		List<Triple<String, String, String>> list = List.of(t1);
 		System.out.println(list.contains(t3));
 		// Should print true since Triples are value objects.
+		
+		Pair<String, Pair<String, Note>> pp = t2.asPairs();
+		System.out.println(String.format("<Key: %s, Value: <Key: %s, Value: %s>>",
+				pp.getKey(), pp.getValue().getKey(), pp.getValue().getKey()));
 	}
 }
