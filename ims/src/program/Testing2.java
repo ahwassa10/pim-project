@@ -9,10 +9,13 @@ public class Testing2 {
 		IMS system = new IMS();
 		
 		Identity i = Identity.newIdentifier();
-		SystemEntity e = system.getEntity(i);
+		SystemEntity e1 = system.getEntity(i);
 		
-		System.out.println(e.getIdentity());
-		
+		System.out.println(e1.getIdentity());
 		System.out.println(system.getEntity(i).getIdentity());
+		
+		system.getEntity(Identity.newIdentifier());
+		
+		system.getAttributes().forEach(attribute -> System.out.println(attribute.getQualityType() + ": " + attribute.getAttributeValue()));
 	}
 }
