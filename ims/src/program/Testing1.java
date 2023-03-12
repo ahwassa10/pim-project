@@ -1,4 +1,4 @@
-package inmemory;
+package program;
 
 import java.util.List;
 

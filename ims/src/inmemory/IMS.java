@@ -6,7 +6,6 @@ import java.util.List;
 import model.entities.Agent;
 import model.entities.Attribute;
 import model.entities.Property;
-import model.entities.SystemEntity;
 import model.qualities.Identity;
 
 public class IMS implements Agent {
@@ -24,7 +23,7 @@ public class IMS implements Agent {
 		if (identities.containsKey(identity)) {
 			return identities.get(identity);
 		} else {
-			SystemEntity se = new SystemEntity() {
+			SystemEntity se = new SystemEntity(identity) {
 				public List<Property<?>> getProperties() {
 					return List.of(Property.from(identity.getQualityType(), identity));
 				}
