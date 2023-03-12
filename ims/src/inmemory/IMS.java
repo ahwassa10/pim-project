@@ -1,16 +1,40 @@
 package inmemory;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
-import model.entities.Entity;
+import model.entities.Agent;
+import model.entities.Attribute;
+import model.entities.Property;
+import model.entities.SystemEntity;
+import model.qualities.Identity;
 
-public class IMS {
-	private Map<UUID, Entity> identityTable = new HashMap<>();
+public class IMS implements Agent {
+	private HashMap<Identity, SystemEntity> identities = new HashMap<>();
 	
-	public Entity createEntity() {
-		
+	public List<Attribute<?>> getAttributes() {
+		return List.of();
 	}
 	
+	public SystemEntity getEntity(Identity identity) {
+		if (identity == null) {
+			throw new IllegalArgumentException("Identity cannot be null");
+		}
+		
+		if (identities.containsKey(identity)) {
+			return identities.get(identity);
+		} else {
+			SystemEntity se = new SystemEntity() {
+				public List<Property<?>> getProperties() {
+					return List.of(Property.from(identity.getQualityType(), identity));
+				}
+			};
+			identities.put(identity, se);
+			return se;
+		}
+	}
+	
+	public List<Property<?>> getProperties() {
+		return List.of();
+	}
 }

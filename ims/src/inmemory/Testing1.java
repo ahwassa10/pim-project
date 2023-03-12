@@ -8,7 +8,7 @@ import model.qualities.Name;
 import model.qualities.Note;
 import model.qualities.Score;
 
-public class Testing {
+public class Testing1 {
 	public static void main(String[] args) {
 		Name n1 = Name.from("Hello there");
 		Name n2 = Name.from("Hello there");
