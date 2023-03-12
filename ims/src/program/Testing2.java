@@ -16,6 +16,6 @@ public class Testing2 {
 		
 		system.getEntity(Identity.newIdentifier());
 		
-		system.getAttributes().forEach(attribute -> System.out.println(attribute.getQualityType() + ": " + attribute.getAttributeValue()));
+		system.getAttributes().forEach(attribute -> System.out.println(attribute));
 	}
 }

@@ -40,4 +40,8 @@ public class Attribute<V> {
 	public int hashCode() {
 		return attribute.hashCode();
 	}
+	
+	public String toString() {
+		return attribute.toString();
+	}
 }

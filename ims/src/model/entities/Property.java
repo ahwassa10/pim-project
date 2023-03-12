@@ -34,4 +34,8 @@ public final class Property<V> {
 		return property.hashCode();
 	}
 	
+	public String toString() {
+		return property.toString();
+	}
+	
 }
