@@ -6,6 +6,7 @@ import model.entities.Pair;
 import model.entities.Triple;
 import model.qualities.Name;
 import model.qualities.Note;
+import model.qualities.Score;
 
 public class Testing {
 	public static void main(String[] args) {
@@ -53,5 +54,13 @@ public class Testing {
 		Pair<String, Pair<String, Note>> pp = t2.asPairs();
 		System.out.println(String.format("<Key: %s, Value: <Key: %s, Value: %s>>",
 				pp.getKey(), pp.getValue().getKey(), pp.getValue().getKey()));
+	
+		
+		Score s = Score.newScore(10);
+		s.increment();
+		s.increment();
+		s.decrement();
+		System.out.println(s.getScore());
+		
 	}
 }
