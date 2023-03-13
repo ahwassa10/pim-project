@@ -4,12 +4,12 @@ import model.qualities.QualityType;
 import structural.Triple;
 
 public class Attribute<V> {
-	private final Triple<Entity, QualityType, V> attribute;
+	private final Triple<Entity, QualityType, V> triple;
 	
 	private Attribute(Entity entity,
 					  QualityType qualityType,
 					  V attributeValue) {
-		attribute = Triple.of(entity, qualityType, attributeValue);
+		triple = Triple.of(entity, qualityType, attributeValue);
 	}
 	
 	public static <V> Attribute<V> from(Entity entity,
@@ -23,26 +23,26 @@ public class Attribute<V> {
 		if (!(o instanceof Attribute<?>)) {return false;}
 		
 		Attribute<?> a = (Attribute<?>) o;
-		return (attribute.equals(a.attribute));
+		return (triple.equals(a.triple));
 	}
 	
 	public Entity getEntity() {
-		return attribute.getKey();
+		return triple.getKey();
 	}
 	
 	public QualityType getQualityType() {
-		return attribute.getQualifier();
+		return triple.getQualifier();
 	}
 	
 	public V getAttributeValue() {
-		return attribute.getValue();
+		return triple.getValue();
 	}
 	
 	public int hashCode() {
-		return attribute.hashCode();
+		return triple.hashCode();
 	}
 	
 	public String toString() {
-		return attribute.toString();
+		return triple.toString();
 	}
 }
