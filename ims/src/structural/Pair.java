@@ -1,4 +1,4 @@
-package model.entities;
+package structural;
 
 public final class Pair<K, V> {
 	private final K key;

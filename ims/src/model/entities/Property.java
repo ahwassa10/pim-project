@@ -1,6 +1,7 @@
 package model.entities;
 
 import model.qualities.QualityType;
+import structural.Pair;
 
 public final class Property<V> {
 	private final Pair<QualityType, V> property;

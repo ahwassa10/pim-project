@@ -1,6 +1,7 @@
 package model.entities;
 
 import model.qualities.QualityType;
+import structural.Triple;
 
 public class Attribute<V> {
 	private final Triple<Entity, QualityType, V> attribute;

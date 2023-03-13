@@ -2,11 +2,11 @@ package program;
 
 import java.util.List;
 
-import model.entities.Pair;
-import model.entities.Triple;
 import model.qualities.Name;
 import model.qualities.Note;
 import model.qualities.Score;
+import structural.Pair;
+import structural.Triple;
 
 public class Testing1 {
 	public static void main(String[] args) {

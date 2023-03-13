@@ -1,4 +1,4 @@
-package model.entities;
+package structural;
 
 public class Triple<K, Q, V> {
 	private final K key;
