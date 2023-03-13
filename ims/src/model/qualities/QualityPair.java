@@ -1,12 +1,12 @@
 package model.qualities;
 
+import structural.Pair;
+
 public final class QualityPair<V> {
-	private final QualityType qualityType;
-	private final V value;
+	private final Pair<QualityType, V> pair;
 	
 	QualityPair(QualityType qualityType, V value) {
-		this.qualityType = qualityType;
-		this.value = value;
+		pair = Pair.of(qualityType, value);
 	}
 	
 	public boolean equals(Object o) {
@@ -14,26 +14,23 @@ public final class QualityPair<V> {
 		if (!(o instanceof QualityPair<?>)) {return false;}
 		
 		QualityPair<?> qp = (QualityPair<?>) o;
-		return (qualityType.equals(qp.qualityType) &&
-				value.equals(qp.value));
+		return pair.equals(qp.pair);
 	}
 	
 	public QualityType getQualityType() {
-		return qualityType;
+		return pair.getKey();
 	}
 	
 	public V getValue() {
-		return value;
+		return pair.getValue();
 	}
 	
 	public int hashCode() {
-		int result = qualityType.hashCode();
-		result = 31 * result + value.hashCode();
-		
-		return result;
+		return pair.hashCode();
 	}
 	
 	public String toString() {
-		return String.format("QualityPair<%s, %s>", qualityType, value);
+		return String.format("QualityPair<%s, %s>",
+				pair.getKey(), pair.getValue());
 	}
 }

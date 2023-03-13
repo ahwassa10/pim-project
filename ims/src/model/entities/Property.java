@@ -4,10 +4,10 @@ import model.qualities.QualityType;
 import structural.Pair;
 
 public final class Property<V> {
-	private final Pair<QualityType, V> property;
+	private final Pair<QualityType, V> pair;
 	
 	private Property(QualityType qualityType, V propertyValue) {
-		property = Pair.of(qualityType, propertyValue);
+		pair = Pair.of(qualityType, propertyValue);
 	}
 	
 	public static <V> Property<V> from(QualityType qualityType,
@@ -20,23 +20,24 @@ public final class Property<V> {
 		if (!(o instanceof Property<?>)) {return false;}
 		
 		Property<?> p = (Property<?>) o;
-		return property.equals(p.property); 
+		return pair.equals(p.pair); 
 	}
 	
 	public QualityType getQualityType() {
-		return property.getKey();
+		return pair.getKey();
 	}
 	
 	public V getPropertyValue() {
-		return property.getValue();
+		return pair.getValue();
 	}
 	
 	public int hashCode() {
-		return property.hashCode();
+		return pair.hashCode();
 	}
 	
 	public String toString() {
-		return property.toString();
+		return String.format("Property<%s, %s>",
+				pair.getKey(), pair.getValue());
 	}
 	
 }
