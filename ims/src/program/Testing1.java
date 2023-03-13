@@ -2,9 +2,9 @@ package program;
 
 import java.util.List;
 
-import model.qualities.Name;
 import model.qualities.Note;
 import model.qualities.Score;
+import structural.Name;
 import structural.Pair;
 import structural.Triple;
 

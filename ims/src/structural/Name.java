@@ -1,11 +1,7 @@
-package model.qualities;
+package structural;
 
-public final class Name implements Quality {
-	
+public final class Name{
 	private static final int MAX_NAME_LENGTH = 128;
-	
-	private static QualityType qualityType =
-			QualityType.from("name");
 	
 	private String nameValue;
 	
@@ -42,10 +38,6 @@ public final class Name implements Quality {
 		
 		Name n = (Name) o;
 		return nameValue.equals(n.toString());
-	}
-	
-	public QualityType getQualityType() {
-		return qualityType;
 	}
 	
 	public int hashCode() {

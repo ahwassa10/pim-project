@@ -7,8 +7,8 @@ import inmemory.SystemEntity;
 import inmemory.User;
 import model.entities.Attribute;
 import model.qualities.Identity;
-import model.qualities.Name;
 import model.qualities.Note;
+import structural.Name;
 
 public class Testing3 {
 	public static void main(String[] args) {

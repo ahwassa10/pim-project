@@ -1,9 +1,9 @@
 package program;
 
 import model.entities.Property;
-import model.qualities.Name;
 import model.qualities.Note;
 import model.qualities.QualityType;
+import structural.Name;
 
 public class Testing4 {
 	public static void main(String[] args) {
