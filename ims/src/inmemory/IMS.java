@@ -13,6 +13,8 @@ import model.qualities.Identity;
 public class IMS implements Agent {
 	private HashMap<Identity, SystemEntity> identities = new HashMap<>();
 	
+	private User user = new User();
+	
 	public void deleteEntity(Identity identity) {
 		if (identity == null) {
 			throw new IllegalArgumentException("Identity cannot be null");
@@ -45,6 +47,10 @@ public class IMS implements Agent {
 			identities.put(identity, se);
 			return se;
 		}
+	}
+	
+	public User getUser() {
+		return user;
 	}
 	
 	public List<Property<?>> getProperties() {
