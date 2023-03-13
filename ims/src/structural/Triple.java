@@ -55,6 +55,4 @@ public class Triple<K, Q, V> {
 		return String.format("Triple<%s, %s, %s>",
 				key, qualifier, value);
 	}
-	
-	
 }
