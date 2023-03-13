@@ -14,7 +14,7 @@ public final class QualityPair<V> {
 		if (!(o instanceof QualityPair<?>)) {return false;}
 		
 		QualityPair<?> qp = (QualityPair<?>) o;
-		return (qualityType.equals(qp.getQualityType()) &&
+		return (qualityType.equals(qp.qualityType) &&
 				value.equals(qp.value));
 	}
 	

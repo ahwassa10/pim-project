@@ -21,6 +21,18 @@ public class QualityType {
 		}
 	}
 	
+	public boolean equals(Object o) {
+		if (o == this) {return true;}
+		if (!(o instanceof QualityType)) {return false;}
+		
+		QualityType qt = (QualityType) o;
+		return qualityType.equals(qt.qualityType);
+	}
+	
+	public int hashCode() {
+		return qualityType.hashCode();
+	}
+	
 	public static boolean isValidQualityType(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
