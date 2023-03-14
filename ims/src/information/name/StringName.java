@@ -7,7 +7,7 @@ public final class StringName{
 	
 	private StringName(String name) {
 		if (!isValidNameValue(name)) {
-			throw new IllegalArgumentException("Cannot create Name from this string");
+			throw new IllegalArgumentException("Cannot create a name from this string");
 		} else {
 			this.name = name;
 		}

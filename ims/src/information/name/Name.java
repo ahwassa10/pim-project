@@ -1,13 +1,20 @@
 package information.name;
 
+import information.AbstractInfoPair;
 import information.InfoType;
-import information.InfoTypeName;
 
-public final class Name implements InfoType {
-	private static final InfoTypeName infoTypeName =
-			InfoTypeName.from("name");
+public class Name extends AbstractInfoPair<StringName>{
+	private static InfoType infoType = new NameType();
 	
-	public InfoTypeName getInfoTypeName() {
-		return infoTypeName;
+	private Name(StringName name) {
+		super(name);
+	}
+	
+	public Name from(String name) {
+		return new Name(StringName.from(name));
+	}
+	
+	public InfoType getInfoType() {
+		return infoType;
 	}
 }
