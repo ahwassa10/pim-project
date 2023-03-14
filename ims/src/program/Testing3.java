@@ -2,22 +2,22 @@ package program;
 
 import java.util.List;
 
+import information.identity.UUIDIdentity;
 import information.name.StringName;
+import information.note.StringNote;
 import inmemory.IMS;
 import inmemory.SystemEntity;
 import inmemory.User;
 import model.entities.Attribute;
-import structural.Identity;
-import structural.Note;
 
 public class Testing3 {
 	public static void main(String[] args) {
 		IMS system = new IMS();
 		User user = system.getUser();
 		
-		SystemEntity se = system.getEntity(Identity.newIdentifier());
+		SystemEntity se = system.getEntity(UUIDIdentity.newIdentifier());
 		StringName n = StringName.from("A system entity");
-		Note nn = Note.from("Testing user attributions");
+		StringNote nn = StringNote.from("Testing user attributions");
 		
 		user.attribute(se, n);
 		user.attribute(se, nn);

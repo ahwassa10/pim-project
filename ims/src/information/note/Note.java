@@ -1,25 +1,25 @@
-package information.name;
+package information.note;
 
 import information.AbstractInfoPair;
 import information.InfoType;
 import information.InfoTypeName;
 
-public final class Name extends AbstractInfoPair<StringName>{
+public final class Note extends AbstractInfoPair<StringNote> {
 	private static InfoType infoType = new InfoType() {
 		private static InfoTypeName infoTypeName =
-				InfoTypeName.from("name");
+				InfoTypeName.from("note");
 		
 		public InfoTypeName getInfoTypeName() {
 			return infoTypeName;
 		}
 	};
 	
-	private Name(StringName name) {
-		super(name);
+	private Note(StringNote note) {
+		super(note);
 	}
 	
-	public Name from(String name) {
-		return new Name(StringName.from(name));
+	public Note from(String note) {
+		return new Note(StringNote.from(note));
 	}
 	
 	public InfoType getInfoType() {
@@ -27,6 +27,6 @@ public final class Name extends AbstractInfoPair<StringName>{
 	}
 	
 	public String toString() {
-		return String.format("Name<%s>", this.getValue());
+		return String.format("Note<%s>", this.getValue());
 	}
 }

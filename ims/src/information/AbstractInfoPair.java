@@ -24,4 +24,10 @@ public abstract class AbstractInfoPair<V> implements InfoPair<V> {
 	public int hashCode() {
 		return value.hashCode();
 	}
+	
+	public String toString() {
+		return String.format("InfoPair<%s, %s>",
+				this.getInfoType().getInfoTypeName(),
+				value);
+	}
 }

@@ -1,14 +1,14 @@
-package structural;
+package information.identity;
 
 import java.util.UUID;
 
-public final class Identity {
+public final class UUIDIdentity {
 	private UUID identity = UUID.randomUUID();
 	
-	private Identity() {}
+	private UUIDIdentity() {}
 	
-	public static Identity newIdentifier() {
-		return new Identity();
+	public static UUIDIdentity newIdentifier() {
+		return new UUIDIdentity();
 	}
 	
 	public UUID getIdentifier() {

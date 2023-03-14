@@ -1,25 +1,25 @@
-package information.name;
+package information.identity;
 
 import information.AbstractInfoPair;
 import information.InfoType;
 import information.InfoTypeName;
 
-public final class Name extends AbstractInfoPair<StringName>{
+public final class Identity extends AbstractInfoPair<UUIDIdentity> {
 	private static InfoType infoType = new InfoType() {
 		private static InfoTypeName infoTypeName =
-				InfoTypeName.from("name");
+				InfoTypeName.from("identity");
 		
 		public InfoTypeName getInfoTypeName() {
 			return infoTypeName;
 		}
 	};
 	
-	private Name(StringName name) {
-		super(name);
+	private Identity(UUIDIdentity identity) {
+		super(identity);
 	}
 	
-	public Name from(String name) {
-		return new Name(StringName.from(name));
+	public Identity newIdentifier() {
+		return new Identity(UUIDIdentity.newIdentifier());
 	}
 	
 	public InfoType getInfoType() {
@@ -27,6 +27,6 @@ public final class Name extends AbstractInfoPair<StringName>{
 	}
 	
 	public String toString() {
-		return String.format("Name<%s>", this.getValue());
+		return String.format("Identity<%s>", this.getValue());
 	}
 }

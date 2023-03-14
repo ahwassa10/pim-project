@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import information.identity.UUIDIdentity;
 import model.entities.Agent;
 import model.entities.Attribute;
 import model.entities.Property;
-import structural.Identity;
 
 public class IMS implements Agent {
-	private HashMap<Identity, SystemEntity> identities = new HashMap<>();
+	private HashMap<UUIDIdentity, SystemEntity> identities = new HashMap<>();
 	
 	private User user = new User();
 	
-	public void deleteEntity(Identity identity) {
+	public void deleteEntity(UUIDIdentity identity) {
 		if (identity == null) {
 			throw new IllegalArgumentException("Identity cannot be null");
 		}
@@ -25,13 +25,13 @@ public class IMS implements Agent {
 	public List<Attribute<?>> getAttributes() {
 		List<Attribute<?>> l = new ArrayList<>();
 		
-		for (Entry<Identity, SystemEntity> e : identities.entrySet()) {
+		for (Entry<UUIDIdentity, SystemEntity> e : identities.entrySet()) {
 			l.add(Attribute.from(e.getValue(), e.getKey().getQualityType(), e.getKey()));
 		}
 		return l;
 	}
 	
-	public SystemEntity getEntity(Identity identity) {
+	public SystemEntity getEntity(UUIDIdentity identity) {
 		if (identity == null) {
 			throw new IllegalArgumentException("Identity cannot be null");
 		}

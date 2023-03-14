@@ -3,7 +3,7 @@ package program;
 import java.util.List;
 
 import information.name.StringName;
-import structural.Note;
+import information.note.StringNote;
 import structural.Score;
 import util.Pair;
 import util.Triple;
@@ -29,9 +29,9 @@ public class Testing1 {
 		System.out.println(p2.equals(p3));
 		System.out.println(p3.equals(p1));
 		
-		Pair<String, Note> p4 = Pair.of("note", Note.from("A note"));
-		Pair<String, Note> p5 = Pair.of("note", Note.from("A note"));
-		Pair<Note, Note> p6 = Pair.of(Note.from("note"), Note.from("A note"));
+		Pair<String, StringNote> p4 = Pair.of("note", StringNote.from("A note"));
+		Pair<String, StringNote> p5 = Pair.of("note", StringNote.from("A note"));
+		Pair<StringNote, StringNote> p6 = Pair.of(StringNote.from("note"), StringNote.from("A note"));
 		System.out.println(p4);
 		System.out.println(p4.equals(p1));
 		System.out.println(p4.equals(p5));
@@ -39,8 +39,8 @@ public class Testing1 {
 		
 		Triple<String, String, String> t1 =
 				Triple.of("Hello", "there", "general");	
-		Triple<String, String, Note> t2 =
-				Triple.of("Owner", "note", Note.from("hello!"));
+		Triple<String, String, StringNote> t2 =
+				Triple.of("Owner", "note", StringNote.from("hello!"));
 		Triple<String, String, String> t3 =
 				Triple.of("Hello", "there", "general");
 		
@@ -51,7 +51,7 @@ public class Testing1 {
 		System.out.println(list.contains(t3));
 		// Should print true since Triples are value objects.
 		
-		Pair<String, Pair<String, Note>> pp = t2.asPairs();
+		Pair<String, Pair<String, StringNote>> pp = t2.asPairs();
 		System.out.println(String.format("<Key: %s, Value: <Key: %s, Value: %s>>",
 				pp.getKey(), pp.getValue().getKey(), pp.getValue().getKey()));
 	

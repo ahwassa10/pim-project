@@ -1,11 +1,11 @@
-package structural;
+package information.note;
 
-public final class Note {
+public final class StringNote {
 	private static final int MAX_NOTE_LENGTH = 1024;
 	
 	private String noteValue;
 	
-	private Note(String noteValue) {
+	private StringNote(String noteValue) {
 		if (!isValidNoteValue(noteValue)) {
 			throw new IllegalArgumentException("Invalid note value");
 		} else {
@@ -28,15 +28,15 @@ public final class Note {
 		return true;
 	}
 	
-	public static Note from(String noteValue) {
-		return new Note(noteValue);
+	public static StringNote from(String noteValue) {
+		return new StringNote(noteValue);
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof Note)) {return false;}
+		if (!(o instanceof StringNote)) {return false;}
 		
-		Note n = (Note) o;
+		StringNote n = (StringNote) o;
 		return noteValue.equals(n.toString());
 	}
 	
