@@ -1,12 +1,8 @@
-package model.qualities;
+package structural;
 
 import java.util.UUID;
 
-public class Identity implements Quality {
-	
-	private static QualityType qualityType =
-			QualityType.from("identity");
-	
+public final class Identity {
 	private UUID identity = UUID.randomUUID();
 	
 	private Identity() {}
@@ -17,10 +13,6 @@ public class Identity implements Quality {
 	
 	public UUID getIdentifier() {
 		return identity;
-	}
-	
-	public QualityType getQualityType() {
-		return qualityType;
 	}
 	
 	public String toString() {

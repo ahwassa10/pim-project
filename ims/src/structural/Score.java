@@ -1,9 +1,6 @@
-package model.qualities;
+package structural;
 
 public final class Score {
-	private static QualityType qualityType =
-			QualityType.from("score");
-	
 	private int score;
 	
 	private Score(int initialScore) {
@@ -29,10 +26,6 @@ public final class Score {
 		Score s = (Score) o;
 		
 		return score == s.score;
-	}
-	
-	public QualityType getQualityType() {
-		return qualityType;
 	}
 	
 	public int getScore() {

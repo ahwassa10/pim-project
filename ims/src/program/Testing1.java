@@ -2,10 +2,10 @@ package program;
 
 import java.util.List;
 
-import model.qualities.Note;
-import model.qualities.Score;
 import structural.Name;
+import structural.Note;
 import structural.Pair;
+import structural.Score;
 import structural.Triple;
 
 public class Testing1 {

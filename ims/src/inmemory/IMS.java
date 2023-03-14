@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import model.entities.Agent;
 import model.entities.Attribute;
 import model.entities.Property;
-import model.qualities.Identity;
+import structural.Identity;
 
 public class IMS implements Agent {
 	private HashMap<Identity, SystemEntity> identities = new HashMap<>();

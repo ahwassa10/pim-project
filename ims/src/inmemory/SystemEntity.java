@@ -1,7 +1,7 @@
 package inmemory;
 
 import model.entities.Entity;
-import model.qualities.Identity;
+import structural.Identity;
 
 public abstract class SystemEntity implements Entity {
 	private Identity identity;

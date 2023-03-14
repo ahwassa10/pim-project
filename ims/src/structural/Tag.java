@@ -1,18 +1,14 @@
-package model.qualities;
+package structural;
 
 import java.util.Arrays;
 
-public class Tag implements Quality {
-	
+public final class Tag {
 	private static final char[] ALLOWED_KEYWORD_CHARACTERS =
 			new char[] {'_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
 				        'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 				        'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
 	private static final int MAX_KEYWORD_LENGTH = 32;
-	
-	private static QualityType qualityType = 
-			QualityType.from("tag");
 	
 	private String keyword;
 	
@@ -40,10 +36,6 @@ public class Tag implements Quality {
 	
 	public static Tag from(String keyword) {
 		return new Tag(keyword);
-	}
-	
-	public QualityType getQualityType() {
-		return qualityType;
 	}
 	
 	public String toString() {

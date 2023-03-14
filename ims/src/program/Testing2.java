@@ -2,7 +2,7 @@ package program;
 
 import inmemory.IMS;
 import inmemory.SystemEntity;
-import model.qualities.Identity;
+import structural.Identity;
 
 public class Testing2 {
 	public static void main(String[] args) {

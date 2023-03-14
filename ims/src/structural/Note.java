@@ -1,11 +1,7 @@
-package model.qualities;
+package structural;
 
-public final class Note implements Quality {
-	
+public final class Note {
 	private static final int MAX_NOTE_LENGTH = 1024;
-	
-	private static QualityType qualityType =
-			QualityType.from("note");
 	
 	private String noteValue;
 	
@@ -42,10 +38,6 @@ public final class Note implements Quality {
 		
 		Note n = (Note) o;
 		return noteValue.equals(n.toString());
-	}
-
-	public QualityType getQualityType() {
-		return qualityType;
 	}
 	
 	public int hashCode() {
