@@ -1,4 +1,4 @@
-package structural;
+package util;
 
 public interface Triple<K, Q, V> {
 	public K getKey();

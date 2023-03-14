@@ -1,11 +1,9 @@
-package quality;
-
-import model.qualities.QualityType;
+package qualities;
 
 public abstract class AbstractQualityPair<V> implements QualityPair<V> {
 	private V value;
 	
-	AbstractQualityPair(V value) {
+	protected AbstractQualityPair(V value) {
 		this.value = value;
 	}
 	
@@ -17,7 +15,7 @@ public abstract class AbstractQualityPair<V> implements QualityPair<V> {
 		return value.equals(aq.value);
 	}
 	
-	public abstract QualityType getQualityType();
+	public abstract QualityName getQualityType();
 	
 	public V getValue() {
 		return value;

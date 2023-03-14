@@ -7,7 +7,7 @@ import model.entities.Agent;
 import model.entities.Attribute;
 import model.entities.Entity;
 import model.entities.Property;
-import model.qualities.Quality;
+import qualities.Quality;
 
 public class User implements Agent {
 	private List<Attribute<?>> attributes = new ArrayList<>();

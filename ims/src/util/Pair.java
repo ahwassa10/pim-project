@@ -1,4 +1,4 @@
-package structural;
+package util;
 
 public interface Pair<K, V> {
 	public K getKey();

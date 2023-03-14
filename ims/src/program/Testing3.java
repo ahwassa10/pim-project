@@ -6,8 +6,8 @@ import inmemory.IMS;
 import inmemory.SystemEntity;
 import inmemory.User;
 import model.entities.Attribute;
+import qualities.naming.StringName;
 import structural.Identity;
-import structural.Name;
 import structural.Note;
 
 public class Testing3 {
@@ -16,7 +16,7 @@ public class Testing3 {
 		User user = system.getUser();
 		
 		SystemEntity se = system.getEntity(Identity.newIdentifier());
-		Name n = Name.from("A system entity");
+		StringName n = StringName.from("A system entity");
 		Note nn = Note.from("Testing user attributions");
 		
 		user.attribute(se, n);

@@ -1,8 +1,8 @@
-package model.qualities;
+package qualities;
 
 import java.util.Arrays;
 
-public class QualityType {
+public class QualityName {
 	
 	private static final char[] ALLOWED_CHARACTERS =
 			new char[] {'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -13,7 +13,7 @@ public class QualityType {
 	
 	private String qualityType;
 	
-	private QualityType(String in) {
+	private QualityName(String in) {
 		if (!isValidQualityType(in)) {
 			throw new IllegalArgumentException("Invalid quality type");
 		} else {
@@ -23,9 +23,9 @@ public class QualityType {
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof QualityType)) {return false;}
+		if (!(o instanceof QualityName)) {return false;}
 		
-		QualityType qt = (QualityType) o;
+		QualityName qt = (QualityName) o;
 		return qualityType.equals(qt.qualityType);
 	}
 	
@@ -47,8 +47,8 @@ public class QualityType {
 		return true;
 	}
 	
-	public static QualityType from(String qualityType) {
-		return new QualityType(qualityType);
+	public static QualityName from(String qualityType) {
+		return new QualityName(qualityType);
 	}
 	
 	public String toString() {

@@ -1,21 +1,21 @@
-package structural;
+package qualities.naming;
 
-public final class Name{
+public final class StringName{
 	private static final int MAX_NAME_LENGTH = 128;
 	
-	private String nameValue;
+	private String name;
 	
-	private Name(String nameValue) {
-		if (!isValidNameValue(nameValue)) {
-			throw new IllegalArgumentException("Invalid name value");
+	private StringName(String name) {
+		if (!isValidNameValue(name)) {
+			throw new IllegalArgumentException("Cannot create Name from this string");
 		} else {
-			this.nameValue = nameValue;
+			this.name = name;
 		}
 	}
 	
 	public static boolean isValidNameValue(String test_string) {
 		if ((test_string == null) ||
-			(test_string.length() <= 0) ||
+			(test_string.length() < 0) ||
 			(test_string.length() > MAX_NAME_LENGTH)) {
 			return false;
 		}
@@ -28,23 +28,23 @@ public final class Name{
 		return true;
 	}
 	
-	public static Name from(String nameValue) {
-		return new Name(nameValue);
+	public static StringName from(String name) {
+		return new StringName(name);
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof Name)) { return false;}
+		if (!(o instanceof StringName)) { return false;}
 		
-		Name n = (Name) o;
-		return nameValue.equals(n.toString());
+		StringName sn = (StringName) o;
+		return name.equals(sn.name);
 	}
 	
 	public int hashCode() {
-		return nameValue.hashCode();
+		return name.hashCode();
 	}
 	
 	public String toString() {
-		return nameValue;
+		return name;
 	}
 }

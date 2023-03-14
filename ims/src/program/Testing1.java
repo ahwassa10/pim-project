@@ -2,16 +2,16 @@ package program;
 
 import java.util.List;
 
-import structural.Name;
+import qualities.naming.StringName;
 import structural.Note;
-import structural.Pair;
 import structural.Score;
-import structural.Triple;
+import util.Pair;
+import util.Triple;
 
 public class Testing1 {
 	public static void main(String[] args) {
-		Name n1 = Name.from("Hello there");
-		Name n2 = Name.from("Hello there");
+		StringName n1 = StringName.from("Hello there");
+		StringName n2 = StringName.from("Hello there");
 		
 		System.out.println(n1.equals(n2));
 		System.out.println(n1.getQualityType());

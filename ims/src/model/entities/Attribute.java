@@ -1,19 +1,19 @@
 package model.entities;
 
-import model.qualities.QualityType;
-import structural.Triple;
+import qualities.QualityName;
+import util.Triple;
 
 public class Attribute<V> {
-	private final Triple<Entity, QualityType, V> triple;
+	private final Triple<Entity, QualityName, V> triple;
 	
 	private Attribute(Entity entity,
-					  QualityType qualityType,
+					  QualityName qualityType,
 					  V attributeValue) {
 		triple = Triple.of(entity, qualityType, attributeValue);
 	}
 	
 	public static <V> Attribute<V> from(Entity entity,
-										QualityType qualityType,
+										QualityName qualityType,
 										V attributeValue) {
 		return new Attribute<V>(entity, qualityType, attributeValue);
 	}
@@ -30,7 +30,7 @@ public class Attribute<V> {
 		return triple.getKey();
 	}
 	
-	public QualityType getQualityType() {
+	public QualityName getQualityType() {
 		return triple.getQualifier();
 	}
 	
