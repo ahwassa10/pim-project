@@ -1,4 +1,4 @@
-package qualities.naming;
+package information.name;
 
 public final class StringName{
 	private static final int MAX_NAME_LENGTH = 128;

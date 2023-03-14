@@ -1,5 +1,7 @@
 package qualities;
 
+import information.InfoTypeName;
+
 public abstract class AbstractQualityPair<V> implements QualityPair<V> {
 	private V value;
 	
@@ -15,7 +17,7 @@ public abstract class AbstractQualityPair<V> implements QualityPair<V> {
 		return value.equals(aq.value);
 	}
 	
-	public abstract QualityName getQualityType();
+	public abstract InfoTypeName getQualityType();
 	
 	public V getValue() {
 		return value;

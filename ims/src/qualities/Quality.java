@@ -1,5 +1,7 @@
 package qualities;
 
+import information.InfoTypeName;
+
 public interface Quality {
-	public QualityName getQualityName();
+	public InfoTypeName getQualityName();
 }

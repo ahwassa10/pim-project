@@ -2,7 +2,7 @@ package program;
 
 import java.util.List;
 
-import qualities.naming.StringName;
+import information.name.StringName;
 import structural.Note;
 import structural.Score;
 import util.Pair;

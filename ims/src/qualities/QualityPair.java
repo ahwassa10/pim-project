@@ -1,6 +1,8 @@
 package qualities;
 
+import information.InfoTypeName;
+
 public interface QualityPair<V> {
-	QualityName getQualityType();
+	InfoTypeName getQualityType();
 	V getValue();
 }

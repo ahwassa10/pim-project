@@ -1,7 +1,6 @@
 package qualities;
 
-import qualities.naming.StringName;
-import qualities.naming.NameQuality;
+import information.name.StringName;
 
 public class Test {
 	public static void main(String[] args) {

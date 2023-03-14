@@ -1,8 +1,8 @@
-package qualities;
+package information;
 
 import java.util.Arrays;
 
-public class QualityName {
+public class InfoTypeName {
 	
 	private static final char[] ALLOWED_CHARACTERS =
 			new char[] {'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -11,26 +11,26 @@ public class QualityName {
 	
 	private static final int MAX_LENGTH = 128;
 	
-	private String qualityType;
+	private String infoTypeName;
 	
-	private QualityName(String in) {
+	private InfoTypeName(String in) {
 		if (!isValidQualityType(in)) {
-			throw new IllegalArgumentException("Invalid quality type");
+			throw new IllegalArgumentException("Invalid infotype name");
 		} else {
-			this.qualityType = in;
+			this.infoTypeName = in;
 		}
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof QualityName)) {return false;}
+		if (!(o instanceof InfoTypeName)) {return false;}
 		
-		QualityName qt = (QualityName) o;
-		return qualityType.equals(qt.qualityType);
+		InfoTypeName itn = (InfoTypeName) o;
+		return infoTypeName.equals(itn.infoTypeName);
 	}
 	
 	public int hashCode() {
-		return qualityType.hashCode();
+		return infoTypeName.hashCode();
 	}
 	
 	public static boolean isValidQualityType(String test_string) {
@@ -47,11 +47,11 @@ public class QualityName {
 		return true;
 	}
 	
-	public static QualityName from(String qualityType) {
-		return new QualityName(qualityType);
+	public static InfoTypeName from(String infoTypeName) {
+		return new InfoTypeName(infoTypeName);
 	}
 	
 	public String toString() {
-		return qualityType;
+		return infoTypeName;
 	}
 }

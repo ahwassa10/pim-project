@@ -2,11 +2,11 @@ package program;
 
 import java.util.List;
 
+import information.name.StringName;
 import inmemory.IMS;
 import inmemory.SystemEntity;
 import inmemory.User;
 import model.entities.Attribute;
-import qualities.naming.StringName;
 import structural.Identity;
 import structural.Note;
 

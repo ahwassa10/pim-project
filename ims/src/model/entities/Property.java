@@ -1,16 +1,16 @@
 package model.entities;
 
-import qualities.QualityName;
+import information.InfoTypeName;
 import util.Pair;
 
 public final class Property<V> {
-	private final Pair<QualityName, V> pair;
+	private final Pair<InfoTypeName, V> pair;
 	
-	private Property(QualityName qualityType, V propertyValue) {
+	private Property(InfoTypeName qualityType, V propertyValue) {
 		pair = Pair.of(qualityType, propertyValue);
 	}
 	
-	public static <V> Property<V> from(QualityName qualityType,
+	public static <V> Property<V> from(InfoTypeName qualityType,
 									   V propertyValue) {
 		return new Property<V>(qualityType, propertyValue);
 	}
@@ -23,7 +23,7 @@ public final class Property<V> {
 		return pair.equals(p.pair); 
 	}
 	
-	public QualityName getQualityType() {
+	public InfoTypeName getQualityType() {
 		return pair.getKey();
 	}
 	
