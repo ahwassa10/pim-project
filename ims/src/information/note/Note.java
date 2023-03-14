@@ -1,11 +1,12 @@
 package information.note;
 
 import information.AbstractInfoPair;
+import information.AbstractInfoType;
 import information.InfoType;
 import information.InfoTypeName;
 
 public final class Note extends AbstractInfoPair<StringNote> {
-	private static InfoType infoType = new InfoType() {
+	private static InfoType infoType = new AbstractInfoType() {
 		private static InfoTypeName infoTypeName =
 				InfoTypeName.from("note");
 		
@@ -18,7 +19,7 @@ public final class Note extends AbstractInfoPair<StringNote> {
 		super(note);
 	}
 	
-	public Note from(String note) {
+	public static Note from(String note) {
 		return new Note(StringNote.from(note));
 	}
 	
