@@ -16,7 +16,7 @@ public class InfoTypeName {
 		return new InfoTypeName(infoTypeName);
 	}
 	
-	public static boolean isValidQualityType(String test_string) {
+	public static boolean isValidInfoType(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() < MIN_LENGTH) ||
 			(test_string.length() > MAX_LENGTH)) {
@@ -27,7 +27,7 @@ public class InfoTypeName {
 	}
 	
 	private InfoTypeName(String in) {
-		if (!isValidQualityType(in)) {
+		if (!isValidInfoType(in)) {
 			throw new IllegalArgumentException("Invalid infotype name");
 		} else {
 			this.infoTypeName = in;
