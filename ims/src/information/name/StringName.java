@@ -1,19 +1,23 @@
 package information.name;
 
-public final class StringName{
+import information.AbstractInfoPair;
+import information.InfoPair;
+import information.InfoType;
+
+public final class StringName implements Name {
 	private static final int MAX_NAME_LENGTH = 128;
 	
 	private String name;
 	
-	private StringName(String name) {
-		if (!isValidNameValue(name)) {
+	public StringName(String name) {
+		if (!isValidStringName(name)) {
 			throw new IllegalArgumentException("Cannot create a name from this string");
 		} else {
 			this.name = name;
 		}
 	}
 	
-	public static boolean isValidNameValue(String test_string) {
+	public static boolean isValidStringName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() < 0) ||
 			(test_string.length() > MAX_NAME_LENGTH)) {
@@ -28,8 +32,14 @@ public final class StringName{
 		return true;
 	}
 	
-	public static StringName from(String name) {
-		return new StringName(name);
+	public InfoPair<Name> asInfoPair() {
+		return new AbstractInfoPair<Name>(this) {
+			private static InfoType infoType = Name.asInfoType();
+			
+			public InfoType getInfoType() {
+				return infoType;
+			}
+		};
 	}
 	
 	public boolean equals(Object o) {
@@ -38,6 +48,10 @@ public final class StringName{
 		
 		StringName sn = (StringName) o;
 		return name.equals(sn.name);
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public int hashCode() {
