@@ -1,18 +1,17 @@
-package information.name;
+package information;
 
-import information.SimpleInfoPair;
-import information.InfoPair;
-
-public final class StringName implements Name {
+public final class Name implements Info {
+	private static final InfoType INFO_TYPE =
+			new SimpleInfoType(InfoTypeName.from("Name"));
 	private static final int MAX_NAME_LENGTH = 128;
 	
-	private final String stringName;
+	private final String name;
 	
-	public StringName(String stringName) {
+	public Name(String stringName) {
 		if (!isValidStringName(stringName)) {
 			throw new IllegalArgumentException("Cannot create a name from this string");
 		} else {
-			this.stringName = stringName;
+			this.name = stringName;
 		}
 	}
 	
@@ -32,26 +31,30 @@ public final class StringName implements Name {
 	}
 	
 	public InfoPair<Name> asInfoPair() {
-		return new SimpleInfoPair<Name>(Name.asInfoType(), this);
+		return new SimpleInfoPair<Name>(INFO_TYPE, this);
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof StringName)) { return false;}
+		if (!(o instanceof Name)) { return false;}
 		
-		StringName sn = (StringName) o;
-		return stringName.equals(sn.stringName);
+		Name sn = (Name) o;
+		return name.equals(sn.name);
+	}
+	
+	public InfoType getInfoType() {
+		return INFO_TYPE;
 	}
 	
 	public String getName() {
-		return stringName;
+		return name;
 	}
 	
 	public int hashCode() {
-		return stringName.hashCode();
+		return name.hashCode();
 	}
 	
 	public String toString() {
-		return stringName;
+		return name;
 	}
 }

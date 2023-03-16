@@ -1,13 +1,12 @@
 package testing;
 
 import information.InfoPair;
+import information.Name;
 import information.Note;
-import information.name.Name;
-import information.name.StringName;
 
 public class Testing1 {
 	public static void main(String[] args) {
-		Name n1 = new StringName("Testing names");
+		Name n1 = new Name("Testing names");
 		InfoPair<Name> i1 = n1.asInfoPair();
 		InfoPair<Name> i2 = n1.asInfoPair();
 		
@@ -24,8 +23,8 @@ public class Testing1 {
 		// Each call to getInfoType returns the same instance.
 		System.out.println("4) " + (i1.getInfoType() == i1.getInfoType()));
 		
-		// Each call to asInfoType returns a new instance.
-		System.out.println("5) " + (Name.asInfoType() == Name.asInfoType()));
+		// Each call to getInfoType returns a new instance.
+		System.out.println("5) " + (n1.getInfoType() == n1.getInfoType()));
 		
 		// SimpleInfoPair defines an equals method for all InfoPairs.
 		System.out.println("6) " + (i1.equals(i2)));

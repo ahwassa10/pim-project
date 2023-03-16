@@ -1,15 +1,15 @@
 package inmemory;
 
-import information.identity.UUIDIdentity;
+import information.Identity;
 
 public abstract class SystemEntity implements Entity {
-	private UUIDIdentity identity;
+	private Identity identity;
 	
-	SystemEntity(UUIDIdentity identity) {
+	SystemEntity(Identity identity) {
 		this.identity = identity;
 	}
 	
-	public UUIDIdentity getIdentity() {
+	public Identity getIdentity() {
 		return identity;
 	}
 }
