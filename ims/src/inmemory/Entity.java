@@ -1,4 +1,4 @@
-package model.entities;
+package inmemory;
 
 import java.util.List;
 

@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import information.identity.UUIDIdentity;
-import model.entities.Agent;
-import model.entities.Attribute;
-import model.entities.Property;
 
 public class IMS implements Agent {
 	private HashMap<UUIDIdentity, SystemEntity> identities = new HashMap<>();

@@ -3,10 +3,6 @@ package inmemory;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.entities.Agent;
-import model.entities.Attribute;
-import model.entities.Entity;
-import model.entities.Property;
 import qualities.Quality;
 
 public class User implements Agent {

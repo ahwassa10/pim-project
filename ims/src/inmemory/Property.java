@@ -1,4 +1,4 @@
-package model.entities;
+package inmemory;
 
 import information.InfoTypeName;
 import util.Pair;
