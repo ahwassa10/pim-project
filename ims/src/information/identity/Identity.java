@@ -5,6 +5,7 @@ import java.util.UUID;
 import information.InfoPair;
 import information.InfoType;
 import information.InfoTypeName;
+import information.SimpleInfoType;
 
 public interface Identity {
 	UUID getIdentifier();
@@ -12,13 +13,6 @@ public interface Identity {
 	InfoPair<Identity> asInfoPair();
 	
 	static InfoType asInfoType() {
-		return new InfoType() {
-			private static final InfoTypeName infoTypeName =
-					InfoTypeName.from("Identity");
-			
-			public InfoTypeName getInfoTypeName() {
-				return infoTypeName;
-			}
-		};
+		return new SimpleInfoType(InfoTypeName.from("Identity"));
 	}
 }

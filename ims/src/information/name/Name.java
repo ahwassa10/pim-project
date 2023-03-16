@@ -3,6 +3,7 @@ package information.name;
 import information.InfoPair;
 import information.InfoType;
 import information.InfoTypeName;
+import information.SimpleInfoType;
 
 public interface Name {
 	String getName();
@@ -10,14 +11,6 @@ public interface Name {
 	InfoPair<Name> asInfoPair();
 	
 	static InfoType asInfoType() {
-		return new InfoType() {
-			// This instance is reused every time asInfoType() is called.
-			private static final InfoTypeName infoTypeName =
-					InfoTypeName.from("Name");
-			
-			public InfoTypeName getInfoTypeName() {
-				return infoTypeName;
-			}
-		};
+		return new SimpleInfoType(InfoTypeName.from("Name"));
 	}
 }

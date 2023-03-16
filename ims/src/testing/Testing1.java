@@ -3,6 +3,8 @@ package testing;
 import information.InfoPair;
 import information.name.Name;
 import information.name.StringName;
+import information.note.Note;
+import information.note.StringNote;
 
 public class Testing1 {
 	public static void main(String[] args) {
@@ -29,6 +31,16 @@ public class Testing1 {
 		// AbstractInfoPair defines an equals method for all InfoPairs.
 		System.out.println(i1.equals(i2));
 		
+		System.out.println(i1);
+		System.out.println(i1.getInfoType());
 		System.out.println(i1.getValue());
+		
+		Note note = new StringNote("This is a note");
+		InfoPair<Note> i3 = note.asInfoPair();
+		
+		System.out.println(i3.equals(i1));
+		System.out.println(i3);
+		System.out.println(i3.getInfoType());
+		System.out.println(i3.getValue());
 	}
 }

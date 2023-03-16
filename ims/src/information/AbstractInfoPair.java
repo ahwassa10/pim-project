@@ -27,7 +27,7 @@ public abstract class AbstractInfoPair<V> implements InfoPair<V> {
 	
 	public String toString() {
 		return String.format("InfoPair<%s, %s>",
-				this.getInfoType().getInfoTypeName(),
+				this.getInfoType(),
 				value);
 	}
 }
