@@ -2,13 +2,23 @@ package information.identity;
 
 import java.util.UUID;
 
-public final class UUIDIdentity {
-	private UUID identity = UUID.randomUUID();
+import information.AbstractInfoPair;
+import information.InfoPair;
+import information.InfoType;
+
+public final class UUIDIdentity implements Identity {
+	private final UUID identity = UUID.randomUUID();
 	
-	private UUIDIdentity() {}
+	public UUIDIdentity() {}
 	
-	public static UUIDIdentity newIdentifier() {
-		return new UUIDIdentity();
+	public InfoPair<Identity> asInfoPair() {
+		return new AbstractInfoPair<Identity>(this) {
+			private static InfoType infoType = Identity.asInfoType();
+			
+			public InfoType getInfoType() {
+				return infoType;
+			}
+		};
 	}
 	
 	public UUID getIdentifier() {

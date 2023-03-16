@@ -1,33 +1,24 @@
 package information.identity;
 
-import information.AbstractInfoPair;
-import information.AbstractInfoType;
+import java.util.UUID;
+
+import information.InfoPair;
 import information.InfoType;
 import information.InfoTypeName;
 
-public final class Identity extends AbstractInfoPair<UUIDIdentity> {
-	private static InfoType infoType = new AbstractInfoType() {
-		private static InfoTypeName infoTypeName =
-				InfoTypeName.from("identity");
-		
-		public InfoTypeName getInfoTypeName() {
-			return infoTypeName;
-		}
-	};
+public interface Identity {
+	UUID getIdentifier();
 	
-	private Identity(UUIDIdentity identity) {
-		super(identity);
-	}
+	InfoPair<Identity> asInfoPair();
 	
-	public static Identity newIdentifier() {
-		return new Identity(UUIDIdentity.newIdentifier());
-	}
-	
-	public InfoType getInfoType() {
-		return infoType;
-	}
-	
-	public String toString() {
-		return String.format("Identity<%s>", this.getValue());
+	static InfoType asInfoType() {
+		return new InfoType() {
+			private static final InfoTypeName infoTypeName =
+					InfoTypeName.from("Identity");
+			
+			public InfoTypeName getInfoTypeName() {
+				return infoTypeName;
+			}
+		};
 	}
 }
