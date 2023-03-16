@@ -7,13 +7,13 @@ import information.InfoType;
 public final class StringName implements Name {
 	private static final int MAX_NAME_LENGTH = 128;
 	
-	private String name;
+	private final String stringName;
 	
-	public StringName(String name) {
-		if (!isValidStringName(name)) {
+	public StringName(String stringName) {
+		if (!isValidStringName(stringName)) {
 			throw new IllegalArgumentException("Cannot create a name from this string");
 		} else {
-			this.name = name;
+			this.stringName = stringName;
 		}
 	}
 	
@@ -47,18 +47,18 @@ public final class StringName implements Name {
 		if (!(o instanceof StringName)) { return false;}
 		
 		StringName sn = (StringName) o;
-		return name.equals(sn.name);
+		return stringName.equals(sn.stringName);
 	}
 	
 	public String getName() {
-		return name;
+		return stringName;
 	}
 	
 	public int hashCode() {
-		return name.hashCode();
+		return stringName.hashCode();
 	}
 	
 	public String toString() {
-		return name;
+		return stringName;
 	}
 }

@@ -5,9 +5,9 @@ import information.InfoType;
 import information.InfoTypeName;
 
 public interface Name {
-	public String getName();
+	String getName();
 	
-	public InfoPair<Name> asInfoPair();
+	InfoPair<Name> asInfoPair();
 	
 	static InfoType asInfoType() {
 		return new InfoType() {

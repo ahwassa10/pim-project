@@ -1,19 +1,23 @@
 package information.note;
 
-public final class StringNote {
+import information.AbstractInfoPair;
+import information.InfoPair;
+import information.InfoType;
+
+public final class StringNote implements Note {
 	private static final int MAX_NOTE_LENGTH = 1024;
 	
-	private String noteValue;
+	private final String stringNote;
 	
-	private StringNote(String noteValue) {
-		if (!isValidNoteValue(noteValue)) {
-			throw new IllegalArgumentException("Invalid note value");
+	public StringNote(String stringNote) {
+		if (!isValidStringNote(stringNote)) {
+			throw new IllegalArgumentException("Cannot create a note from this string");
 		} else {
-			this.noteValue = noteValue;
+			this.stringNote = stringNote;
 		}
 	}
 	
-	public static boolean isValidNoteValue(String test_string) {
+	public static boolean isValidStringNote(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() <= 0) ||
 			(test_string.length() > MAX_NOTE_LENGTH)) {
@@ -28,23 +32,33 @@ public final class StringNote {
 		return true;
 	}
 	
-	public static StringNote from(String noteValue) {
-		return new StringNote(noteValue);
+	public InfoPair<Note> asInfoPair() {
+		return new AbstractInfoPair<Note>(this) {
+			private static InfoType infoType = Note.asInfoType();
+			
+			public InfoType getInfoType() {
+				return infoType;
+			}
+		};
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
 		if (!(o instanceof StringNote)) {return false;}
 		
-		StringNote n = (StringNote) o;
-		return noteValue.equals(n.toString());
+		StringNote sn = (StringNote) o;
+		return stringNote.equals(sn.stringNote);
+	}
+	
+	public String getNote() {
+		return stringNote;
 	}
 	
 	public int hashCode() {
-		return noteValue.hashCode();
+		return stringNote.hashCode();
 	}
 	
 	public String toString() {
-		return noteValue;
+		return stringNote;
 	}
 }
