@@ -1,17 +1,19 @@
 package information;
 
-public final class Note implements Info {
+public final class Note extends AbstractSingleValueInfo<String> {
 	private static final InfoType INFO_TYPE =
 			new SimpleInfoType(InfoTypeName.from("Note"));
 	private static final int MAX_NOTE_LENGTH = 1024;
 	
-	private final String note;
+	private Note(String note) {
+		super(note);
+	}
 	
-	public Note(String note) {
+	public static Note from(String note) {
 		if (!isValidStringNote(note)) {
 			throw new IllegalArgumentException("Cannot create a note from this string");
 		} else {
-			this.note = note;
+			return new Note(note);
 		}
 	}
 	
@@ -34,27 +36,7 @@ public final class Note implements Info {
 		return new SimpleInfoPair<Note>(INFO_TYPE, this);
 	}
 	
-	public boolean equals(Object o) {
-		if (o == this) {return true;}
-		if (!(o instanceof Note)) {return false;}
-		
-		Note sn = (Note) o;
-		return note.equals(sn.note);
-	}
-	
 	public InfoType getInfoType() {
 		return INFO_TYPE;
-	}
-	
-	public String getNote() {
-		return note;
-	}
-	
-	public int hashCode() {
-		return note.hashCode();
-	}
-	
-	public String toString() {
-		return note;
 	}
 }

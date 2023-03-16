@@ -1,6 +1,6 @@
 package information;
 
-public interface InfoPair<V> {
+public interface InfoPair<V extends Info> {
 	InfoType getInfoType();
 	V getValue();
 	

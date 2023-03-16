@@ -6,7 +6,7 @@ import information.Note;
 
 public class Testing1 {
 	public static void main(String[] args) {
-		Name n1 = new Name("Testing names");
+		Name n1 = Name.from("Testing names");
 		InfoPair<Name> i1 = n1.asInfoPair();
 		InfoPair<Name> i2 = n1.asInfoPair();
 		
@@ -42,7 +42,7 @@ public class Testing1 {
 		System.out.println(i1.getInfoType());
 		System.out.println(i1.getValue());
 		
-		Note note = new Note("This is a note");
+		Note note = Note.from("This is a note");
 		InfoPair<Note> i3 = note.asInfoPair();
 		
 		System.out.println(i3.equals(i1));

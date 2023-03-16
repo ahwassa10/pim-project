@@ -1,17 +1,19 @@
 package information;
 
-public final class Name implements Info {
+public final class Name extends AbstractSingleValueInfo<String> {
 	private static final InfoType INFO_TYPE =
 			new SimpleInfoType(InfoTypeName.from("Name"));
 	private static final int MAX_NAME_LENGTH = 128;
 	
-	private final String name;
+	private Name(String name) {
+		super(name);
+	}
 	
-	public Name(String stringName) {
-		if (!isValidStringName(stringName)) {
+	public static Name from(String name) {
+		if (!isValidStringName(name)) {
 			throw new IllegalArgumentException("Cannot create a name from this string");
 		} else {
-			this.name = stringName;
+			return new Name(name);
 		}
 	}
 	
@@ -34,27 +36,7 @@ public final class Name implements Info {
 		return new SimpleInfoPair<Name>(INFO_TYPE, this);
 	}
 	
-	public boolean equals(Object o) {
-		if (o == this) {return true;}
-		if (!(o instanceof Name)) { return false;}
-		
-		Name sn = (Name) o;
-		return name.equals(sn.name);
-	}
-	
 	public InfoType getInfoType() {
 		return INFO_TYPE;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public int hashCode() {
-		return name.hashCode();
-	}
-	
-	public String toString() {
-		return name;
 	}
 }

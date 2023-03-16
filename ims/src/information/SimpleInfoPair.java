@@ -1,6 +1,6 @@
 package information;
 
-public final class SimpleInfoPair<V> implements InfoPair<V> {
+public final class SimpleInfoPair<V extends Info> implements InfoPair<V> {
 	private final InfoType infoType;
 	private final V value;
 	
