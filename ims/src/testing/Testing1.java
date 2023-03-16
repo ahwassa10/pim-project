@@ -1,10 +1,9 @@
 package testing;
 
 import information.InfoPair;
+import information.Note;
 import information.name.Name;
 import information.name.StringName;
-import information.note.Note;
-import information.note.StringNote;
 
 public class Testing1 {
 	public static void main(String[] args) {
@@ -14,13 +13,13 @@ public class Testing1 {
 		
 		// Each InfoPair is a unique instance.
 		// Each call to asInfoPair returns a new instance.
-		System.out.println("1)" + (i1 == i2));
+		System.out.println("1) " + (i1 == i2));
 		
 		// Same value is inside each InfoPair
-		System.out.println("2)" + (i1.getValue() == i2.getValue()));
+		System.out.println("2) " + (i1.getValue() == i2.getValue()));
 		
 		// Different InfoType instance in each InfoPair.
-		System.out.println("3)" + (i1.getInfoType() == i2.getInfoType()));
+		System.out.println("3) " + (i1.getInfoType() == i2.getInfoType()));
 		
 		// Each call to getInfoType returns the same instance.
 		System.out.println("4) " + (i1.getInfoType() == i1.getInfoType()));
@@ -44,7 +43,7 @@ public class Testing1 {
 		System.out.println(i1.getInfoType());
 		System.out.println(i1.getValue());
 		
-		Note note = new StringNote("This is a note");
+		Note note = new Note("This is a note");
 		InfoPair<Note> i3 = note.asInfoPair();
 		
 		System.out.println(i3.equals(i1));

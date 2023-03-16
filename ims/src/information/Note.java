@@ -1,18 +1,17 @@
-package information.note;
+package information;
 
-import information.SimpleInfoPair;
-import information.InfoPair;
-
-public final class StringNote implements Note {
+public final class Note implements Info {
+	private static final InfoType INFO_TYPE =
+			new SimpleInfoType(InfoTypeName.from("Note"));
 	private static final int MAX_NOTE_LENGTH = 1024;
 	
-	private final String stringNote;
+	private final String note;
 	
-	public StringNote(String stringNote) {
-		if (!isValidStringNote(stringNote)) {
+	public Note(String note) {
+		if (!isValidStringNote(note)) {
 			throw new IllegalArgumentException("Cannot create a note from this string");
 		} else {
-			this.stringNote = stringNote;
+			this.note = note;
 		}
 	}
 	
@@ -32,26 +31,30 @@ public final class StringNote implements Note {
 	}
 	
 	public InfoPair<Note> asInfoPair() {
-		return new SimpleInfoPair<Note>(Note.asInfoType(), this);
+		return new SimpleInfoPair<Note>(INFO_TYPE, this);
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof StringNote)) {return false;}
+		if (!(o instanceof Note)) {return false;}
 		
-		StringNote sn = (StringNote) o;
-		return stringNote.equals(sn.stringNote);
+		Note sn = (Note) o;
+		return note.equals(sn.note);
+	}
+	
+	public InfoType getInfoType() {
+		return INFO_TYPE;
 	}
 	
 	public String getNote() {
-		return stringNote;
+		return note;
 	}
 	
 	public int hashCode() {
-		return stringNote.hashCode();
+		return note.hashCode();
 	}
 	
 	public String toString() {
-		return stringNote;
+		return note;
 	}
 }
