@@ -1,8 +1,7 @@
 package information.note;
 
-import information.AbstractInfoPair;
+import information.SimpleInfoPair;
 import information.InfoPair;
-import information.InfoType;
 
 public final class StringNote implements Note {
 	private static final int MAX_NOTE_LENGTH = 1024;
@@ -33,13 +32,7 @@ public final class StringNote implements Note {
 	}
 	
 	public InfoPair<Note> asInfoPair() {
-		return new AbstractInfoPair<Note>(this) {
-			private static InfoType infoType = Note.asInfoType();
-			
-			public InfoType getInfoType() {
-				return infoType;
-			}
-		};
+		return new SimpleInfoPair<Note>(Note.asInfoType(), this);
 	}
 	
 	public boolean equals(Object o) {

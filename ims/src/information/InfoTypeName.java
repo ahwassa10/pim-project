@@ -12,6 +12,14 @@ public class InfoTypeName {
 	
 	private String infoTypeName;
 	
+	private InfoTypeName(String in) {
+		if (!isValidInfoType(in)) {
+			throw new IllegalArgumentException("Invalid infotype name");
+		} else {
+			this.infoTypeName = in;
+		}
+	}
+	
 	public static InfoTypeName from(String infoTypeName) {
 		return new InfoTypeName(infoTypeName);
 	}
@@ -24,14 +32,6 @@ public class InfoTypeName {
 		}
 		
 		return pattern.matcher(test_string).matches();
-	}
-	
-	private InfoTypeName(String in) {
-		if (!isValidInfoType(in)) {
-			throw new IllegalArgumentException("Invalid infotype name");
-		} else {
-			this.infoTypeName = in;
-		}
 	}
 	
 	public boolean equals(Object o) {

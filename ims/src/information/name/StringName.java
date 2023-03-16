@@ -1,8 +1,7 @@
 package information.name;
 
-import information.AbstractInfoPair;
+import information.SimpleInfoPair;
 import information.InfoPair;
-import information.InfoType;
 
 public final class StringName implements Name {
 	private static final int MAX_NAME_LENGTH = 128;
@@ -33,13 +32,7 @@ public final class StringName implements Name {
 	}
 	
 	public InfoPair<Name> asInfoPair() {
-		return new AbstractInfoPair<Name>(this) {
-			private static InfoType infoType = Name.asInfoType();
-			
-			public InfoType getInfoType() {
-				return infoType;
-			}
-		};
+		return new SimpleInfoPair<Name>(Name.asInfoType(), this);
 	}
 	
 	public boolean equals(Object o) {

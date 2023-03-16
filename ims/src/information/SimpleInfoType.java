@@ -7,6 +7,14 @@ public final class SimpleInfoType implements InfoType {
 		this.infoTypeName = infoTypeName;
 	}
 	
+	public boolean equals(Object o) {
+		if (o == this) {return true;}
+		if (!(o instanceof SimpleInfoType)) {return false;}
+		
+		SimpleInfoType sit = (SimpleInfoType) o;
+		return infoTypeName.equals(sit.infoTypeName);
+	}
+	
 	public InfoTypeName getInfoTypeName() {
 		return infoTypeName;
 	}

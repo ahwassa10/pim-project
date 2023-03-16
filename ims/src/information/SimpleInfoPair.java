@@ -1,21 +1,25 @@
 package information;
 
-public abstract class AbstractInfoPair<V> implements InfoPair<V> {
+public final class SimpleInfoPair<V> implements InfoPair<V> {
+	private final InfoType infoType;
 	private final V value;
 	
-	protected AbstractInfoPair(V value) {
+	public SimpleInfoPair(InfoType infoType, V value) {
+		this.infoType = infoType;
 		this.value = value;
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof AbstractInfoPair<?>)) {return false;}
+		if (!(o instanceof SimpleInfoPair<?>)) {return false;}
 		
-		AbstractInfoPair<?> aip = (AbstractInfoPair<?>) o;
+		SimpleInfoPair<?> aip = (SimpleInfoPair<?>) o;
 		return value.equals(aip.value);
 	}
 	
-	public abstract InfoType getInfoType();
+	public InfoType getInfoType() {
+		return infoType;
+	}
 	
 	public V getValue() {
 		return value;
