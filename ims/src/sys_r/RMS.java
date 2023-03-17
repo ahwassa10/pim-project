@@ -9,21 +9,9 @@ public class RMS {
 	private final Path import_folder;
 	private final Path output_folder;
 	
-	public RMS(String if_path, String of_path) {
-		import_folder = Path.of(if_path);
-		if (!Files.exists(import_folder)) {
-			throw new IllegalArgumentException("Import folder path does not exist");
-		} else if (!Files.isDirectory(import_folder)) {
-			throw new IllegalArgumentException("Import folder path is not a directory");
-		}
-		
-		output_folder = Path.of(of_path);
-		if (!Files.exists(output_folder)) {
-			throw new IllegalArgumentException("Output folder path does not exist");
-		} else if (!Files.isDirectory(output_folder)) {
-			throw new IllegalArgumentException("Output folder path is not a directory");
-		}
-		
+	RMS(Path if_path, Path of_path) {
+		this.import_folder = if_path;
+		this.output_folder = of_path;
 		System.out.println("Successfully created the RMS");
 	}
 	
@@ -36,5 +24,10 @@ public class RMS {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String toString() {
+		return String.format("RMS<Import Folder<%s>, Output Folder<%s>>",
+				import_folder, output_folder);
 	}
 }
