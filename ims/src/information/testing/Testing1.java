@@ -1,4 +1,4 @@
-package testing;
+package information.testing;
 
 import information.DataPair;
 import information.Name;

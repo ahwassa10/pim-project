@@ -1,4 +1,4 @@
-package ondisk;
+package sys_d;
 
 public interface DMS_Setup {
 	static DMS quick_dms() {

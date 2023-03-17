@@ -1,7 +1,7 @@
-package testing;
+package program;
 
-import ondisk.DMS;
-import ondisk.DMS_Setup;
+import sys_d.DMS;
+import sys_d.DMS_Setup;
 
 public class Testing2 {
 	public static void main(String[] args) {

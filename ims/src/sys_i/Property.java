@@ -1,4 +1,4 @@
-package inmemory;
+package sys_i;
 
 import information.InfoTypeName;
 import util.Pair;

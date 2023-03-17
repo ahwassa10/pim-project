@@ -24,10 +24,10 @@ public final class Tag extends AbstractSingleValueInfo<String> {
 	
 	public static boolean isValidTag(String test_string) {
 		if ((test_string == null) ||
-				(test_string.length() < MIN_TAG_LENGTH) ||
-				(test_string.length() > MAX_TAG_LENGTH)) {
-				return false;
-			}
+			(test_string.length() < MIN_TAG_LENGTH) ||
+			(test_string.length() > MAX_TAG_LENGTH)) {
+			return false;
+		}
 		return pattern.matcher(test_string).matches();
 	}
 	
