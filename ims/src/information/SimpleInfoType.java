@@ -15,11 +15,11 @@ public final class SimpleInfoType implements InfoType {
 		return infoTypeName.equals(sit.infoTypeName);
 	}
 	
-	public InfoTypeName getInfoTypeName() {
+	public InfoTypeName getName() {
 		return infoTypeName;
 	}
 	
 	public String toString() {
-		return String.format("InfoType<%s>", this.getInfoTypeName());
+		return infoTypeName.toString();
 	}
 }

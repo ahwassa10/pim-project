@@ -30,7 +30,7 @@ public final class SimpleInfoPair<V extends Info> implements InfoPair<V> {
 	}
 	
 	public String toString() {
-		return String.format("InfoPair<%s, %s>",
+		return String.format("%s<%s>",
 				this.getInfoType(),
 				value);
 	}
