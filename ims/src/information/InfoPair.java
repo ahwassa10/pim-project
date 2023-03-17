@@ -4,7 +4,7 @@ public interface InfoPair<V extends Info> {
 	InfoType getInfoType();
 	V getValue();
 	
-	default InfoTypeName getInfoTypeName() {
+	default String getInfoTypeName() {
 		return getInfoType().getName();
 	}
 }

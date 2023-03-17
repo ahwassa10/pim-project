@@ -1,5 +1,5 @@
 package information;
 
 public interface InfoType {
-	InfoTypeName getName();
+	String getName();
 }

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
 	private static final InfoType INFO_TYPE =
-			new SimpleInfoType(InfoTypeName.from("Identity"));
+			new SimpleInfoType("Identity");
 	
 	private Identity(UUID identity) {
 		super(identity);

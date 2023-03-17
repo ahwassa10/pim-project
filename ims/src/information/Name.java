@@ -2,7 +2,7 @@ package information;
 
 public final class Name extends AbstractSingleValueInfo<String> {
 	private static final InfoType INFO_TYPE =
-			new SimpleInfoType(InfoTypeName.from("Name"));
+			new SimpleInfoType("Name");
 	private static final int MAX_NAME_LENGTH = 128;
 	
 	private Name(String name) {
