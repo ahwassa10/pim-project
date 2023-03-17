@@ -25,8 +25,7 @@ public final class SimpleDataType implements DataType {
 			(test_string.length() < MIN_LENGTH) ||
 			(test_string.length() > MAX_LENGTH)) {
 			return false;
-		}
-		
+		}	
 		return pattern.matcher(test_string).matches();
 	}
 	
