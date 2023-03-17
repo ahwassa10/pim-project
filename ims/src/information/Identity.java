@@ -3,8 +3,8 @@ package information;
 import java.util.UUID;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
-	private static final InfoType INFO_TYPE =
-			new SimpleInfoType("Identity");
+	private static final DataType DATA_TYPE =
+			new SimpleDataType("Identity");
 	
 	private Identity(UUID identity) {
 		super(identity);
@@ -14,11 +14,11 @@ public final class Identity extends AbstractSingleValueInfo<UUID> {
 		return new Identity(UUID.randomUUID());
 	}
 	
-	public InfoPair<Identity> asInfoPair() {
-		return new SimpleInfoPair<Identity>(INFO_TYPE, this);
+	public DataPair asDataPair() {
+		return new SimpleDataPair(DATA_TYPE, this);
 	}
 	
-	public InfoType getInfoType() {
-		return INFO_TYPE;
+	public DataType getDataType() {
+		return DATA_TYPE;
 	}
 }

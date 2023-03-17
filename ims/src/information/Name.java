@@ -1,8 +1,8 @@
 package information;
 
 public final class Name extends AbstractSingleValueInfo<String> {
-	private static final InfoType INFO_TYPE =
-			new SimpleInfoType("Name");
+	private static final DataType DATA_TYPE =
+			new SimpleDataType("Name");
 	private static final int MAX_NAME_LENGTH = 128;
 	
 	private Name(String name) {
@@ -32,11 +32,11 @@ public final class Name extends AbstractSingleValueInfo<String> {
 		return true;
 	}
 	
-	public InfoPair<Name> asInfoPair() {
-		return new SimpleInfoPair<Name>(INFO_TYPE, this);
+	public DataPair asDataPair() {
+		return new SimpleDataPair(DATA_TYPE, this);
 	}
 	
-	public InfoType getInfoType() {
-		return INFO_TYPE;
+	public DataType getDataType() {
+		return DATA_TYPE;
 	}
 }

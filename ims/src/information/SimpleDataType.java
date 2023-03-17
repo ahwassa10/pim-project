@@ -2,21 +2,21 @@ package information;
 
 import java.util.regex.Pattern;
 
-public final class SimpleInfoType implements InfoType {
+public final class SimpleDataType implements DataType {
 	// Matches a string that starts with an uppercase letter followed by
 	// zero or more occurrences of any letter (both uppercase and
 	// lowercase) or the hyphen -.
-	private static Pattern pattern = Pattern.compile("[A-Z][a-zA-Z[-]]*");
+	private static final Pattern pattern = Pattern.compile("[A-Z][a-zA-Z[-]]*");
 	private static final int MAX_LENGTH = 128;
 	private static final int MIN_LENGTH = 1;
 	
-	private final String infoTypeName;
+	private final String dataTypeName;
 	
-	public SimpleInfoType(String infoTypeName) {
-		if (!isValidInfoTypeName(infoTypeName)) {
-			throw new IllegalArgumentException("Invalid infoType name");
+	public SimpleDataType(String dataTypeName) {
+		if (!isValidInfoTypeName(dataTypeName)) {
+			throw new IllegalArgumentException("Invalid dataType name");
 		} else {
-			this.infoTypeName = infoTypeName;
+			this.dataTypeName = dataTypeName;
 		}
 	}
 	
@@ -32,21 +32,21 @@ public final class SimpleInfoType implements InfoType {
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof SimpleInfoType)) {return false;}
+		if (!(o instanceof SimpleDataType)) {return false;}
 		
-		SimpleInfoType sit = (SimpleInfoType) o;
-		return infoTypeName.equals(sit.infoTypeName);
+		SimpleDataType sdt = (SimpleDataType) o;
+		return dataTypeName.equals(sdt.dataTypeName);
 	}
 	
 	public String getName() {
-		return infoTypeName;
+		return dataTypeName;
 	}
 	
 	public int hashCode() {
-		return infoTypeName.hashCode();
+		return dataTypeName.hashCode();
 	}
 	
 	public String toString() {
-		return String.format("InfoType<%s>", infoTypeName);
+		return String.format("DataType<%s>", dataTypeName);
 	}
 }

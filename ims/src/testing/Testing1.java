@@ -1,53 +1,50 @@
 package testing;
 
-import information.InfoPair;
+import information.DataPair;
 import information.Name;
 import information.Note;
 
 public class Testing1 {
 	public static void main(String[] args) {
 		Name n1 = Name.from("Testing names");
-		InfoPair<Name> i1 = n1.asInfoPair();
-		InfoPair<Name> i2 = n1.asInfoPair();
+		DataPair i1 = n1.asDataPair();
+		DataPair i2 = n1.asDataPair();
 		
-		// Each InfoPair is a unique instance.
-		// Each call to asInfoPair returns a new instance.
+		// Each DataPair is a unique instance.
+		// Each call to asDataPair returns a new instance.
 		System.out.println("1) " + (i1 == i2));
 		
-		// Same value is inside each InfoPair
-		System.out.println("2) " + (i1.getValue() == i2.getValue()));
+		// Same value is inside each DataPair
+		System.out.println("2) " + (i1.getInfo() == i2.getInfo()));
 		
-		// Different InfoType instance in each InfoPair.
-		System.out.println("3) " + (i1.getInfoType() == i2.getInfoType()));
+		// Same DataType instance in each DataPair.
+		System.out.println("3) " + (i1.getDataType() == i2.getDataType()));
 		
-		// Each call to getInfoType returns the same instance.
-		System.out.println("4) " + (i1.getInfoType() == i1.getInfoType()));
+		// Each call to getDataType on a DataPair returns the same instance.
+		System.out.println("4) " + (i1.getDataType() == i1.getDataType()));
 		
-		// Each call to getInfoType returns a new instance.
-		System.out.println("5) " + (n1.getInfoType() == n1.getInfoType()));
+		// Each call to getDataType on a Name returns the same instance.
+		System.out.println("5) " + (n1.getDataType() == n1.getDataType()));
 		
-		// SimpleInfoPair defines an equals method for all InfoPairs.
+		// SimpleDataPair defines an equals method for all DataPairs.
 		System.out.println("6) " + (i1.equals(i2)));
 		
-		// SimpleInfoType defines an equals method for all InfoTypes.
-		System.out.println("7) " + (i1.getInfoType().equals(i2.getInfoType())));
+		// SimpleDataType defines an equals method for all DataTypes.
+		System.out.println("7) " + (i1.getDataType().equals(i2.getDataType())));
 		
-		// InfoTypeName defines an equals method for InfoTypes.
-		System.out.println("8) " + (i1.getInfoTypeName().equals(i2.getInfoTypeName())));
-		
-		// A new instance of InfoTypeName is created every time.
-		System.out.println("9) " + (i1.getInfoTypeName() == i2.getInfoTypeName()));
+		// The same instance of String is used for the DataTypeName.
+		System.out.println("9) " + (i1.getDataTypeName() == i2.getDataTypeName()));
 		
 		System.out.println(i1);
-		System.out.println(i1.getInfoType());
-		System.out.println(i1.getValue());
+		System.out.println(i1.getDataType());
+		System.out.println(i1.getInfo());
 		
 		Note note = Note.from("This is a note");
-		InfoPair<Note> i3 = note.asInfoPair();
+		DataPair i3 = note.asDataPair();
 		
 		System.out.println(i3.equals(i1));
 		System.out.println(i3);
-		System.out.println(i3.getInfoType());
-		System.out.println(i3.getValue());
+		System.out.println(i3.getDataType());
+		System.out.println(i3.getInfo());
 	}
 }

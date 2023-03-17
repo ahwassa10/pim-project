@@ -24,6 +24,6 @@ public abstract class AbstractSingleValueInfo<T> implements Info {
 	}
 	
 	public String toString() {
-		return String.format("%s<%s>", getInfoType().getName(), get());
+		return String.format("%s<%s>", getDataType().getName(), get());
 	}
 }
