@@ -2,7 +2,7 @@ package sys_d;
 
 import java.nio.file.Path;
 
-public class DMS {
+public final class DMS {
 	private final Path storage_folder;
 	private final Path export_folder;
 	
