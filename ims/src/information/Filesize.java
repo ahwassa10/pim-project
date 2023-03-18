@@ -16,10 +16,6 @@ public class Filesize extends AbstractSingleValueInfo<Integer> {
 		}
 	}
 	
-	public DataPair asDataPair() {
-		return new SimpleDataPair(DATA_TYPE, this);
-	}
-	
 	public DataType getDataType() {
 		return DATA_TYPE;
 	}

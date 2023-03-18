@@ -7,6 +7,10 @@ public abstract class AbstractSingleValueInfo<T> implements Info {
 		this.value = value;
 	}
 	
+	public DataPair asDataPair() {
+		return new SimpleDataPair(getDataType(), this);
+	}
+	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
 		if (!(o instanceof AbstractSingleValueInfo<?>)) {return false;}

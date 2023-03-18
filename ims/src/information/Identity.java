@@ -14,10 +14,6 @@ public final class Identity extends AbstractSingleValueInfo<UUID> {
 		return new Identity(UUID.randomUUID());
 	}
 	
-	public DataPair asDataPair() {
-		return new SimpleDataPair(DATA_TYPE, this);
-	}
-	
 	public DataType getDataType() {
 		return DATA_TYPE;
 	}

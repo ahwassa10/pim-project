@@ -33,7 +33,7 @@ public class Testing1 {
 		System.out.println("7) " + (i1.getDataType().equals(i2.getDataType())));
 		
 		// The same instance of String is used for the DataTypeName.
-		System.out.println("9) " + (i1.getDataTypeName() == i2.getDataTypeName()));
+		System.out.println("8) " + (i1.getDataTypeName() == i2.getDataTypeName()));
 		
 		System.out.println(i1);
 		System.out.println(i1.getDataType());

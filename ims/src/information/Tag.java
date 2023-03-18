@@ -31,10 +31,6 @@ public final class Tag extends AbstractSingleValueInfo<String> {
 		return pattern.matcher(test_string).matches();
 	}
 	
-	public DataPair asDataPair() {
-		return new SimpleDataPair(DATA_TYPE, this);
-	}
-	
 	public DataType getDataType() {
 		return DATA_TYPE;
 	}

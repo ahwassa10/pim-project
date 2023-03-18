@@ -32,10 +32,6 @@ public final class Note extends AbstractSingleValueInfo<String> {
 		return true;
 	}
 	
-	public DataPair asDataPair() {
-		return new SimpleDataPair(DATA_TYPE, this);
-	}
-	
 	public DataType getDataType() {
 		return DATA_TYPE;
 	}
