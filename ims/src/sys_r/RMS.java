@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import information.Filename;
+import information.Filepath;
 import information.Filesize;
 import information.Info;
 
@@ -21,29 +22,32 @@ public class RMS {
 		System.out.println("Successfully created the RMS");
 	}
 	
-	private List<Info> decompose(Path file) {
+	private List<Info> decomposeToInfo(Path input_file) throws IOException {
 		List<Info> infoList = new ArrayList<>();
 		
-		Filename filename = Filename.from(file.getFileName().toString());
-		Filesize filesize = null;
-		try {
-			filesize = Filesize.from((Long) Files.getAttribute(file, "basic:size"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		infoList.add(filename);
-		infoList.add(filesize);
+		infoList.add(Filepath.from(input_file));
+		infoList.add(Filename.from(input_file.getFileName().toString()));
+		infoList.add(Filesize.from((Long) Files.getAttribute(input_file, "basic:size")));
 		
 		return infoList;
 	}
 	
+	private Path moveToOutputFolder(Path input_file) throws IOException {
+		Path output_file = output_folder.resolve(input_file.getFileName());
+		Files.move(input_file, output_file);
+		
+		return output_file;
+	}
+	
 	public void readImportFolder() {
-		try (DirectoryStream<Path> content =
-				Files.newDirectoryStream(import_folder)) {
-			
-			content.forEach(f -> System.out.println(decompose(f)));
-			
+		try (DirectoryStream<Path> content = Files.newDirectoryStream(import_folder)) {
+			content.forEach(file -> {
+				try {
+					System.out.println(decomposeToInfo(file));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
