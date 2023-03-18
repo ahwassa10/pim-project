@@ -5,6 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import information.Filename;
@@ -28,6 +29,18 @@ public final class RMS {
 		infoList.add(Filesize.from((Long) Files.getAttribute(input_file, "basic:size")));
 		
 		return infoList;
+	}
+	
+	public List<Info> retrieveInfo() {
+		try (DirectoryStream<Path> content = Files.newDirectoryStream(import_folder)) {
+			Iterator<Path> i = content.iterator();
+			if (i.hasNext()) {
+				return decomposeToInfo(i.next());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public void readImportFolder() {

@@ -3,6 +3,11 @@ package sys_i;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+
+import information.Identity;
+import information.Info;
 
 public final class IMS {
 	private final Path output_folder;
@@ -17,5 +22,28 @@ public final class IMS {
 		Files.move(input_file, output_file);
 		
 		return output_file;
+	}
+	
+	public SystemEntity importInfo(List<Info> infolist) {
+		Objects.requireNonNull(infolist, "Infolist cannot be null");
+		
+		Identity i = Identity.newIdentifier();
+		infolist.add(i);
+		
+		return new SystemEntity() {
+			private List<Info> qualities = infolist;
+			
+			public Identity getIdentity() {
+				return i;
+			}
+			
+			public List<Info> getQualities() {
+				return qualities;
+			}
+		};
+	}
+	
+	public String toString() {
+		return String.format("IMS<Output Folder<%s>", output_folder);
 	}
 }
