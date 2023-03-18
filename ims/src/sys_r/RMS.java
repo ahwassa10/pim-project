@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import information.Info;
 
 public class RMS {
 	private final Path import_folder;
@@ -15,7 +19,15 @@ public class RMS {
 		System.out.println("Successfully created the RMS");
 	}
 	
-	public void importFiles() {
+	private List<Info> decompose(Path file) {
+		List<Info> infoList = new ArrayList<>();
+		
+		
+		
+		return infoList;
+	}
+	
+	public void readImportFolder() {
 		try (DirectoryStream<Path> content =
 				Files.newDirectoryStream(import_folder)) {
 			
