@@ -1,7 +1,7 @@
 package information;
 
 public class Filesize extends AbstractSingleValueInfo<Long> {
-	private static final DataType DATA_TYPE =
+	public static final DataType DATA_TYPE =
 			new SimpleDataType("Filesize");
 	
 	private Filesize(long filesize) {

@@ -1,7 +1,7 @@
 package information;
 
 public final class Filename extends AbstractSingleValueInfo<String> {
-	private static final DataType DATA_TYPE =
+	public static final DataType DATA_TYPE =
 			new SimpleDataType("Filename");
 	private static final Character[] INVALID_FILENAME_CHARS =
 		{'"', '*', '<', '>', '?', '|', '\000'};

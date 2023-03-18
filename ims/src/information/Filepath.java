@@ -4,7 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class Filepath extends AbstractSingleValueInfo<Path> {
-	private static final DataType DATA_TYPE =
+	public static final DataType DATA_TYPE =
 			new SimpleDataType("Filepath");
 	
 	private Filepath(Path filepath) {

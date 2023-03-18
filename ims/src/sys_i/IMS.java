@@ -3,11 +3,15 @@ package sys_i;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import information.DataType;
+import information.Filepath;
 import information.Identity;
 import information.Info;
+import information.SimpleDataType;
 
 public final class IMS {
 	private final Path output_folder;
@@ -17,24 +21,36 @@ public final class IMS {
 		System.out.println("Sucessfully created the IMS");
 	}
 	
-	private Path moveToOutputFolder(Path input_file) throws IOException {
+	private Path moveToOutputFolder(Path input_file) {
 		Path output_file = output_folder.resolve(input_file.getFileName());
-		Files.move(input_file, output_file);
-		
+		try {
+			Files.move(input_file, output_file);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return input_file;
+		}
 		return output_file;
 	}
 	
 	public SystemEntity importInfo(List<Info> infolist) {
 		Objects.requireNonNull(infolist, "Infolist cannot be null");
 		
-		Identity i = Identity.newIdentifier();
-		infolist.add(i);
+		Identity identity = Identity.newIdentifier();
+		infolist.add(identity);
+		
+		infolist.stream()
+				.filter(i -> i.getDataType().equals(Filepath.DATA_TYPE))
+				.findFirst()
+				.ifPresent(i -> {
+					moveToOutputFolder(((Filepath) i).get());
+					infolist.remove(i);
+				});
 		
 		return new SystemEntity() {
 			private List<Info> qualities = infolist;
 			
 			public Identity getIdentity() {
-				return i;
+				return identity;
 			}
 			
 			public List<Info> getQualities() {
