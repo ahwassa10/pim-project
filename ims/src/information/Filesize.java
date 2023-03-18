@@ -1,14 +1,14 @@
 package information;
 
-public class Filesize extends AbstractSingleValueInfo<Integer> {
+public class Filesize extends AbstractSingleValueInfo<Long> {
 	private static final DataType DATA_TYPE =
 			new SimpleDataType("Filesize");
 	
-	private Filesize(int filesize) {
+	private Filesize(long filesize) {
 		super(filesize);
 	}
 	
-	public static Filesize from(int filesize) {
+	public static Filesize from(long filesize) {
 		if (filesize < 0) {
 			throw new IllegalArgumentException("Negative filesize is impossible");
 		} else {
