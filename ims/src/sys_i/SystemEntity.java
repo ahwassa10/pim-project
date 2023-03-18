@@ -1,11 +1,7 @@
 package sys_i;
 
-import java.util.List;
-
 import information.Identity;
-import information.Info;
 
-public interface SystemEntity {
+public interface SystemEntity extends Entity {
 	Identity getIdentity();
-	List<Info> getQualities();
 }

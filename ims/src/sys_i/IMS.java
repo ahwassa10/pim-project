@@ -3,15 +3,12 @@ package sys_i;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import information.DataType;
 import information.Filepath;
 import information.Identity;
 import information.Info;
-import information.SimpleDataType;
 
 public final class IMS {
 	private final Path output_folder;
