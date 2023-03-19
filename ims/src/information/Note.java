@@ -1,25 +1,23 @@
 package information;
 
-public final class Note extends AbstractSingleValueInfo<String> {
-	private static final DataType DATA_TYPE =
-			new SimpleDataType("Note");
-	private static final int MAX_NOTE_LENGTH = 1024;
+public class Note {
+	public static final int MAX_NOTE_LENGTH = 1024;
+	public static final int MIN_NOTE_LENGTH = 0;	
+	public static final DataType DATA_TYPE =
+			new SimpleDataType("Note", Name::isValidName);
+	private static final SimpleInfoFactory<String> sif =
+			new SimpleInfoFactory<>(DATA_TYPE);
 	
-	private Note(String note) {
-		super(note);
-	}
+	private Note() {}
 	
-	public static Note from(String note) {
-		if (!isValidStringNote(note)) {
-			throw new IllegalArgumentException("Cannot create a note from this string");
-		} else {
-			return new Note(note);
+	public static boolean isValidNote(Object o) {
+		if (!(o instanceof String)) {
+			return false;
 		}
-	}
-	
-	public static boolean isValidStringNote(String test_string) {
+		String test_string = (String) o;
+		
 		if ((test_string == null) ||
-			(test_string.length() <= 0) ||
+			(test_string.length() < MIN_NOTE_LENGTH) ||
 			(test_string.length() > MAX_NOTE_LENGTH)) {
 			return false;
 		}
@@ -32,7 +30,11 @@ public final class Note extends AbstractSingleValueInfo<String> {
 		return true;
 	}
 	
-	public DataType getDataType() {
-		return DATA_TYPE;
+	public static Info from(String name) {
+		return sif.from(name);
+	}
+	
+	public static String get(Info info) {
+		return sif.get(info);
 	}
 }

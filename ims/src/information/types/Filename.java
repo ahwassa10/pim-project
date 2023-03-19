@@ -1,4 +1,8 @@
-package information;
+package information.types;
+
+import information.AbstractSingleValueInfo;
+import information.DataType;
+import information.SimpleDataType;
 
 public final class Filename extends AbstractSingleValueInfo<String> {
 	public static final DataType DATA_TYPE =

@@ -1,7 +1,11 @@
-package information;
+package information.types;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import information.AbstractSingleValueInfo;
+import information.DataType;
+import information.SimpleDataType;
 
 public final class Filepath extends AbstractSingleValueInfo<Path> {
 	public static final DataType DATA_TYPE =

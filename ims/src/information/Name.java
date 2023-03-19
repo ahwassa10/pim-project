@@ -1,25 +1,23 @@
 package information;
 
-public final class Name extends AbstractSingleValueInfo<String> {
-	private static final DataType DATA_TYPE =
-			new SimpleDataType("Name");
-	private static final int MAX_NAME_LENGTH = 128;
+public class Name {
+	public static final int MAX_NAME_LENGTH = 128;
+	public static final int MIN_NAME_LENGTH = 0;
+	public static final DataType DATA_TYPE =
+			new SimpleDataType("Name", Name::isValidName);
+	private static final SimpleInfoFactory<String> sif =
+			new SimpleInfoFactory<>(DATA_TYPE);
 	
-	private Name(String name) {
-		super(name);
-	}
+	private Name() {}
 	
-	public static Name from(String name) {
-		if (!isValidStringName(name)) {
-			throw new IllegalArgumentException("Cannot create a name from this string");
-		} else {
-			return new Name(name);
+	public static boolean isValidName(Object o) {
+		if (!(o instanceof String)) {
+			return false;
 		}
-	}
-	
-	public static boolean isValidStringName(String test_string) {
+		String test_string = (String) o;
+		
 		if ((test_string == null) ||
-			(test_string.length() < 0) ||
+			(test_string.length() < MIN_NAME_LENGTH) ||
 			(test_string.length() > MAX_NAME_LENGTH)) {
 			return false;
 		}
@@ -32,7 +30,11 @@ public final class Name extends AbstractSingleValueInfo<String> {
 		return true;
 	}
 	
-	public DataType getDataType() {
-		return DATA_TYPE;
+	public static Info from(String name) {
+		return sif.from(name);
+	}
+	
+	public static String get(Info info) {
+		return sif.get(info);
 	}
 }

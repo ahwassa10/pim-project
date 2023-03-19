@@ -1,6 +1,10 @@
 package information;
 
 public interface Info {
-	DataPair asDataPair();
+	Data getData();
 	DataType getDataType();
+	
+	default String getDataTypeName() {
+		return getDataType().getDataTypeName();
+	}
 }

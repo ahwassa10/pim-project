@@ -6,9 +6,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-import information.Filepath;
-import information.Identity;
 import information.Info;
+import information.types.Filepath;
+import information.types.Identity;
 
 public final class IMS {
 	private final Path output_folder;

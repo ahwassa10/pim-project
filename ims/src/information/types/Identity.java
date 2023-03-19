@@ -1,6 +1,10 @@
-package information;
+package information.types;
 
 import java.util.UUID;
+
+import information.AbstractSingleValueInfo;
+import information.DataType;
+import information.SimpleDataType;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
 	private static final DataType DATA_TYPE =

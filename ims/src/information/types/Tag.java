@@ -1,6 +1,10 @@
-package information;
+package information.types;
 
 import java.util.regex.Pattern;
+
+import information.AbstractSingleValueInfo;
+import information.DataType;
+import information.SimpleDataType;
 
 public final class Tag extends AbstractSingleValueInfo<String> {
 	private static final DataType DATA_TYPE =

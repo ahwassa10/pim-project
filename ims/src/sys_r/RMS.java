@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import information.Filename;
-import information.Filepath;
-import information.Filesize;
 import information.Info;
+import information.types.Filename;
+import information.types.Filepath;
+import information.types.Filesize;
 
 public final class RMS {
 	private final Path import_folder;

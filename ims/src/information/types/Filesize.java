@@ -1,4 +1,8 @@
-package information;
+package information.types;
+
+import information.AbstractSingleValueInfo;
+import information.DataType;
+import information.SimpleDataType;
 
 public class Filesize extends AbstractSingleValueInfo<Long> {
 	public static final DataType DATA_TYPE =
