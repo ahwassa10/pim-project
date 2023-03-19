@@ -1,6 +1,7 @@
 package sys_d;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -10,8 +11,24 @@ final class DMSTypes implements Types {
 	
 	DMSTypes() {}
 	
+	public int countTypes() {
+		return types.size();
+	}
+	
+	public InfoType getInfoType(String typeName) {
+		if (types.containsKey(typeName)) {
+			return types.get(typeName);
+		} else {
+			throw new IllegalArgumentException("This InfoType does not exist");
+		}
+	}
+	
 	public boolean hasType(String typeName) {
 		return types.containsKey(typeName);
+	}
+	
+	public List<String> listTypeNames() {
+		return List.copyOf(types.keySet());
 	}
 	
 	public InfoType makeInfoType(String typeName,
@@ -24,14 +41,6 @@ final class DMSTypes implements Types {
 			InfoType type = new SimpleInfoType(typeName, predicate, function);
 			types.put(typeName, type);
 			return type;
-		}
-	}
-	
-	public InfoType getInfoType(String typeName) {
-		if (types.containsKey(typeName)) {
-			return types.get(typeName);
-		} else {
-			throw new IllegalArgumentException("This InfoType does not exist");
 		}
 	}
 }

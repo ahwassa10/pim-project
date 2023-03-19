@@ -24,7 +24,7 @@ class SimpleInfoType implements InfoType {
 		}
 	}
 	
-	public Info asInfo(String data) {
+	public Info fromData(String data) {
 		return dataToInfo.apply(data);
 	}
 	
