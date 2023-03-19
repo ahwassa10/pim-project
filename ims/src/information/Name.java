@@ -1,21 +1,14 @@
 package information;
 
-public class Name {
+public final class Name {
 	public static final int MAX_NAME_LENGTH = 128;
 	public static final int MIN_NAME_LENGTH = 0;
-	public static final InfoType DATA_TYPE =
-			new SimpleInfoType("Name", Name::isValidName);
-	private static final SimpleInfoFactory<String> sif =
-			new SimpleInfoFactory<>(DATA_TYPE);
+	public static final InfoType INFO_TYPE =
+			InfoTypes.from("Name", Name::isValidName, Name::asInfo);
 	
 	private Name() {}
 	
-	public static boolean isValidName(Object o) {
-		if (!(o instanceof String)) {
-			return false;
-		}
-		String test_string = (String) o;
-		
+	public static boolean isValidName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() < MIN_NAME_LENGTH) ||
 			(test_string.length() > MAX_NAME_LENGTH)) {
@@ -30,11 +23,20 @@ public class Name {
 		return true;
 	}
 	
-	public static Info from(String name) {
-		return sif.from(name);
+	public static Info asInfo(String test_string) {
+		if (!isValidName(test_string)) {
+			throw new IllegalArgumentException("Data does not represent a Name");
+		} else {
+			return new SimpleInfo(INFO_TYPE, test_string);
+		}
 	}
 	
-	public static String get(Info info) {
-		return sif.get(info);
+	
+	public static String getName(Info info) {
+		if (!INFO_TYPE.equals(info.getInfoType())) {
+			throw new IllegalArgumentException("InfoType not Name");
+		} else {
+			return (String) info.getObject();
+		}
 	}
 }

@@ -19,7 +19,7 @@ public interface InfoType {
 		return TYPE_PATTERN.matcher(test_string).matches();
 	}
 	
-	Info asInfoWith(String data);
+	Info asInfo(String data);
 	String getTypeName();
 	boolean qualifies(String data);
 }

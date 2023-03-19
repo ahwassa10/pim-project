@@ -31,7 +31,7 @@ public final class InfoTypes {
 			}
 		}
 		
-		public Info asInfoWith(String data) {
+		public Info asInfo(String data) {
 			return function.apply(data);
 		}
 		
@@ -70,9 +70,11 @@ public final class InfoTypes {
 
 		if (types.containsKey(typeName)) {
 			throw new IllegalArgumentException("This InfoType already exists");
+		} else {
+			InfoType type = new SimpleInfoType(typeName, predicate, function);
+			types.put(typeName, type);
+			return type;
 		}
-
-		return new SimpleInfoType(typeName, predicate, function);
 	}
 	
 	public static InfoType get(String typeName) {

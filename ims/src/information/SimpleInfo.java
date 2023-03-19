@@ -1,12 +1,12 @@
 package information;
 
 public final class SimpleInfo implements Info {
-	private final InfoType dataType;
-	private final Data data;
+	private final InfoType infoType;
+	private final Object object;
 	
-	public SimpleInfo(InfoType dataType, Data data) {
-		this.dataType = dataType;
-		this.data = data;
+	public SimpleInfo(InfoType infoType, Object object) {
+		this.infoType = infoType;
+		this.object = object;
 	}
 	
 	public boolean equals(Object o) {
@@ -14,27 +14,31 @@ public final class SimpleInfo implements Info {
 		if (!(o instanceof SimpleInfo)) {return false;}
 		
 		SimpleInfo sdp = (SimpleInfo) o;
-		return dataType.equals(dataType) && data.equals(sdp.data);
+		return infoType.equals(infoType) && object.equals(sdp.object);
 	}
 	
-	public InfoType getDataType() {
-		return dataType;
+	public InfoType getInfoType() {
+		return infoType;
 	}
 	
-	public Data getData() {
-		return data;
+	public String asData() {
+		return object.toString();
+	}
+	
+	public Object getObject() {
+		return object;
 	}
 	
 	public int hashCode() {
-		int result = dataType.hashCode();
-		result = result * 31 + data.hashCode();
+		int result = infoType.hashCode();
+		result = result * 31 + object.hashCode();
 		
 		return result;
 	}
 	
 	public String toString() {
 		return String.format("<%s, %s>",
-				dataType,
-				data);
+				infoType,
+				object);
 	}
 }
