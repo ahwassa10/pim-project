@@ -3,6 +3,7 @@ package sys_d;
 import java.nio.file.Path;
 
 import information.Name;
+import information.Note;
 
 public final class DMS {
 	private final Path storage_folder;
@@ -14,6 +15,7 @@ public final class DMS {
 		this.export_folder = ef_path;
 		
 		Name.register(this);
+		Note.register(this);
 		
 		System.out.println("Successfully created the DMS");
 	}

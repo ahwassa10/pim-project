@@ -4,7 +4,7 @@ public final class SimpleDataPair implements DataPair {
 	private String data;
 	private String qualifier;
 	
-	SimpleDataPair(String data, String qualifier) {
+	public SimpleDataPair(String data, String qualifier) {
 		if (data == null) {
 			throw new IllegalArgumentException("Data cannot be null");
 		} else if (qualifier == null) {
@@ -17,9 +17,9 @@ public final class SimpleDataPair implements DataPair {
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof DataPair)) {return false;}
+		if (!(o instanceof SimpleDataPair)) {return false;}
 		
-		DataPair dp = (DataPair) o;
+		SimpleDataPair dp = (SimpleDataPair) o;
 		return qualifier.equals(dp.getQualifier()) && data.equals(dp.getData());
 	}
 	

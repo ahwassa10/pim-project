@@ -34,7 +34,7 @@ public final class Name {
 	
 	private static String toData(Info info) {
 		if (!INFO_TYPE.equals(info.getInfoType())) {
-			throw new IllegalArgumentException("Info is incorrect type");
+			throw new IllegalArgumentException("InfoType not Name");
 		} else {
 			return (String) info.getObject();
 		}
@@ -42,7 +42,7 @@ public final class Name {
 	
 	private static Info toInfo(String data) {
 		if (!isValidName(data)) {
-			throw new IllegalArgumentException("Data cannot be converted to Name");
+			throw new IllegalArgumentException("Data does not represent a Name");
 		} else {
 			return new SimpleInfo(INFO_TYPE, data);
 		}

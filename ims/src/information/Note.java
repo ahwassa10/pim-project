@@ -1,19 +1,23 @@
 package information;
 
-import sys_d.AbstractInfo;
-import sys_d.DMSTypes;
+import sys_d.DMS;
 import sys_d.Info;
 import sys_d.InfoType;
+import sys_d.SimpleInfo;
 
-public class Note {
+public final class Note {
 	public static final int MAX_NOTE_LENGTH = 1024;
 	public static final int MIN_NOTE_LENGTH = 0;	
-	public static final InfoType INFO_TYPE =
-			DMSTypes.from("Note", Note::isValidNote, Note::asInfo);
+	public static InfoType INFO_TYPE;
 	
 	private Note() {}
 	
-	public static boolean isValidNote(String test_string) {
+	public static void register(DMS dms) {
+		INFO_TYPE = dms.getTypes().makeInfoType(Note::isValidNote,
+				Note::toInfo, Note::toData, "Note");
+	}
+	
+	private static boolean isValidNote(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() < MIN_NOTE_LENGTH) ||
 			(test_string.length() > MAX_NOTE_LENGTH)) {
@@ -28,19 +32,19 @@ public class Note {
 		return true;
 	}
 	
-	public static Info asInfo(String test_string) {
-		if (!isValidNote(test_string)) {
-			throw new IllegalArgumentException("Data does not represent a Note");
-		} else {
-			return new AbstractInfo(INFO_TYPE, test_string);
-		}
-	}
-	
-	public static String getNote(Info info) {
+	private static String toData(Info info) {
 		if (!INFO_TYPE.equals(info.getInfoType())) {
 			throw new IllegalArgumentException("InfoType not Note");
 		} else {
 			return (String) info.getObject();
+		}
+	}
+	
+	private static Info toInfo(String data) {
+		if (!isValidNote(data)) {
+			throw new IllegalArgumentException("Data does not represent a Note");
+		} else {
+			return new SimpleInfo(INFO_TYPE, data);
 		}
 	}
 }

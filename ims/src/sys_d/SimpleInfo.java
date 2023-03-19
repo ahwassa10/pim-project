@@ -17,9 +17,9 @@ public class SimpleInfo implements Info {
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof Info)) {return false;}
+		if (!(o instanceof SimpleInfo)) {return false;}
 		
-		Info i = (Info) o;
+		SimpleInfo i = (SimpleInfo) o;
 		return infoType.equals(i.getInfoType()) && object.equals(i.getObject());
 	}
 	
