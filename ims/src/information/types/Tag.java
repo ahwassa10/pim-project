@@ -4,11 +4,11 @@ import java.util.regex.Pattern;
 
 import information.AbstractSingleValueInfo;
 import information.InfoType;
-import information.SimpleDataType;
+import information.SimpleInfoType;
 
 public final class Tag extends AbstractSingleValueInfo<String> {
 	private static final InfoType DATA_TYPE =
-			new SimpleDataType("Tag");
+			new SimpleInfoType("Tag");
 	private static final Pattern pattern =
 			Pattern.compile("[a-z][a-z[_]]*");
 	private static final int MAX_TAG_LENGTH = 32;

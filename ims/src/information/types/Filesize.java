@@ -2,11 +2,11 @@ package information.types;
 
 import information.AbstractSingleValueInfo;
 import information.InfoType;
-import information.SimpleDataType;
+import information.SimpleInfoType;
 
 public class Filesize extends AbstractSingleValueInfo<Long> {
 	public static final InfoType DATA_TYPE =
-			new SimpleDataType("Filesize");
+			new SimpleInfoType("Filesize");
 	
 	private Filesize(long filesize) {
 		super(filesize);

@@ -2,11 +2,11 @@ package information.types;
 
 import information.AbstractSingleValueInfo;
 import information.InfoType;
-import information.SimpleDataType;
+import information.SimpleInfoType;
 
 public final class Filename extends AbstractSingleValueInfo<String> {
 	public static final InfoType DATA_TYPE =
-			new SimpleDataType("Filename");
+			new SimpleInfoType("Filename");
 	private static final Character[] INVALID_FILENAME_CHARS =
 		{'"', '*', '<', '>', '?', '|', '\000'};
 	private static final int MIN_FILENAME_LENGTH = 1;

@@ -4,11 +4,11 @@ import java.util.UUID;
 
 import information.AbstractSingleValueInfo;
 import information.InfoType;
-import information.SimpleDataType;
+import information.SimpleInfoType;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
 	private static final InfoType DATA_TYPE =
-			new SimpleDataType("Identity");
+			new SimpleInfoType("Identity");
 	
 	private Identity(UUID identity) {
 		super(identity);

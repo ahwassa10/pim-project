@@ -5,11 +5,11 @@ import java.nio.file.Path;
 
 import information.AbstractSingleValueInfo;
 import information.InfoType;
-import information.SimpleDataType;
+import information.SimpleInfoType;
 
 public final class Filepath extends AbstractSingleValueInfo<Path> {
 	public static final InfoType DATA_TYPE =
-			new SimpleDataType("Filepath");
+			new SimpleInfoType("Filepath");
 	
 	private Filepath(Path filepath) {
 		super(filepath);

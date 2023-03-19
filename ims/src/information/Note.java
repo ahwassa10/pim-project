@@ -4,7 +4,7 @@ public class Note {
 	public static final int MAX_NOTE_LENGTH = 1024;
 	public static final int MIN_NOTE_LENGTH = 0;	
 	public static final InfoType DATA_TYPE =
-			new SimpleDataType("Note", Name::isValidName);
+			new SimpleInfoType("Note", Name::isValidName);
 	private static final SimpleInfoFactory<String> sif =
 			new SimpleInfoFactory<>(DATA_TYPE);
 	
