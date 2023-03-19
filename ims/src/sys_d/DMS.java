@@ -2,14 +2,24 @@ package sys_d;
 
 import java.nio.file.Path;
 
+import information.Name;
+
 public final class DMS {
 	private final Path storage_folder;
 	private final Path export_folder;
+	private final Types types = new DMSTypes();
 	
 	DMS(Path sf_path, Path ef_path) {
 		this.storage_folder = sf_path;
 		this.export_folder = ef_path;
+		
+		Name.register(this);
+		
 		System.out.println("Successfully created the DMS");
+	}
+	
+	public Types getTypes() {
+		return types;
 	}
 	
 	public String toString() {

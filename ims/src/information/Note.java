@@ -1,10 +1,15 @@
 package information;
 
+import sys_d.AbstractInfo;
+import sys_d.DMSTypes;
+import sys_d.Info;
+import sys_d.InfoType;
+
 public class Note {
 	public static final int MAX_NOTE_LENGTH = 1024;
 	public static final int MIN_NOTE_LENGTH = 0;	
 	public static final InfoType INFO_TYPE =
-			InfoTypes.from("Note", Note::isValidNote, Note::asInfo);
+			DMSTypes.from("Note", Note::isValidNote, Note::asInfo);
 	
 	private Note() {}
 	
@@ -27,7 +32,7 @@ public class Note {
 		if (!isValidNote(test_string)) {
 			throw new IllegalArgumentException("Data does not represent a Note");
 		} else {
-			return new SimpleInfo(INFO_TYPE, test_string);
+			return new AbstractInfo(INFO_TYPE, test_string);
 		}
 	}
 	

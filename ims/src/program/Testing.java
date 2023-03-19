@@ -2,9 +2,9 @@ package program;
 
 import java.util.List;
 
-import information.Info;
 import sys_d.DMS;
 import sys_d.DMSBuilder;
+import sys_d.Info;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
 import sys_i.SystemEntity;

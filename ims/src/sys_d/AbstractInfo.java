@@ -1,28 +1,24 @@
-package information;
+package sys_d;
 
-public final class SimpleInfo implements Info {
+public abstract class AbstractInfo implements Info {
 	private final InfoType infoType;
 	private final Object object;
 	
-	public SimpleInfo(InfoType infoType, Object object) {
+	public AbstractInfo(InfoType infoType, Object object) {
 		this.infoType = infoType;
 		this.object = object;
 	}
 	
 	public boolean equals(Object o) {
 		if (o == this) {return true;}
-		if (!(o instanceof SimpleInfo)) {return false;}
+		if (!(o instanceof AbstractInfo)) {return false;}
 		
-		SimpleInfo sdp = (SimpleInfo) o;
+		AbstractInfo sdp = (AbstractInfo) o;
 		return infoType.equals(infoType) && object.equals(sdp.object);
 	}
 	
 	public InfoType getInfoType() {
 		return infoType;
-	}
-	
-	public String asData() {
-		return object.toString();
 	}
 	
 	public Object getObject() {

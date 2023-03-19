@@ -1,8 +1,8 @@
 package information.types;
 
 import information.AbstractSingleValueInfo;
-import information.InfoType;
 import information.SimpleInfoType;
+import sys_d.InfoType;
 
 public final class Filename extends AbstractSingleValueInfo<String> {
 	public static final InfoType DATA_TYPE =

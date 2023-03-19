@@ -3,8 +3,8 @@ package information.types;
 import java.util.regex.Pattern;
 
 import information.AbstractSingleValueInfo;
-import information.InfoType;
 import information.SimpleInfoType;
+import sys_d.InfoType;
 
 public final class Tag extends AbstractSingleValueInfo<String> {
 	private static final InfoType DATA_TYPE =

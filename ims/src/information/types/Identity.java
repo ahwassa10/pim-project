@@ -3,8 +3,8 @@ package information.types;
 import java.util.UUID;
 
 import information.AbstractSingleValueInfo;
-import information.InfoType;
 import information.SimpleInfoType;
+import sys_d.InfoType;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
 	private static final InfoType DATA_TYPE =

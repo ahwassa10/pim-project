@@ -2,7 +2,7 @@ package sys_i;
 
 import java.util.List;
 
-import information.Info;
+import sys_d.Info;
 
 public interface Entity {
 	List<Info> getQualities();

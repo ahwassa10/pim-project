@@ -4,8 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import information.AbstractSingleValueInfo;
-import information.InfoType;
 import information.SimpleInfoType;
+import sys_d.InfoType;
 
 public final class Filepath extends AbstractSingleValueInfo<Path> {
 	public static final InfoType DATA_TYPE =
