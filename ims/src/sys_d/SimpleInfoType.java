@@ -54,7 +54,7 @@ class SimpleInfoType implements InfoType {
 	}
 	
 	public String toString() {
-		return String.format("InfoType<%s>", typeName);
+		return String.format("InfoType:%s", typeName);
 	}
 	
 	public boolean qualifies(String o) {

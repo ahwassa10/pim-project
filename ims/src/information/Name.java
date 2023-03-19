@@ -3,6 +3,7 @@ package information;
 import sys_d.DMS;
 import sys_d.Info;
 import sys_d.InfoType;
+import sys_d.SimpleInfo;
 
 public final class Name {
 	public static final int MAX_NAME_LENGTH = 128;
@@ -16,7 +17,7 @@ public final class Name {
 				Name::toInfo, Name::toData, "Name");
 	}
 	
-	public static boolean isValidName(String test_string) {
+	private static boolean isValidName(String test_string) {
 		if ((test_string == null) ||
 			(test_string.length() < MIN_NAME_LENGTH) ||
 			(test_string.length() > MAX_NAME_LENGTH)) {
@@ -31,7 +32,7 @@ public final class Name {
 		return true;
 	}
 	
-	public static String toData(Info info) {
+	private static String toData(Info info) {
 		if (!INFO_TYPE.equals(info.getInfoType())) {
 			throw new IllegalArgumentException("Info is incorrect type");
 		} else {
@@ -39,18 +40,11 @@ public final class Name {
 		}
 	}
 	
-	public static Info toInfo(String data) {
+	private static Info toInfo(String data) {
 		if (!isValidName(data)) {
 			throw new IllegalArgumentException("Data cannot be converted to Name");
 		} else {
-			return new Info() {
-				public InfoType getInfoType() {
-					return INFO_TYPE;
-				}
-				public Object getObject() {
-					return data;
-				}
-			};
+			return new SimpleInfo(INFO_TYPE, data);
 		}
 	}
 }

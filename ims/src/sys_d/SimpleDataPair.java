@@ -1,6 +1,6 @@
 package sys_d;
 
-final class SimpleDataPair implements DataPair {
+public final class SimpleDataPair implements DataPair {
 	private String data;
 	private String qualifier;
 	
