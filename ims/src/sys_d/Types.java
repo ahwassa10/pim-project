@@ -5,13 +5,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface Types {
+	default DataPair asDataPair(Info info) {
+		return new SimpleDataPair(info.getInfoType().asData(info),
+				                  info.getInfoType().getTypeName());
+	}
+	
 	default Info asInfo(DataPair dataPair) {
 		String typeName = dataPair.getQualifier();
 		if (!hasType(typeName)) {
 			throw new IllegalArgumentException("typeName does not exist");
 		} else {
 			InfoType infoType = getInfoType(typeName);
-			return infoType.fromData(dataPair.getData());
+			return infoType.asInfo(dataPair.getData());
 		}
 	}
 	
@@ -21,9 +26,10 @@ public interface Types {
 	
 	List<String> listTypeNames();
 	
-	InfoType makeInfoType(String typeName,
-						  Predicate<String> dataTester,
-						  Function<String, Info> dataToInfo);
+	InfoType makeInfoType(Predicate<String> dataTester,
+						  Function<String, Info> dataToInfo,
+						  Function<Info, String> infoToData,
+						  String typeName);
 	
 	boolean hasType(String typeName);
 }

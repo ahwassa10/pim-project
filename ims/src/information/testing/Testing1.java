@@ -18,10 +18,18 @@ public class Testing1 {
 		InfoType name = types.getInfoType("Name");
 		System.out.println(name);
 		
-		Info i = name.fromData("Test name");
-		String data = i.asData();
-		DataPair dp = i.asDataPair();
-		System.out.println(dp.getQualifier() + " " + dp.getData());
-		System.out.println(data);
+		Info i = name.asInfo("Testing Information");
+		System.out.println(i);
+		
+		String d = name.asData(i);
+		System.out.println(d);
+		
+		DataPair dp = types.asDataPair(i);
+		System.out.println(dp);
+		
+		Info i2 = types.asInfo(dp);
+		System.out.println(i2);
+		
+		System.out.println(i.equals(i2));
 	}
 }

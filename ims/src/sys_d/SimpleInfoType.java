@@ -4,27 +4,36 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 class SimpleInfoType implements InfoType {
-	private final Function<String, Info> dataToInfo;
 	private final Predicate<String> dataTester;
+	private final Function<String, Info> dataToInfo;
+	private final Function<Info, String> infoToData;
 	private final String typeName;
 		
-	public SimpleInfoType(String typeName,
-					   Predicate<String> dataTester,
-					   Function<String, Info> dataToInfo) {
-		if (dataToInfo == null) {
-			throw new IllegalArgumentException("Function cannot be null");
-		} else if (dataTester == null) {
-			throw new IllegalArgumentException("Predicate cannot be null");
+	public SimpleInfoType(Predicate<String> dataTester,
+					      Function<String, Info> dataToInfo,
+					      Function<Info, String> infoToData,
+					      String typeName) {
+		if (dataTester == null) {
+			throw new IllegalArgumentException("dataTester predicate cannot be null");
+		} else if (dataToInfo == null) {
+			throw new IllegalArgumentException("dataToInfo function cannot be null");
+		} else if (infoToData == null) {
+			throw new IllegalArgumentException("infoToData function cannot be null");
 		} else if (!InfoType.isValidTypeName(typeName)) {
 			throw new IllegalArgumentException("Invalid dataType name");
 		} else {
-			this.dataToInfo = dataToInfo;
 			this.dataTester = dataTester;
+			this.dataToInfo = dataToInfo;
+			this.infoToData = infoToData;
 			this.typeName = typeName;
 		}
 	}
 	
-	public Info fromData(String data) {
+	public String asData(Info info) {
+		return infoToData.apply(info);
+	}
+	
+	public Info asInfo(String data) {
 		return dataToInfo.apply(data);
 	}
 	

@@ -12,7 +12,8 @@ public final class Name {
 	private Name() {}
 	
 	public static void register(DMS dms) {
-		INFO_TYPE = dms.getTypes().makeInfoType("Name", Name::isValidName, Name::toInfo);
+		INFO_TYPE = dms.getTypes().makeInfoType(Name::isValidName,
+				Name::toInfo, Name::toData, "Name");
 	}
 	
 	public static boolean isValidName(String test_string) {
@@ -31,7 +32,7 @@ public final class Name {
 	}
 	
 	public static String toData(Info info) {
-		if (INFO_TYPE.equals(info.getInfoType())) {
+		if (!INFO_TYPE.equals(info.getInfoType())) {
 			throw new IllegalArgumentException("Info is incorrect type");
 		} else {
 			return (String) info.getObject();
@@ -43,9 +44,6 @@ public final class Name {
 			throw new IllegalArgumentException("Data cannot be converted to Name");
 		} else {
 			return new Info() {
-				public String asData() {
-					return data;
-				}
 				public InfoType getInfoType() {
 					return INFO_TYPE;
 				}
@@ -55,5 +53,4 @@ public final class Name {
 			};
 		}
 	}
-	
 }
