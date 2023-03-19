@@ -3,11 +3,11 @@ package information.types;
 import java.util.UUID;
 
 import information.AbstractSingleValueInfo;
-import information.DataType;
+import information.InfoType;
 import information.SimpleDataType;
 
 public final class Identity extends AbstractSingleValueInfo<UUID> {
-	private static final DataType DATA_TYPE =
+	private static final InfoType DATA_TYPE =
 			new SimpleDataType("Identity");
 	
 	private Identity(UUID identity) {
@@ -18,7 +18,7 @@ public final class Identity extends AbstractSingleValueInfo<UUID> {
 		return new Identity(UUID.randomUUID());
 	}
 	
-	public DataType getDataType() {
+	public InfoType getDataType() {
 		return DATA_TYPE;
 	}
 }

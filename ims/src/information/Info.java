@@ -1,10 +1,11 @@
 package information;
 
 public interface Info {
-	Data getData();
-	DataType getDataType();
-	
-	default String getDataTypeName() {
-		return getDataType().getDataTypeName();
+	default String getInfoTypeName() {
+		return getInfoType().getTypeName();
 	}
+	
+	String asData();
+	InfoType getInfoType();
+	Object getObject();
 }

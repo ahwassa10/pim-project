@@ -4,11 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import information.AbstractSingleValueInfo;
-import information.DataType;
+import information.InfoType;
 import information.SimpleDataType;
 
 public final class Filepath extends AbstractSingleValueInfo<Path> {
-	public static final DataType DATA_TYPE =
+	public static final InfoType DATA_TYPE =
 			new SimpleDataType("Filepath");
 	
 	private Filepath(Path filepath) {
@@ -29,7 +29,7 @@ public final class Filepath extends AbstractSingleValueInfo<Path> {
 			   (Files.isRegularFile(test_path));
 	}
 	
-	public DataType getDataType() {
+	public InfoType getDataType() {
 		return DATA_TYPE;
 	}
 }

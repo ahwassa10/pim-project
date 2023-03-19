@@ -3,7 +3,7 @@ package information;
 public class Name {
 	public static final int MAX_NAME_LENGTH = 128;
 	public static final int MIN_NAME_LENGTH = 0;
-	public static final DataType DATA_TYPE =
+	public static final InfoType DATA_TYPE =
 			new SimpleDataType("Name", Name::isValidName);
 	private static final SimpleInfoFactory<String> sif =
 			new SimpleInfoFactory<>(DATA_TYPE);

@@ -2,14 +2,14 @@ package information;
 
 import java.util.function.Predicate;
 
-public final class SimpleDataType implements DataType {
+public final class SimpleDataType implements InfoType {
 	private final String dataTypeName;
 	private final Predicate<Object> predicate; 
 	
 	public SimpleDataType(String dataTypeName, Predicate<Object> predicate) {
 		if (predicate == null) {
 			throw new IllegalArgumentException("Predicate cannot be null");
-		} else if (!DataType.isValidDataTypeName(dataTypeName)) {
+		} else if (!InfoType.isValidDataTypeName(dataTypeName)) {
 			throw new IllegalArgumentException("Invalid dataType name");
 		} else {
 			this.dataTypeName = dataTypeName;

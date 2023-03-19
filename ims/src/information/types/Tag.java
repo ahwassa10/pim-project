@@ -3,11 +3,11 @@ package information.types;
 import java.util.regex.Pattern;
 
 import information.AbstractSingleValueInfo;
-import information.DataType;
+import information.InfoType;
 import information.SimpleDataType;
 
 public final class Tag extends AbstractSingleValueInfo<String> {
-	private static final DataType DATA_TYPE =
+	private static final InfoType DATA_TYPE =
 			new SimpleDataType("Tag");
 	private static final Pattern pattern =
 			Pattern.compile("[a-z][a-z[_]]*");
@@ -35,7 +35,7 @@ public final class Tag extends AbstractSingleValueInfo<String> {
 		return pattern.matcher(test_string).matches();
 	}
 	
-	public DataType getDataType() {
+	public InfoType getDataType() {
 		return DATA_TYPE;
 	}
 }

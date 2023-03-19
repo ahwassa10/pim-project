@@ -1,10 +1,10 @@
 package information;
 
 public final class SimpleInfo implements Info {
-	private final DataType dataType;
+	private final InfoType dataType;
 	private final Data data;
 	
-	public SimpleInfo(DataType dataType, Data data) {
+	public SimpleInfo(InfoType dataType, Data data) {
 		this.dataType = dataType;
 		this.data = data;
 	}
@@ -17,7 +17,7 @@ public final class SimpleInfo implements Info {
 		return dataType.equals(dataType) && data.equals(sdp.data);
 	}
 	
-	public DataType getDataType() {
+	public InfoType getDataType() {
 		return dataType;
 	}
 	
