@@ -1,8 +1,6 @@
 package sys_d;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -21,22 +19,23 @@ public final class DMS {
 							String qualifier,
 							String value) throws IOException {
 		
-		Path keyPath = null;
-		DirectoryStream<Path> contents = Files.newDirectoryStream(storage_folder);
-		for (Path p : contents) {
-			if (key.equals(p.getFileName().toString())) {
-				keyPath = p;
-				break;
-			}
+		if (key == null || qualifier == null || value == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
 		}
-		if (keyPath == null) {
-			keyPath = Files.createDirectory(storage_folder.resolve(key));
+		if (key.isBlank() || qualifier.isBlank()) {
+			throw new IllegalArgumentException("Key and qualifier cannot be blank");
 		}
+		
+		// Creates the InfoType folder if it doesn't exist.
+		// Does nothing if the folder does exist.
+		Path keyPath = Files.createDirectories(storage_folder.resolve(key));
+		
+		// The UUID of the entity becomes the fileName.
 		Path fileName = keyPath.resolve(qualifier);
 		
-		BufferedWriter bw = Files.newBufferedWriter(fileName);
-		bw.write(value);
-		bw.close();
+		// Creates the file (if it doesn't exist) and writes the string
+		// to the file, truncating the file if it already has data in it.
+		Files.writeString(fileName, value);
 	}
 	
 	public String toString() {
