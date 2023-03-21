@@ -3,7 +3,12 @@ package sys_i.types;
 public final class Filesize {
 	private Filesize() {}
 
-	public static boolean isValidFilesize(long test_size) {
-		return test_size >= 0;
+	public static boolean isValidFilesize(String test_string) {
+		try {
+			long filesize = Long.parseLong(test_string);
+			return filesize >= 0;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

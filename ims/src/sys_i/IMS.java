@@ -43,7 +43,7 @@ public final class IMS {
 		
 		String filename = data.get("Filename");
 		String filepath = data.get("Filepath");
-		long filesize   = Long.parseLong(data.get("Filesize"));
+		String filesize = data.get("Filesize");
 		
 		if (!Filename.isValidFilename(filename)) {
 			throw new IllegalArgumentException("Invalid filename value");
@@ -57,7 +57,7 @@ public final class IMS {
 		
 		UUID identity = UUID.randomUUID();
 		
-		return new SimpleFileEntity(identity, filename, filesize);
+		return new SimpleFileEntity(identity, filename, Long.parseLong(filesize));
 	}
 	
 	public String toString() {
