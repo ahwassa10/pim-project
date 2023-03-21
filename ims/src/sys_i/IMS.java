@@ -3,12 +3,13 @@ package sys_i;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
-import information.types.Filepath;
-import information.types.Identity;
-import sys_d.Info;
+import sys_i.types.Filename;
+import sys_i.types.Filepath;
+import sys_i.types.Filesize;
 
 public final class IMS {
 	private final Path output_folder;
@@ -29,29 +30,42 @@ public final class IMS {
 		return output_file;
 	}
 	
-	public SystemEntity importInfo(List<Info> infolist) {
-		Objects.requireNonNull(infolist, "Infolist cannot be null");
+	public FileEntity createFileEntity(Map<String, String> data) {
+		Objects.requireNonNull(data, "Input data cannot be null");
 		
-		Identity identity = Identity.newIdentifier();
-		infolist.add(identity);
+		if (!data.containsKey("Filename")) {
+			throw new IllegalArgumentException("Data does not contain Filename attribute");
+		} else if (!data.containsKey("Filepath")) {
+			throw new IllegalArgumentException("Data does not contain Filepath attribute");
+		} else if (!data.containsKey("Filesize")) {
+			throw new IllegalArgumentException("Data does not contain Filesize attribute");
+		}
 		
-		infolist.stream()
-				.filter(i -> i.getDataType().equals(Filepath.DATA_TYPE))
-				.findFirst()
-				.ifPresent(i -> {
-					moveToOutputFolder(((Filepath) i).get());
-					infolist.remove(i);
-				});
+		String filename = data.get("Filename");
+		String filepath = data.get("Filepath");
+		long filesize   = Long.parseLong(data.get("Filesize"));
 		
-		return new SystemEntity() {
-			private List<Info> qualities = infolist;
-			
-			public Identity getIdentity() {
+		if (!Filename.isValidFilename(filename)) {
+			throw new IllegalArgumentException("Invalid filename value");
+		} else if (!Filepath.isValidFilepath(filepath)) {
+			throw new IllegalArgumentException("Invalid filepath value");
+		} else if (!Filesize.isValidFilesize(filesize)) {
+			throw new IllegalArgumentException("Invalid filesize value");
+		}
+		
+		moveToOutputFolder(Path.of(filepath));
+		
+		UUID identity = UUID.randomUUID();
+		
+		return new FileEntity() {
+			public UUID getIdentity() {
 				return identity;
 			}
-			
-			public List<Info> getQualities() {
-				return qualities;
+			public String getFilename() {
+				return filename;
+			}
+			public long getFilesize() {
+				return filesize;
 			}
 		};
 	}

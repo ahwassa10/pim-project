@@ -1,7 +1,7 @@
 package sys_i;
 
-import information.types.Identity;
+import java.util.UUID;
 
-public interface SystemEntity extends Entity {
-	Identity getIdentity();
+public interface SystemEntity {
+	UUID getIdentity();
 }
