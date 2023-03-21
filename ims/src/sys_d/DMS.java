@@ -2,8 +2,8 @@ package sys_d;
 
 import java.nio.file.Path;
 
-import information.Name;
-import information.Note;
+import sys_i.types.Name;
+import sys_i.types.Note;
 
 public final class DMS {
 	private final Path storage_folder;

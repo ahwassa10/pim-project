@@ -4,6 +4,6 @@ public final class Filesize {
 	private Filesize() {}
 
 	public static boolean isValidFilesize(long test_size) {
-		return test_size > 0;
+		return test_size >= 0;
 	}
 }

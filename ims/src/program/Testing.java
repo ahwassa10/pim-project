@@ -1,10 +1,12 @@
 package program;
 
 import java.util.Map;
+import java.util.UUID;
 
 import sys_i.FileEntity;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
+import sys_i.types.Identity;
 import sys_r.RMS;
 import sys_r.RMSBuilder;
 
@@ -17,5 +19,12 @@ public class Testing {
 		System.out.println(data);
 		FileEntity fe = ims.createFileEntity(data);
 		System.out.println(fe);
+		
+		System.out.println(Identity.isValidIdentity(null));
+		System.out.println(Identity.isValidIdentity(UUID.randomUUID().toString()));
+		System.out.println(Identity.isValidIdentity(UUID.randomUUID().toString()));
+		System.out.println(Identity.isValidIdentity(UUID.randomUUID().toString()));
+		System.out.println(Identity.isValidIdentity(UUID.randomUUID().toString()));
+		System.out.println(Identity.isValidIdentity(UUID.randomUUID().toString()));
 	}
 }
