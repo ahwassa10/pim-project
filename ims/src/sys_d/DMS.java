@@ -38,6 +38,10 @@ public final class DMS {
 		Files.writeString(fileName, value);
 	}
 	
+	public void saveQuality(Quality q) throws IOException {
+		saveQuality(q.getKey(), q.getQualifier(), q.getValue());
+	}
+	
 	public String toString() {
 		return String.format("DMS<Storage Folder<%s>, Export Folder<%s>>",
 				storage_folder, export_folder);

@@ -1,12 +1,10 @@
-package sys_d;
+package junk;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import junk.Info;
 
 final class DMSTypes implements Types {
 	private final Map<String, InfoType> types = new HashMap<>();

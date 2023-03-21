@@ -1,7 +1,5 @@
 package junk;
 
-import sys_d.InfoType;
-
 public class SimpleInfo implements Info {
 	private final InfoType infoType;
 	private final Object object;

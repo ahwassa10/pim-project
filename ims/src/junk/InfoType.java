@@ -1,8 +1,6 @@
-package sys_d;
+package junk;
 
 import java.util.regex.Pattern;
-
-import junk.Info;
 
 public interface InfoType {
 	// Matches a string that starts with an uppercase letter followed by

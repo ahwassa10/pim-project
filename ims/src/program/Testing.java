@@ -4,6 +4,7 @@ import java.util.Map;
 
 import sys_d.DMS;
 import sys_d.DMSBuilder;
+import sys_d.Qualities;
 import sys_i.FileEntity;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
@@ -23,6 +24,7 @@ public class Testing {
 		
 		try {
 			dms.saveQuality("Name", "entity0", "Test");
+			dms.saveQuality(Qualities.from("Name", "entity1", "Another name"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

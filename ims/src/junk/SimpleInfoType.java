@@ -1,9 +1,7 @@
-package sys_d;
+package junk;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import junk.Info;
 
 class SimpleInfoType implements InfoType {
 	private final Predicate<String> dataTester;

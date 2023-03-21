@@ -1,12 +1,8 @@
-package sys_d;
+package junk;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import junk.DataPair;
-import junk.Info;
-import junk.SimpleDataPair;
 
 public interface Types {
 	default DataPair asDataPair(Info info) {
