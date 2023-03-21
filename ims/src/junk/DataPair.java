@@ -1,4 +1,4 @@
-package sys_d;
+package junk;
 
 public interface DataPair {
 	String getData();

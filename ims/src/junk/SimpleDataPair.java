@@ -1,4 +1,4 @@
-package sys_d;
+package junk;
 
 public final class SimpleDataPair implements DataPair {
 	private String data;
