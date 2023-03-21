@@ -24,9 +24,11 @@ public class Testing {
 		
 		try {
 			dms.saveQuality("Name", "entity0", "Test");
+			dms.saveQuality("Note", "entity0", "This is a note");
+			dms.saveQuality("Random", "entity0", "134242452");
 			dms.saveQuality(Quality.from("Name", "entity1", "Another name"));
 			
-			System.out.println(dms.loadQuality("Name", "entity2"));
+			System.out.println(dms.getData("entity0"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

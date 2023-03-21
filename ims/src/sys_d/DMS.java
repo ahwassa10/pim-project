@@ -1,8 +1,11 @@
 package sys_d;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class DMS {
 	private final Path storage_folder;
@@ -15,7 +18,29 @@ public final class DMS {
 		System.out.println("Successfully created the DMS");
 	}
 	
-	public String loadQuality(String key, String qualifier) throws IOException {
+	public Map<String, String> getData(String qualifier) throws IOException {
+		if (qualifier == null) {
+			throw new IllegalArgumentException("Input cannot be null");
+		} else if (qualifier.isBlank()) {
+			throw new IllegalArgumentException("Qualifier cannot be blank");
+		}
+		
+		Map<String, String> data = new HashMap<>();
+		
+		try (DirectoryStream<Path> keys = Files.newDirectoryStream(storage_folder)) {
+			for (Path keyPath : keys) {
+				Path fileName = keyPath.resolve(qualifier);
+				if (Files.exists(fileName)) {
+					data.put(keyPath.getFileName().toString(), // Quality key
+							 Files.readString(fileName));      // Quality value
+				}
+			}
+		}
+		
+		return data;
+	}
+	
+	public String getValue(String key, String qualifier) throws IOException {
 		if (key == null || qualifier == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
 		}
