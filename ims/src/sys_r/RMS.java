@@ -4,14 +4,9 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-
-import information.types.Filename;
-import information.types.Filepath;
-import information.types.Filesize;
-import sys_d.Info;
+import java.util.Map;
 
 public final class RMS {
 	private final Path import_folder;
@@ -21,17 +16,16 @@ public final class RMS {
 		System.out.println("Successfully created the RMS");
 	}
 	
-	private List<Info> decomposeToInfo(Path input_file) throws IOException {
-		List<Info> infoList = new ArrayList<>();
+	private Map<String, String> decomposeToInfo(Path input_file) throws IOException {
+		Map<String, String> data = new HashMap<>();
 		
-		infoList.add(Filepath.from(input_file));
-		infoList.add(Filename.from(input_file.getFileName().toString()));
-		infoList.add(Filesize.from((Long) Files.getAttribute(input_file, "basic:size")));
-		
-		return infoList;
+		data.put("Filepath", input_file.toAbsolutePath().toString());
+		data.put("Filename", input_file.getFileName().toString());
+		data.put("Filesize", Long.toString((long) Files.getAttribute(input_file, "basic:size")));
+		return data;
 	}
 	
-	public List<Info> retrieveInfo() {
+	public Map<String, String> getData() {
 		try (DirectoryStream<Path> content = Files.newDirectoryStream(import_folder)) {
 			Iterator<Path> i = content.iterator();
 			if (i.hasNext()) {
