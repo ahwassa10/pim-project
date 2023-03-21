@@ -57,17 +57,7 @@ public final class IMS {
 		
 		UUID identity = UUID.randomUUID();
 		
-		return new FileEntity() {
-			public UUID getIdentity() {
-				return identity;
-			}
-			public String getFilename() {
-				return filename;
-			}
-			public long getFilesize() {
-				return filesize;
-			}
-		};
+		return new SimpleFileEntity(identity, filename, filesize);
 	}
 	
 	public String toString() {
