@@ -15,6 +15,25 @@ public final class DMS {
 		System.out.println("Successfully created the DMS");
 	}
 	
+	public String loadQuality(String key, String qualifier) throws IOException {
+		if (key == null || qualifier == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
+		}
+		if (key.isBlank() || qualifier.isBlank()) {
+			throw new IllegalArgumentException("Key and qualifier cannot be blank");
+		}
+		
+		Path keyPath = storage_folder.resolve(key);
+		if (!Files.exists(keyPath)) {
+			throw new IllegalArgumentException("Key does not exist");
+		}
+		Path fileName = keyPath.resolve(qualifier);
+		if (!Files.exists(fileName)) {
+			throw new IllegalArgumentException("Qualifier does not have this key");
+		}
+		return Files.readString(fileName);
+	}
+	
 	public void saveQuality(String key,
 							String qualifier,
 							String value) throws IOException {
