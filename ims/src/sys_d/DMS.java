@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public final class DMS {
 	private final Path storage_folder;
@@ -18,20 +19,19 @@ public final class DMS {
 		System.out.println("Successfully created the DMS");
 	}
 	
-	public Map<String, String> getData(String agent, String qualifier) throws IOException {
-		if (qualifier == null) {
-			throw new IllegalArgumentException("Input cannot be null");
-		} else if (qualifier.isBlank()) {
-			throw new IllegalArgumentException("Qualifier cannot be blank");
+	public Map<String, String> getData(String agent, String entity) throws IOException {
+		if (agent == null || entity == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
+		} else if (agent.isBlank() || entity.isBlank()) {
+			throw new IllegalArgumentException("Agent and entity cannot be blank");
 		}
 		
 		Map<String, String> data = new HashMap<>();
-		
 		Path agentPath = storage_folder.resolve(agent);
 		
 		try (DirectoryStream<Path> keys = Files.newDirectoryStream(agentPath)) {
 			for (Path keyPath : keys) {
-				Path fileName = keyPath.resolve(qualifier);
+				Path fileName = keyPath.resolve(entity);
 				if (Files.exists(fileName)) {
 					data.put(keyPath.getFileName().toString(), // Quality key
 							 Files.readString(fileName));      // Quality value
@@ -41,11 +41,28 @@ public final class DMS {
 		return data;
 	}
 	
-	public String getValue(String agent, String key, String qualifier) throws IOException {
-		if (agent == null || key == null || qualifier == null) {
+	public void saveData(String agent, String entity, Map<String, String> data) throws IOException {
+		if (agent == null || entity == null || data == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
+		} else if (agent.isBlank() || entity.isBlank()) {
+			throw new IllegalArgumentException("Agent and entity cannot be blank");
 		}
-		if (agent.isBlank() || key.isBlank() || qualifier.isBlank()) {
+		
+		Path agentPath = Files.createDirectories(storage_folder.resolve(agent));
+		for (Entry<String, String> dataEntry : data.entrySet()) {
+			String key = dataEntry.getKey();
+			String value = dataEntry.getValue();
+			
+			Path keyPath = Files.createDirectories(agentPath.resolve(key));
+			Path fileName = keyPath.resolve(entity);
+			Files.writeString(fileName, value);
+		}
+	}
+	
+	public String getQuality(String agent, String key, String entity) throws IOException {
+		if (agent == null || key == null || entity == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
+		} else if (agent.isBlank() || key.isBlank() || entity.isBlank()) {
 			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
 		}
 		
@@ -53,7 +70,7 @@ public final class DMS {
 		if (!Files.exists(keyPath)) {
 			throw new IllegalArgumentException("Agent/Key does not exist");
 		}
-		Path fileName = keyPath.resolve(qualifier);
+		Path fileName = keyPath.resolve(entity);
 		if (!Files.exists(fileName)) {
 			throw new IllegalArgumentException("Qualifier does not have this key");
 		}

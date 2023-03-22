@@ -4,7 +4,6 @@ import java.util.Map;
 
 import sys_d.DMS;
 import sys_d.DMSBuilder;
-import sys_d.Quality;
 import sys_i.FileEntity;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
@@ -23,12 +22,20 @@ public class Testing {
 		System.out.println(fe);
 		
 		try {
-			dms.saveQuality("User", "Name", "entity0", "Test");
-			dms.saveQuality("User", "Note", "entity0", "This is a note");
-			dms.saveQuality("User", "Random", "entity0", "134242452");
-			dms.saveQuality(Quality.from("User", "Name", "entity1", "Another name"));
+			dms.saveData("user", "entity0",
+					Map.of("Name", "Test name",
+						   "Note", "This is a note",
+						   "Random", "1234",
+						   "Key", "Value"));
 			
-			System.out.println(dms.getData("User", "entity2"));
+			dms.saveData("user", "entity1",
+					Map.of("Name", "Entity One",
+						   "Score", "123",
+						   "Random", "4321"));
+			
+			System.out.println(dms.getData("user", "entity0"));
+			System.out.println(dms.getData("user", "entity1"));
+			System.out.println(dms.getData("user", "entity2"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
