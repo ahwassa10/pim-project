@@ -9,14 +9,44 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public final class DMS {
-	private final Path storage_folder;
 	private final Path export_folder;
+	private final Path quality_folder;
+	private final Path substance_folder;
 	
-	DMS(Path sf_path, Path ef_path) {
-		this.storage_folder = sf_path;
+	DMS(Path ef_path, Path qf_path, Path sf_path) {
 		this.export_folder = ef_path;
+		this.quality_folder = qf_path;
+		this.substance_folder = sf_path;
 		
 		System.out.println("Successfully created the DMS");
+	}
+	
+	public Path getEntity(String entity) {
+		if (entity == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
+		} else if (entity.isBlank()) {
+			throw new IllegalArgumentException("Entity cannot be blank");
+		}
+		
+		Path test_path = substance_folder.resolve(entity);
+		if (!Files.exists(test_path)) {
+			throw new IllegalArgumentException("Entity does not exist");
+		}
+		return test_path;
+	}
+	
+	public void saveEntity(String entity, Path entitySubstance) throws IOException {
+		if (entity == null || entitySubstance == null) {
+			throw new IllegalArgumentException("Inputs cannot be null");
+		} else if (entity.isBlank()) {
+			throw new IllegalArgumentException("Entity cannot be blank");
+		} else if (!Files.exists(entitySubstance)) {
+			throw new IllegalArgumentException("Entity substance does not exist");
+		} else if (!Files.isRegularFile(entitySubstance)) {
+			throw new IllegalArgumentException("Entity substance is not in a regular file");
+		}
+		
+		Files.copy(entitySubstance, substance_folder.resolve(entity));
 	}
 	
 	public Map<String, String> getData(String agent, String entity) throws IOException {
@@ -27,7 +57,7 @@ public final class DMS {
 		}
 		
 		Map<String, String> data = new HashMap<>();
-		Path agentPath = storage_folder.resolve(agent);
+		Path agentPath = quality_folder.resolve(agent);
 		
 		try (DirectoryStream<Path> keys = Files.newDirectoryStream(agentPath)) {
 			for (Path keyPath : keys) {
@@ -48,7 +78,7 @@ public final class DMS {
 			throw new IllegalArgumentException("Agent and entity cannot be blank");
 		}
 		
-		Path agentPath = Files.createDirectories(storage_folder.resolve(agent));
+		Path agentPath = Files.createDirectories(quality_folder.resolve(agent));
 		for (Entry<String, String> dataEntry : data.entrySet()) {
 			String key = dataEntry.getKey();
 			String value = dataEntry.getValue();
@@ -66,7 +96,7 @@ public final class DMS {
 			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
 		}
 		
-		Path keyPath = storage_folder.resolve(agent).resolve(key);
+		Path keyPath = quality_folder.resolve(agent).resolve(key);
 		if (!Files.exists(keyPath)) {
 			throw new IllegalArgumentException("Agent/Key does not exist");
 		}
@@ -91,7 +121,7 @@ public final class DMS {
 		
 		// Creates the Agent and InfoType folders if they don't exist.
 		// Does nothing if the folders do exist.
-		Path keyPath = Files.createDirectories(storage_folder.resolve(agent).resolve(key));
+		Path keyPath = Files.createDirectories(quality_folder.resolve(agent).resolve(key));
 		
 		// The UUID of the entity becomes the fileName.
 		Path fileName = keyPath.resolve(entity);
@@ -106,7 +136,7 @@ public final class DMS {
 	}
 	
 	public String toString() {
-		return String.format("DMS<Storage Folder<%s>, Export Folder<%s>>",
-				storage_folder, export_folder);
+		return String.format("DMS<Export Folder<%s, Quality Folder<%s>, Substance Folder<%s>>",
+				export_folder, quality_folder, substance_folder);
 	}
 }
