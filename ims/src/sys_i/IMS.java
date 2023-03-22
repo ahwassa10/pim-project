@@ -7,14 +7,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import sys_d.DMS;
 import sys_i.types.Filename;
 import sys_i.types.Filepath;
 import sys_i.types.Filesize;
 
 public final class IMS {
+	private final DMS dms;
 	private final Path output_folder;
 	
-	IMS(Path of_folder) {
+	IMS(DMS dms, Path of_folder) {
+		this.dms = dms;
 		this.output_folder = of_folder;
 		System.out.println("Sucessfully created the IMS");
 	}
@@ -53,9 +56,18 @@ public final class IMS {
 			throw new IllegalArgumentException("Invalid filesize value");
 		}
 		
-		moveToOutputFolder(Path.of(filepath));
-		
 		UUID identity = UUID.randomUUID();
+		try {
+			Path substancePath = dms.saveEntity(identity.toString(), Path.of(filepath));
+			data.put("Filepath", substancePath.toString());
+			System.out.println(data);
+			dms.saveData("FS", identity.toString(), data);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		moveToOutputFolder(Path.of(filepath));
 		
 		return new SimpleFileEntity(identity, filename, Long.parseLong(filesize));
 	}

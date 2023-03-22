@@ -35,7 +35,7 @@ public final class DMS {
 		return test_path;
 	}
 	
-	public void saveEntity(String entity, Path entitySubstance) throws IOException {
+	public Path saveEntity(String entity, Path entitySubstance) throws IOException {
 		if (entity == null || entitySubstance == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
 		} else if (entity.isBlank()) {
@@ -46,7 +46,9 @@ public final class DMS {
 			throw new IllegalArgumentException("Entity substance is not in a regular file");
 		}
 		
-		Files.copy(entitySubstance, substance_folder.resolve(entity));
+		Path substancePath = substance_folder.resolve(entity);
+		Files.copy(entitySubstance, substancePath);
+		return substancePath;
 	}
 	
 	public Map<String, String> getData(String agent, String entity) throws IOException {
