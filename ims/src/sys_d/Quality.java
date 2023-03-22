@@ -1,17 +1,19 @@
 package sys_d;
 
 public interface Quality {
-	static Quality from(String key, String qualifier, String value) {
-		return new SimpleQuality(key, qualifier, value);
+	static Quality from(String agent, String key, String entity, String value) {
+		return new SimpleQuality(agent, key, entity, value);
 	}
 	
 	default boolean equalTo(Quality other) {
-		return getKey().equals(other.getKey()) &&
-			   getQualifier().equals(other.getQualifier()) &&
+		return getAgent().equals(other.getAgent()) &&
+			   getKey().equals(other.getKey()) &&
+			   getEntity().equals(other.getEntity()) &&
 			   getValue().equals(other.getValue());
 	}
 	
+	public String getAgent();
 	public String getKey();
-	public String getQualifier();
+	public String getEntity();
 	public String getValue();
 }

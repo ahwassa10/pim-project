@@ -18,7 +18,7 @@ public final class DMS {
 		System.out.println("Successfully created the DMS");
 	}
 	
-	public Map<String, String> getData(String qualifier) throws IOException {
+	public Map<String, String> getData(String agent, String qualifier) throws IOException {
 		if (qualifier == null) {
 			throw new IllegalArgumentException("Input cannot be null");
 		} else if (qualifier.isBlank()) {
@@ -27,7 +27,9 @@ public final class DMS {
 		
 		Map<String, String> data = new HashMap<>();
 		
-		try (DirectoryStream<Path> keys = Files.newDirectoryStream(storage_folder)) {
+		Path agentPath = storage_folder.resolve(agent);
+		
+		try (DirectoryStream<Path> keys = Files.newDirectoryStream(agentPath)) {
 			for (Path keyPath : keys) {
 				Path fileName = keyPath.resolve(qualifier);
 				if (Files.exists(fileName)) {
@@ -36,21 +38,20 @@ public final class DMS {
 				}
 			}
 		}
-		
 		return data;
 	}
 	
-	public String getValue(String key, String qualifier) throws IOException {
-		if (key == null || qualifier == null) {
+	public String getValue(String agent, String key, String qualifier) throws IOException {
+		if (agent == null || key == null || qualifier == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
 		}
-		if (key.isBlank() || qualifier.isBlank()) {
-			throw new IllegalArgumentException("Key and qualifier cannot be blank");
+		if (agent.isBlank() || key.isBlank() || qualifier.isBlank()) {
+			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
 		}
 		
-		Path keyPath = storage_folder.resolve(key);
+		Path keyPath = storage_folder.resolve(agent).resolve(key);
 		if (!Files.exists(keyPath)) {
-			throw new IllegalArgumentException("Key does not exist");
+			throw new IllegalArgumentException("Agent/Key does not exist");
 		}
 		Path fileName = keyPath.resolve(qualifier);
 		if (!Files.exists(fileName)) {
@@ -59,23 +60,24 @@ public final class DMS {
 		return Files.readString(fileName);
 	}
 	
-	public void saveQuality(String key,
-							String qualifier,
+	public void saveQuality(String agent,
+							String key,
+							String entity,
 							String value) throws IOException {
 		
-		if (key == null || qualifier == null || value == null) {
+		if (agent == null || key == null || entity == null || value == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
 		}
-		if (key.isBlank() || qualifier.isBlank()) {
-			throw new IllegalArgumentException("Key and qualifier cannot be blank");
+		if (agent.isBlank() || key.isBlank() || entity.isBlank()) {
+			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
 		}
 		
-		// Creates the InfoType folder if it doesn't exist.
-		// Does nothing if the folder does exist.
-		Path keyPath = Files.createDirectories(storage_folder.resolve(key));
+		// Creates the Agent and InfoType folders if they don't exist.
+		// Does nothing if the folders do exist.
+		Path keyPath = Files.createDirectories(storage_folder.resolve(agent).resolve(key));
 		
 		// The UUID of the entity becomes the fileName.
-		Path fileName = keyPath.resolve(qualifier);
+		Path fileName = keyPath.resolve(entity);
 		
 		// Creates the file (if it doesn't exist) and writes the string
 		// to the file, truncating the file if it already has data in it.
@@ -83,7 +85,7 @@ public final class DMS {
 	}
 	
 	public void saveQuality(Quality q) throws IOException {
-		saveQuality(q.getKey(), q.getQualifier(), q.getValue());
+		saveQuality(q.getAgent(), q.getKey(), q.getEntity(), q.getValue());
 	}
 	
 	public String toString() {

@@ -1,22 +1,28 @@
 package sys_d;
 
 final class SimpleQuality implements Quality {
+	private final String agent;
 	private final String key;
-	private final String qualifier;
+	private final String entity;
 	private final String value;
 	
-	SimpleQuality(String key, String qualifier, String value) {
+	SimpleQuality(String agent, String key, String entity, String value) {
+		this.agent = agent;
 		this.key = key;
-		this.qualifier = qualifier;
+		this.entity = entity;
 		this.value = value;
+	}
+	
+	public String getAgent() {
+		return agent;
 	}
 	
 	public String getKey() {
 		return key;
 	}
 	
-	public String getQualifier() {
-		return qualifier;
+	public String getEntity() {
+		return entity;
 	}
 	
 	public String getValue() {
@@ -24,7 +30,7 @@ final class SimpleQuality implements Quality {
 	}
 	
 	public String toString() {
-		return String.format("Quality<Key: %s, Qualifier: %s, Value: %s>",
-				key, qualifier, value);
+		return String.format("Quality<Agent: %s, Key: %s, Entity: %s, Value: %s>",
+				agent, key, entity, value);
 	}
 }
