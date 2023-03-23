@@ -1,9 +1,14 @@
 package sys_i;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,6 +38,22 @@ public final class IMS {
 			return input_file;
 		}
 		return output_file;
+	}
+	
+	public static String calculateHash(Path file) throws IOException, NoSuchAlgorithmException {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		
+		try (ByteChannel byteChannel = Files.newByteChannel(file)) {
+			ByteBuffer buffer = ByteBuffer.allocate(8192);
+			while (byteChannel.read(buffer) != -1) {
+				buffer.flip();
+				digest.update(buffer);
+				buffer.clear();
+			}
+		}
+		byte[] hash = digest.digest();
+		
+		return HexFormat.of().withUpperCase().formatHex(hash);
 	}
 	
 	public FileEntity createFileEntity(Map<String, String> data) {
