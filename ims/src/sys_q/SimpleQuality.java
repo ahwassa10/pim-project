@@ -1,4 +1,4 @@
-package sys_d;
+package sys_q;
 
 final class SimpleQuality implements Quality {
 	private final String agent;

@@ -7,16 +7,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import sys_d.DMS;
 import sys_i.types.Filename;
 import sys_i.types.Filepath;
 import sys_i.types.Filesize;
+import sys_q.QMS;
 
 public final class IMS {
-	private final DMS dms;
+	private final QMS dms;
 	private final Path output_folder;
 	
-	IMS(DMS dms, Path of_folder) {
+	IMS(QMS dms, Path of_folder) {
 		this.dms = dms;
 		this.output_folder = of_folder;
 		System.out.println("Sucessfully created the IMS");

@@ -3,23 +3,23 @@ package sys_i;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import sys_d.DMS;
-import sys_d.DMSBuilder;
+import sys_q.QMS;
+import sys_q.QMSBuilder;
 
 public class IMSBuilder {
-	private DMS dms;
+	private QMS dms;
 	private Path output_folder;
 	
 	public IMSBuilder() {}
 	
 	public static IMS test_ims() {
 		return new IMSBuilder()
-				.setDMS(DMSBuilder.test_dms())
+				.setDMS(QMSBuilder.test_qms())
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
 				.build();
 	}
 	
-	public IMSBuilder setDMS(DMS dms) {
+	public IMSBuilder setDMS(QMS dms) {
 		if (dms == null) {
 			throw new IllegalArgumentException("DMS cannot be null");
 		}
@@ -43,7 +43,7 @@ public class IMSBuilder {
 	
 	public IMS build() {
 		if (dms == null) {
-			throw new IllegalStateException("DMS object not specified");
+			throw new IllegalStateException("QMS object not specified");
 		} else if (output_folder == null) {
 			throw new IllegalStateException("Output folder path not specified");
 		}

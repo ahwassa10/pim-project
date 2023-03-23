@@ -1,4 +1,4 @@
-package sys_d;
+package sys_q;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -8,17 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public final class DMS {
+public final class QMS {
 	private final Path export_folder;
 	private final Path quality_folder;
 	private final Path substance_folder;
 	
-	DMS(Path ef_path, Path qf_path, Path sf_path) {
+	QMS(Path ef_path, Path qf_path, Path sf_path) {
 		this.export_folder = ef_path;
 		this.quality_folder = qf_path;
 		this.substance_folder = sf_path;
 		
-		System.out.println("Successfully created the DMS");
+		System.out.println("Successfully created the QMS");
 	}
 	
 	public Path getEntity(String entity) {
@@ -138,7 +138,7 @@ public final class DMS {
 	}
 	
 	public String toString() {
-		return String.format("DMS<Export Folder<%s, Quality Folder<%s>, Substance Folder<%s>>",
+		return String.format("QMS<Export Folder<%s, Quality Folder<%s>, Substance Folder<%s>>",
 				export_folder, quality_folder, substance_folder);
 	}
 }

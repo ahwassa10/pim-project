@@ -1,33 +1,33 @@
-package sys_d;
+package sys_q;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class DMSBuilder {
+public class QMSBuilder {
 	private Path export_folder;
 	private Path quality_folder;
 	private Path substance_folder;
 	
-	public DMSBuilder() {}
+	public QMSBuilder() {}
 	
-	public static DMS test_dms() {
-		return new DMSBuilder()
+	public static QMS test_qms() {
+		return new QMSBuilder()
 				.setExportFolder("C:\\Users\\Primary\\Desktop\\export")
 				.setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
 				.setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
 				.build();
 	}
 	
-	public DMS build() {
+	public QMS build() {
 		if (quality_folder == null) {
 			throw new IllegalStateException("Quality folder path not specified");
 		} else if (export_folder == null) {
 			throw new IllegalStateException("Output folder path not specified");
 		}
-		return new DMS(export_folder, quality_folder, substance_folder);
+		return new QMS(export_folder, quality_folder, substance_folder);
 	}
 	
-	public DMSBuilder setExportFolder(String pathname) {
+	public QMSBuilder setExportFolder(String pathname) {
 		if (pathname == null) {
 			throw new IllegalArgumentException("Export folder path cannot be null");
 		}
@@ -41,7 +41,7 @@ public class DMSBuilder {
 		return this;	
 	}
 	
-	public DMSBuilder setQualityFolder(String pathname) {
+	public QMSBuilder setQualityFolder(String pathname) {
 		if (pathname == null) {
 			throw new IllegalArgumentException("Quality folder path cannot be null");
 		}
@@ -55,7 +55,7 @@ public class DMSBuilder {
 		return this;
 	}
 	
-	public DMSBuilder setSubstanceFolder(String pathname) {
+	public QMSBuilder setSubstanceFolder(String pathname) {
 		if (pathname == null) {
 			throw new IllegalArgumentException("Substance folder path cannot be null");
 		}
