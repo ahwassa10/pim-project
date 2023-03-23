@@ -3,18 +3,18 @@ package sys_i;
 import java.util.UUID;
 
 final class SimpleFileEntity implements FileEntity {
-	private final UUID identity;
+	private final SystemEntity systemEntity;
 	private final String filename;
 	private final long filesize;
 	
-	SimpleFileEntity(UUID identity, String filename, long filesize) {
-		this.identity = identity;
+	SimpleFileEntity(SystemEntity systemEntity, String filename, long filesize) {
+		this.systemEntity = systemEntity;
 		this.filename = filename;
 		this.filesize = filesize;
 	}
 	
 	public UUID getIdentity() {
-		return identity;
+		return systemEntity.getIdentity();
 	}
 	
 	public String getFilename() {
@@ -26,7 +26,7 @@ final class SimpleFileEntity implements FileEntity {
 	}
 	
 	public String toString() {
-		return String.format("FileEntity<Identity:%s, Filename:%s, Filesize:%d>",
-				identity.toString(), filename, filesize);
+		return String.format("FileEntity<%s, Filename<%s>, Filesize<%d>>",
+				systemEntity, filename, filesize);
 	}
 }

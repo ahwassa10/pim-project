@@ -3,8 +3,8 @@ package sys_i;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import sys_i.types.Filename;
@@ -36,7 +36,9 @@ public final class IMS {
 	}
 	
 	public FileEntity createFileEntity(Map<String, String> data) {
-		Objects.requireNonNull(data, "Input data cannot be null");
+		if (data == null) {
+			throw new IllegalArgumentException("Input data cannot be null");
+		}
 		
 		if (!data.containsKey("Filename")) {
 			throw new IllegalArgumentException("Data does not contain Filename attribute");
@@ -58,23 +60,38 @@ public final class IMS {
 			throw new IllegalArgumentException("Invalid filesize value");
 		}
 		
-		UUID identity = UUID.randomUUID();
-		data.put("Identity", identity.toString());
+		SystemEntity systemEntity = createSystemEntity();
+		String identity = systemEntity.getIdentity().toString();
 		try {
 			Path sourcePath = Path.of(filepath);
-			Path substancePath = substance_folder.resolve(identity.toString());
+			Path substancePath = substance_folder.resolve(identity);
 			Files.copy(sourcePath, substancePath);
 	
 			data.put("Filepath", substancePath.toString());
-			dms.saveData("FileSystem", identity.toString(), data);
-			
+			dms.saveData("FileSystem", identity, data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		moveToOutputFolder(Path.of(filepath));
 		
-		return new SimpleFileEntity(identity, filename, Long.parseLong(filesize));
+		return new SimpleFileEntity(systemEntity, filename, Long.parseLong(filesize));
+	}
+	
+	public SystemEntity createSystemEntity() {
+		Map<String, String> data = new HashMap<>();
+		UUID uuid = UUID.randomUUID();
+		String identity = uuid.toString();
+		
+		data.put("Identity", identity);
+		
+		try {
+			dms.saveData("System", identity, data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return new SimpleSystemEntity(uuid);
 	}
 	
 	public String toString() {
