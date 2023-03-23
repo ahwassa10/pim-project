@@ -1,14 +1,9 @@
 package sys_i;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.HexFormat;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,8 +11,9 @@ import sys_i.types.Filename;
 import sys_i.types.Filepath;
 import sys_i.types.Filesize;
 import sys_q.QMS;
+import util.Hashing;
 
-public final class IMS {
+public final class IMS {	
 	private final QMS dms;
 	private final Path output_folder;
 	private final Path substance_folder;
@@ -40,20 +36,55 @@ public final class IMS {
 		return output_file;
 	}
 	
-	public static String calculateHash(Path file) throws IOException, NoSuchAlgorithmException {
-		MessageDigest digest = MessageDigest.getInstance("SHA-256");
-		
-		try (ByteChannel byteChannel = Files.newByteChannel(file)) {
-			ByteBuffer buffer = ByteBuffer.allocate(8192);
-			while (byteChannel.read(buffer) != -1) {
-				buffer.flip();
-				digest.update(buffer);
-				buffer.clear();
-			}
+	public void importFileData(Map<String, String> data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Input data cannot be null");
 		}
-		byte[] hash = digest.digest();
 		
-		return HexFormat.of().withUpperCase().formatHex(hash);
+		// Note that if the map does not contain a key, the get method will return
+		// null. This is okay because the isValid... methods return false for null.
+		String filename = data.get("Filename");
+		String filepath = data.get("Filepath");
+		String filesize = data.get("Filesize");
+		
+		if (!Filename.isValidFilename(filename)) {
+			throw new IllegalArgumentException("Data does not contain valid filename");
+		} else if (!Filepath.isValidFilepath(filepath)) {
+			throw new IllegalArgumentException("Data does not contain valid filepath");
+		} else if (!Filesize.isValidFilesize(filesize)) {
+			throw new IllegalArgumentException("Data does not contain valid filesize");
+		}
+		
+		Path sourceFile = Path.of(filepath);
+		Path tempFile = substance_folder.resolve("temp");
+		String hash = "";
+		try {
+			hash = Hashing.hashStringAndCopy(sourceFile, tempFile);
+			Path destFile = substance_folder.resolve(hash);
+			
+			if (Files.exists(destFile)) {
+				// The case where the substance is a duplicate
+				Files.delete(tempFile);
+			} else {
+				Files.move(tempFile, substance_folder.resolve(hash));
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		String identity = UUID.randomUUID().toString();
+		
+		try {
+			dms.saveQuality("System",     "Identity",  identity, "");
+			dms.saveQuality("System",     "Substance", identity, hash);
+			dms.saveQuality("FileSystem", "Filename",  identity, filename);
+			dms.saveQuality("FileSystem", "Filesize",  identity, filesize);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public FileEntity createFileEntity(Map<String, String> data) {

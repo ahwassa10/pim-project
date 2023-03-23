@@ -2,7 +2,6 @@ package program;
 
 import java.util.Map;
 
-import sys_i.FileEntity;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
 import sys_q.QMS;
@@ -18,8 +17,7 @@ public class Testing {
 		
 		Map<String, String> data = rms.getData();
 		System.out.println(data);
-		FileEntity fe = ims.createFileEntity(data);
-		System.out.println(fe);
+		ims.importFileData(data);
 		
 		try {
 			qms.saveData("user", "entity0",
