@@ -30,7 +30,7 @@ public class RMSBuilder {
 	
 	public RMS build() {
 		if (import_folder == null) {
-			throw new IllegalStateException("Import folder path not specified");
+			throw new IllegalStateException("Import folder not specified");
 		}
 		return new RMS(import_folder);
 	}

@@ -52,6 +52,6 @@ public final class RMS {
 	}
 	
 	public String toString() {
-		return String.format("RMS<Import Folder<%s>", import_folder);
+		return String.format("RMS<Import Folder<%s>>", import_folder);
 	}
 }

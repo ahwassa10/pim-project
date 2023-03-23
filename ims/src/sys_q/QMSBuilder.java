@@ -6,7 +6,6 @@ import java.nio.file.Path;
 public class QMSBuilder {
 	private Path export_folder;
 	private Path quality_folder;
-	private Path substance_folder;
 	
 	public QMSBuilder() {}
 	
@@ -14,17 +13,16 @@ public class QMSBuilder {
 		return new QMSBuilder()
 				.setExportFolder("C:\\Users\\Primary\\Desktop\\export")
 				.setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
-				.setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
 				.build();
 	}
 	
 	public QMS build() {
 		if (quality_folder == null) {
-			throw new IllegalStateException("Quality folder path not specified");
+			throw new IllegalStateException("Quality folder not specified");
 		} else if (export_folder == null) {
-			throw new IllegalStateException("Output folder path not specified");
+			throw new IllegalStateException("Output folder not specified");
 		}
-		return new QMS(export_folder, quality_folder, substance_folder);
+		return new QMS(export_folder, quality_folder);
 	}
 	
 	public QMSBuilder setExportFolder(String pathname) {
@@ -52,20 +50,6 @@ public class QMSBuilder {
 			throw new IllegalArgumentException("Storage folder path is not a directory");
 		}
 		this.quality_folder = test_path;
-		return this;
-	}
-	
-	public QMSBuilder setSubstanceFolder(String pathname) {
-		if (pathname == null) {
-			throw new IllegalArgumentException("Substance folder path cannot be null");
-		}
-		Path test_path = Path.of(pathname);
-		if (!Files.exists(test_path)) {
-			throw new IllegalArgumentException("Substance folder does not exist");
-		} else if (!Files.isDirectory(test_path)) {
-			throw new IllegalArgumentException("Substance folder path is not a directory");
-		}
-		this.substance_folder = test_path;
 		return this;
 	}
 }

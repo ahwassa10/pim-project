@@ -15,10 +15,12 @@ import sys_q.QMS;
 public final class IMS {
 	private final QMS dms;
 	private final Path output_folder;
+	private final Path substance_folder;
 	
-	IMS(QMS dms, Path of_folder) {
+	IMS(QMS dms, Path of_folder, Path sf_folder) {
 		this.dms = dms;
 		this.output_folder = of_folder;
+		this.substance_folder = sf_folder;
 		System.out.println("Sucessfully created the IMS");
 	}
 	
@@ -57,11 +59,14 @@ public final class IMS {
 		}
 		
 		UUID identity = UUID.randomUUID();
+		data.put("Identity", identity.toString());
 		try {
-			Path substancePath = dms.saveEntity(identity.toString(), Path.of(filepath));
+			Path sourcePath = Path.of(filepath);
+			Path substancePath = substance_folder.resolve(identity.toString());
+			Files.copy(sourcePath, substancePath);
+	
 			data.put("Filepath", substancePath.toString());
-			System.out.println(data);
-			dms.saveData("FS", identity.toString(), data);
+			dms.saveData("FileSystem", identity.toString(), data);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,6 +78,7 @@ public final class IMS {
 	}
 	
 	public String toString() {
-		return String.format("IMS<Output Folder<%s>", output_folder);
+		return String.format("IMS<Output Folder<%>, Substance Folder<%s>>",
+				output_folder, substance_folder);
 	}
 }

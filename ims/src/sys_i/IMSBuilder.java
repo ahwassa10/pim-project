@@ -9,6 +9,7 @@ import sys_q.QMSBuilder;
 public class IMSBuilder {
 	private QMS dms;
 	private Path output_folder;
+	private Path substance_folder;
 	
 	public IMSBuilder() {}
 	
@@ -16,7 +17,19 @@ public class IMSBuilder {
 		return new IMSBuilder()
 				.setDMS(QMSBuilder.test_qms())
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
+				.setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
 				.build();
+	}
+	
+	public IMS build() {
+		if (dms == null) {
+			throw new IllegalStateException("QMS object not specified");
+		} else if (output_folder == null) {
+			throw new IllegalStateException("Output folder not specified");
+		} else if (substance_folder == null) {
+			throw new IllegalStateException("Substance folder not specified");
+		}
+		return new IMS(dms, output_folder, substance_folder);
 	}
 	
 	public IMSBuilder setDMS(QMS dms) {
@@ -41,12 +54,17 @@ public class IMSBuilder {
 		return this;	
 	}
 	
-	public IMS build() {
-		if (dms == null) {
-			throw new IllegalStateException("QMS object not specified");
-		} else if (output_folder == null) {
-			throw new IllegalStateException("Output folder path not specified");
+	public IMSBuilder setSubstanceFolder(String pathname) {
+		if (pathname == null) {
+			throw new IllegalArgumentException("Substance folder path cannot be null");
 		}
-		return new IMS(dms, output_folder);
+		Path test_path = Path.of(pathname);
+		if (!Files.exists(test_path)) {
+			throw new IllegalArgumentException("Substance folder does not exist");
+		} else if (!Files.isDirectory(test_path)) {
+			throw new IllegalArgumentException("Substance folder path is not a directory");
+		}
+		this.substance_folder = test_path;
+		return this;
 	}
 }

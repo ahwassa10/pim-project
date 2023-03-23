@@ -11,44 +11,12 @@ import java.util.Map.Entry;
 public final class QMS {
 	private final Path export_folder;
 	private final Path quality_folder;
-	private final Path substance_folder;
 	
-	QMS(Path ef_path, Path qf_path, Path sf_path) {
+	QMS(Path ef_path, Path qf_path) {
 		this.export_folder = ef_path;
 		this.quality_folder = qf_path;
-		this.substance_folder = sf_path;
 		
 		System.out.println("Successfully created the QMS");
-	}
-	
-	public Path getEntity(String entity) {
-		if (entity == null) {
-			throw new IllegalArgumentException("Inputs cannot be null");
-		} else if (entity.isBlank()) {
-			throw new IllegalArgumentException("Entity cannot be blank");
-		}
-		
-		Path test_path = substance_folder.resolve(entity);
-		if (!Files.exists(test_path)) {
-			throw new IllegalArgumentException("Entity does not exist");
-		}
-		return test_path;
-	}
-	
-	public Path saveEntity(String entity, Path entitySubstance) throws IOException {
-		if (entity == null || entitySubstance == null) {
-			throw new IllegalArgumentException("Inputs cannot be null");
-		} else if (entity.isBlank()) {
-			throw new IllegalArgumentException("Entity cannot be blank");
-		} else if (!Files.exists(entitySubstance)) {
-			throw new IllegalArgumentException("Entity substance does not exist");
-		} else if (!Files.isRegularFile(entitySubstance)) {
-			throw new IllegalArgumentException("Entity substance is not in a regular file");
-		}
-		
-		Path substancePath = substance_folder.resolve(entity);
-		Files.copy(entitySubstance, substancePath);
-		return substancePath;
 	}
 	
 	public Map<String, String> getData(String agent, String entity) throws IOException {
@@ -138,7 +106,7 @@ public final class QMS {
 	}
 	
 	public String toString() {
-		return String.format("QMS<Export Folder<%s, Quality Folder<%s>, Substance Folder<%s>>",
-				export_folder, quality_folder, substance_folder);
+		return String.format("QMS<Export Folder<%s>, Quality Folder<%s>>",
+				export_folder, quality_folder);
 	}
 }
