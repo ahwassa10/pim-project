@@ -25,6 +25,16 @@ public final class IMS {
 		System.out.println("Sucessfully created the IMS");
 	}
 	
+	public void validateFileData(String filename, String filepath, String filesize) {
+		if (!Filename.isValidFilename(filename)) {
+			throw new IllegalArgumentException("Data does not contain valid filename");
+		} else if (!Filepath.isValidFilepath(filepath)) {
+			throw new IllegalArgumentException("Data does not contain valid filepath");
+		} else if (!Filesize.isValidFilesize(filesize)) {
+			throw new IllegalArgumentException("Data does not contain valid filesize");
+		}
+	}
+	
 	public void importFileData(Map<String, String> data) {
 		if (data == null) {
 			throw new IllegalArgumentException("Input data cannot be null");
@@ -36,13 +46,7 @@ public final class IMS {
 		String filepath = data.get("Filepath");
 		String filesize = data.get("Filesize");
 		
-		if (!Filename.isValidFilename(filename)) {
-			throw new IllegalArgumentException("Data does not contain valid filename");
-		} else if (!Filepath.isValidFilepath(filepath)) {
-			throw new IllegalArgumentException("Data does not contain valid filepath");
-		} else if (!Filesize.isValidFilesize(filesize)) {
-			throw new IllegalArgumentException("Data does not contain valid filesize");
-		}
+		validateFileData(filename, filepath, filesize);
 		
 		Path importFile = Path.of(filepath);
 		Path tempFile = substance_folder.resolve("temp");
