@@ -14,12 +14,12 @@ import sys_q.QMS;
 import util.Hashing;
 
 public final class IMS {	
-	private final QMS dms;
+	private final QMS qms;
 	private final Path output_folder;
 	private final Path substance_folder;
 	
-	IMS(QMS dms, Path of_folder, Path sf_folder) {
-		this.dms = dms;
+	IMS(QMS qms, Path of_folder, Path sf_folder) {
+		this.qms = qms;
 		this.output_folder = of_folder;
 		this.substance_folder = sf_folder;
 		System.out.println("Sucessfully created the IMS");
@@ -60,10 +60,10 @@ public final class IMS {
 			}
 			
 			String identity = UUID.randomUUID().toString();
-			dms.saveQuality("System",     "Identity",  identity, "");
-			dms.saveQuality("System",     "Substance", identity, hash);
-			dms.saveQuality("FileSystem", "Filename",  identity, filename);
-			dms.saveQuality("FileSystem", "Filesize",  identity, filesize);
+			qms.saveQuality("System",     "Identity",  identity, "");
+			qms.saveQuality("System",     "Substance", identity, hash);
+			qms.saveQuality("FileSystem", "Filename",  identity, filename);
+			qms.saveQuality("FileSystem", "Filesize",  identity, filesize);
 			
 			Path outputFile = output_folder.resolve(filename);
 			Files.move(importFile, outputFile);
@@ -80,7 +80,7 @@ public final class IMS {
 		data.put("Identity", identity);
 		
 		try {
-			dms.saveData("System", identity, data);
+			qms.saveData("System", identity, data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
