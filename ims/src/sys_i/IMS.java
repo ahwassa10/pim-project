@@ -25,17 +25,6 @@ public final class IMS {
 		System.out.println("Sucessfully created the IMS");
 	}
 	
-	private Path moveToOutputFolder(Path input_file) {
-		Path output_file = output_folder.resolve(input_file.getFileName());
-		try {
-			Files.move(input_file, output_file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return input_file;
-		}
-		return output_file;
-	}
-	
 	public void importFileData(Map<String, String> data) {
 		if (data == null) {
 			throw new IllegalArgumentException("Input data cannot be null");
@@ -55,18 +44,20 @@ public final class IMS {
 			throw new IllegalArgumentException("Data does not contain valid filesize");
 		}
 		
-		Path sourceFile = Path.of(filepath);
+		Path importFile = Path.of(filepath);
 		Path tempFile = substance_folder.resolve("temp");
 		String hash = "";
 		try {
-			hash = Hashing.hashStringAndCopy(sourceFile, tempFile);
-			Path destFile = substance_folder.resolve(hash);
+			hash = Hashing.hashStringAndCopy(importFile, tempFile);
+			Path substanceFile = substance_folder.resolve(hash);
 			
-			if (Files.exists(destFile)) {
+			if (Files.exists(substanceFile)) {
 				// The case where the substance is a duplicate
 				Files.delete(tempFile);
 			} else {
-				Files.move(tempFile, substance_folder.resolve(hash));
+				// Rename the tempFile from "temp" to the string representation
+				// of the hash.
+				Files.move(tempFile, substanceFile);
 			}
 			
 		} catch (IOException e) {
@@ -75,59 +66,17 @@ public final class IMS {
 		}
 		
 		String identity = UUID.randomUUID().toString();
-		
 		try {
 			dms.saveQuality("System",     "Identity",  identity, "");
 			dms.saveQuality("System",     "Substance", identity, hash);
 			dms.saveQuality("FileSystem", "Filename",  identity, filename);
 			dms.saveQuality("FileSystem", "Filesize",  identity, filesize);
 			
+			Path outputFile = output_folder.resolve(filename);
+			Files.move(importFile, outputFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public FileEntity createFileEntity(Map<String, String> data) {
-		if (data == null) {
-			throw new IllegalArgumentException("Input data cannot be null");
-		}
-		
-		if (!data.containsKey("Filename")) {
-			throw new IllegalArgumentException("Data does not contain Filename attribute");
-		} else if (!data.containsKey("Filepath")) {
-			throw new IllegalArgumentException("Data does not contain Filepath attribute");
-		} else if (!data.containsKey("Filesize")) {
-			throw new IllegalArgumentException("Data does not contain Filesize attribute");
-		}
-		
-		String filename = data.get("Filename");
-		String filepath = data.get("Filepath");
-		String filesize = data.get("Filesize");
-		
-		if (!Filename.isValidFilename(filename)) {
-			throw new IllegalArgumentException("Invalid filename value");
-		} else if (!Filepath.isValidFilepath(filepath)) {
-			throw new IllegalArgumentException("Invalid filepath value");
-		} else if (!Filesize.isValidFilesize(filesize)) {
-			throw new IllegalArgumentException("Invalid filesize value");
-		}
-		
-		SystemEntity systemEntity = createSystemEntity();
-		String identity = systemEntity.getIdentity().toString();
-		try {
-			Path sourcePath = Path.of(filepath);
-			Path substancePath = substance_folder.resolve(identity);
-			Files.copy(sourcePath, substancePath);
-	
-			data.put("Filepath", substancePath.toString());
-			dms.saveData("FileSystem", identity, data);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		moveToOutputFolder(Path.of(filepath));
-		
-		return new SimpleFileEntity(systemEntity, filename, Long.parseLong(filesize));
 	}
 	
 	public SystemEntity createSystemEntity() {
