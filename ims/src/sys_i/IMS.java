@@ -46,9 +46,8 @@ public final class IMS {
 		
 		Path importFile = Path.of(filepath);
 		Path tempFile = substance_folder.resolve("temp");
-		String hash = "";
 		try {
-			hash = Hashing.hashStringAndCopy(importFile, tempFile);
+			String hash = Hashing.hashStringAndCopy(importFile, tempFile);
 			Path substanceFile = substance_folder.resolve(hash);
 			
 			if (Files.exists(substanceFile)) {
@@ -60,13 +59,7 @@ public final class IMS {
 				Files.move(tempFile, substanceFile);
 			}
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		String identity = UUID.randomUUID().toString();
-		try {
+			String identity = UUID.randomUUID().toString();
 			dms.saveQuality("System",     "Identity",  identity, "");
 			dms.saveQuality("System",     "Substance", identity, hash);
 			dms.saveQuality("FileSystem", "Filename",  identity, filename);
