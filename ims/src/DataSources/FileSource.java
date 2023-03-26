@@ -1,4 +1,4 @@
-package sys_r;
+package DataSources;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public final class RMS {
+public final class FileSource implements DataSource {
 	private final Path import_folder;
 	
-	RMS(Path if_path) {
+	FileSource(Path if_path) {
 		this.import_folder = if_path;
-		System.out.println("Successfully created the RMS");
+		System.out.println("Successfully created a FileSource");
 	}
 	
 	private Map<String, String> decomposeToInfo(Path input_file) throws IOException {
@@ -52,6 +52,6 @@ public final class RMS {
 	}
 	
 	public String toString() {
-		return String.format("RMS<Import Folder<%s>>", import_folder);
+		return String.format("FileSource<Import Folder<%s>>", import_folder);
 	}
 }

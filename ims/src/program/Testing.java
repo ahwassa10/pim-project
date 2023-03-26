@@ -2,20 +2,20 @@ package program;
 
 import java.util.Map;
 
+import DataSources.FileSource;
+import DataSources.FileSourceBuilder;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
 import sys_q.QMS;
 import sys_q.QMSBuilder;
-import sys_r.RMS;
-import sys_r.RMSBuilder;
 
 public class Testing {
 	public static void main(String[] args) {
 		QMS qms = QMSBuilder.test_qms();
 		IMS ims = IMSBuilder.test_ims();
-		RMS rms = RMSBuilder.test_rms();
+		FileSource fs = FileSourceBuilder.test_rms();
 		
-		Map<String, String> data = rms.getData();
+		Map<String, String> data = fs.getData();
 		System.out.println(data);
 		ims.importFileData(data);
 		

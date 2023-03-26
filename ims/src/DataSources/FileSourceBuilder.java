@@ -1,20 +1,20 @@
-package sys_r;
+package DataSources;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class RMSBuilder {
+public class FileSourceBuilder {
 	private Path import_folder;
 	
-	public RMSBuilder() {}
+	public FileSourceBuilder() {}
 	
-	public static RMS test_rms() {
-		return new RMSBuilder()
+	public static FileSource test_rms() {
+		return new FileSourceBuilder()
 				.setImportFolder("C:\\Users\\Primary\\Desktop\\import")
 				.build();
 	}
 	
-	public RMSBuilder setImportFolder(String pathname) {
+	public FileSourceBuilder setImportFolder(String pathname) {
 		if (pathname == null) {
 			throw new IllegalArgumentException("Import folder path cannot be null");
 		}
@@ -28,10 +28,10 @@ public class RMSBuilder {
 		return this;
 	}
 	
-	public RMS build() {
+	public FileSource build() {
 		if (import_folder == null) {
 			throw new IllegalStateException("Import folder not specified");
 		}
-		return new RMS(import_folder);
+		return new FileSource(import_folder);
 	}
 }
