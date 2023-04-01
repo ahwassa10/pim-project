@@ -3,11 +3,11 @@ package sys_i;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import sys_q.QMS;
-import sys_q.QMSBuilder;
+import sys_q.QualityStore;
+import sys_q.QualityStoreBuilder;
 
 public class IMSBuilder {
-	private QMS dms;
+	private QualityStore dms;
 	private Path output_folder;
 	private Path substance_folder;
 	
@@ -15,7 +15,7 @@ public class IMSBuilder {
 	
 	public static IMS test_ims() {
 		return new IMSBuilder()
-				.setDMS(QMSBuilder.test_qms())
+				.setDMS(QualityStoreBuilder.test_qms())
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
 				.setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
 				.build();
@@ -32,7 +32,7 @@ public class IMSBuilder {
 		return new IMS(dms, output_folder, substance_folder);
 	}
 	
-	public IMSBuilder setDMS(QMS dms) {
+	public IMSBuilder setDMS(QualityStore dms) {
 		if (dms == null) {
 			throw new IllegalArgumentException("DMS cannot be null");
 		}

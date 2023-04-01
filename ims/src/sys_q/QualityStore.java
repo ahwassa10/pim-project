@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public final class QMS {
+public final class QualityStore {
 	private final Path export_folder;
 	private final Path quality_folder;
 	
-	QMS(Path ef_path, Path qf_path) {
+	QualityStore(Path ef_path, Path qf_path) {
 		this.export_folder = ef_path;
 		this.quality_folder = qf_path;
 		
@@ -106,7 +106,7 @@ public final class QMS {
 	}
 	
 	public String toString() {
-		return String.format("QMS<Export Folder<%s>, Quality Folder<%s>>",
+		return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
 				export_folder, quality_folder);
 	}
 }

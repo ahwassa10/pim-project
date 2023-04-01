@@ -10,15 +10,15 @@ import java.util.UUID;
 import sys_i.types.Filename;
 import sys_i.types.Filepath;
 import sys_i.types.Filesize;
-import sys_q.QMS;
+import sys_q.QualityStore;
 import util.Hashing;
 
 public final class IMS {	
-	private final QMS qms;
+	private final QualityStore qms;
 	private final Path output_folder;
 	private final Path substance_folder;
 	
-	IMS(QMS qms, Path of_folder, Path sf_folder) {
+	IMS(QualityStore qms, Path of_folder, Path sf_folder) {
 		this.qms = qms;
 		this.output_folder = of_folder;
 		this.substance_folder = sf_folder;

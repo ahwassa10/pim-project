@@ -6,12 +6,12 @@ import DataSources.FileSource;
 import DataSources.FileSourceBuilder;
 import sys_i.IMS;
 import sys_i.IMSBuilder;
-import sys_q.QMS;
-import sys_q.QMSBuilder;
+import sys_q.QualityStore;
+import sys_q.QualityStoreBuilder;
 
 public class Testing {
 	public static void main(String[] args) {
-		QMS qms = QMSBuilder.test_qms();
+		QualityStore qms = QualityStoreBuilder.test_qms();
 		IMS ims = IMSBuilder.test_ims();
 		FileSource fs = FileSourceBuilder.test_rms();
 		
