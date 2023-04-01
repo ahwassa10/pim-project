@@ -18,10 +18,9 @@ public final class IMS {
 	private final Path output_folder;
 	private final Path substance_folder;
 	
-	IMS(QualityStore qms, Path of_folder, Path sf_folder) {
+	IMS(QualityStore qms, Path of_folder) {
 		this.qms = qms;
 		this.output_folder = of_folder;
-		this.substance_folder = sf_folder;
 		System.out.println("Sucessfully created the IMS");
 	}
 	

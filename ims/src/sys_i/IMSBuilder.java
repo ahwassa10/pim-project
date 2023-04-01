@@ -7,36 +7,32 @@ import sys_q.QualityStore;
 import sys_q.QualityStoreBuilder;
 
 public class IMSBuilder {
-	private QualityStore dms;
+	private QualityStore qualityStore;
 	private Path output_folder;
-	private Path substance_folder;
 	
 	public IMSBuilder() {}
 	
 	public static IMS test_ims() {
 		return new IMSBuilder()
-				.setDMS(QualityStoreBuilder.test_qms())
+				.setQualityStore(QualityStoreBuilder.test_qms())
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
-				.setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
 				.build();
 	}
 	
 	public IMS build() {
-		if (dms == null) {
-			throw new IllegalStateException("QMS object not specified");
+		if (qualityStore == null) {
+			throw new IllegalStateException("Quality Store not specified");
 		} else if (output_folder == null) {
 			throw new IllegalStateException("Output folder not specified");
-		} else if (substance_folder == null) {
-			throw new IllegalStateException("Substance folder not specified");
 		}
-		return new IMS(dms, output_folder, substance_folder);
+		return new IMS(qualityStore, output_folder);
 	}
 	
-	public IMSBuilder setDMS(QualityStore dms) {
-		if (dms == null) {
-			throw new IllegalArgumentException("DMS cannot be null");
+	public IMSBuilder setQualityStore(QualityStore qualityStore) {
+		if (qualityStore == null) {
+			throw new IllegalArgumentException("Quality Store cannot be null");
 		}
-		this.dms = dms;
+		this.qualityStore = qualityStore;
 		return this;
 	}
 	
@@ -52,19 +48,5 @@ public class IMSBuilder {
 		}
 		output_folder = test_path;
 		return this;	
-	}
-	
-	public IMSBuilder setSubstanceFolder(String pathname) {
-		if (pathname == null) {
-			throw new IllegalArgumentException("Substance folder path cannot be null");
-		}
-		Path test_path = Path.of(pathname);
-		if (!Files.exists(test_path)) {
-			throw new IllegalArgumentException("Substance folder does not exist");
-		} else if (!Files.isDirectory(test_path)) {
-			throw new IllegalArgumentException("Substance folder path is not a directory");
-		}
-		this.substance_folder = test_path;
-		return this;
 	}
 }
