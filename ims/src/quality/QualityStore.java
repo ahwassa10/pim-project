@@ -16,7 +16,7 @@ public final class QualityStore {
 		this.export_folder = ef_path;
 		this.quality_folder = qf_path;
 		
-		System.out.println("Successfully created Quality Store");
+		System.out.println("Successfully created a quality store");
 	}
 	
 	public Map<String, String> getData(String agent, String entity) throws IOException {

@@ -13,7 +13,7 @@ public final class FileSource implements DataSource {
 	
 	FileSource(Path if_path) {
 		this.import_folder = if_path;
-		System.out.println("Successfully created a File Source");
+		System.out.println("Successfully created a file source");
 	}
 	
 	private Map<String, String> decomposeToInfo(Path input_file) throws IOException {

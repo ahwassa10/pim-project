@@ -12,6 +12,8 @@ public final class SubstanceStore {
 	
 	SubstanceStore(Path substance_folder) {
 		this.substance_folder = substance_folder;
+		
+		System.out.println("Successfully created a substance store");
 	}
 	
 	public String capture(Path substanceSource) {

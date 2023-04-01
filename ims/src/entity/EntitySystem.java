@@ -22,7 +22,7 @@ public final class EntitySystem {
 		this.output_folder = of;
 		this.qualityStore = qs;
 		this.substanceStore = ss;
-		System.out.println("Sucessfully created the Entity System");
+		System.out.println("Successfully created an entity system");
 	}
 	
 	public void validateFileData(String filename, String filepath, String filesize) {
