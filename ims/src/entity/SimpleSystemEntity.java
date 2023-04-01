@@ -1,4 +1,4 @@
-package sys_i;
+package entity;
 
 import java.util.UUID;
 

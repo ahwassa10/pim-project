@@ -1,9 +1,9 @@
-package DataSources;
+package data;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class FileSourceBuilder {
+public final class FileSourceBuilder {
 	private Path import_folder;
 	
 	public FileSourceBuilder() {}

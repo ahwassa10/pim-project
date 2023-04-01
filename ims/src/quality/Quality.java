@@ -1,4 +1,4 @@
-package sys_q;
+package quality;
 
 public interface Quality {
 	static Quality from(String agent, String key, String entity, String value) {

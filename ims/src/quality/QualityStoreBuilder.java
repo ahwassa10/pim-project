@@ -1,9 +1,9 @@
-package sys_q;
+package quality;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class QualityStoreBuilder {
+public final class QualityStoreBuilder {
 	private Path export_folder;
 	private Path quality_folder;
 	

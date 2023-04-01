@@ -19,10 +19,6 @@ public interface InfoType {
 		return TYPE_PATTERN.matcher(test_string).matches();
 	}
 	
-	String asData(Info info);
-	
-	Info asInfo(String data);
-	
 	String getTypeName();
 	
 	boolean qualifies(String data);

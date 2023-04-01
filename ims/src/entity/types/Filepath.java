@@ -1,4 +1,4 @@
-package sys_i.types;
+package entity.types;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

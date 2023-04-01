@@ -1,4 +1,4 @@
-package sys_i.types;
+package entity.types;
 
 import java.util.regex.Pattern;
 

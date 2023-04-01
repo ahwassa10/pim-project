@@ -1,4 +1,4 @@
-package sys_i;
+package entity;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,22 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import entity.types.Filename;
+import entity.types.Filepath;
+import entity.types.Filesize;
+import quality.QualityStore;
 import substance.SubstanceStore;
-import sys_i.types.Filename;
-import sys_i.types.Filepath;
-import sys_i.types.Filesize;
-import sys_q.QualityStore;
 
-public final class IMS {
+public final class EntitySystem {
 	private final Path output_folder;
 	private final QualityStore qualityStore;
 	private final SubstanceStore substanceStore;
 	
-	IMS(Path of, QualityStore qs, SubstanceStore ss) {
+	EntitySystem(Path of, QualityStore qs, SubstanceStore ss) {
 		this.output_folder = of;
 		this.qualityStore = qs;
 		this.substanceStore = ss;
-		System.out.println("Sucessfully created the IMS");
+		System.out.println("Sucessfully created the Entity System");
 	}
 	
 	public void validateFileData(String filename, String filepath, String filesize) {
@@ -82,6 +82,6 @@ public final class IMS {
 	}
 	
 	public String toString() {
-		return String.format("IMS<Output Folder<%>>", output_folder);
+		return String.format("Entity System<Output Folder<%>>", output_folder);
 	}
 }

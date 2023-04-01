@@ -1,4 +1,4 @@
-package sys_q;
+package quality;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -16,7 +16,7 @@ public final class QualityStore {
 		this.export_folder = ef_path;
 		this.quality_folder = qf_path;
 		
-		System.out.println("Successfully created the QMS");
+		System.out.println("Successfully created Quality Store");
 	}
 	
 	public Map<String, String> getData(String agent, String entity) throws IOException {

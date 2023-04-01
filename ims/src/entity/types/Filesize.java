@@ -1,4 +1,4 @@
-package sys_i.types;
+package entity.types;
 
 public final class Filesize {
 	private Filesize() {}

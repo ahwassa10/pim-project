@@ -1,4 +1,4 @@
-package sys_i.types;
+package entity.types;
 
 public final class Name {
 	private static final int MAX_NAME_LENGTH = 128;

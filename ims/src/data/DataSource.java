@@ -1,4 +1,4 @@
-package DataSources;
+package data;
 
 import java.util.Map;
 

@@ -1,29 +1,29 @@
-package sys_i;
+package entity;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import quality.QualityStore;
+import quality.QualityStoreBuilder;
 import substance.SubstanceStore;
 import substance.SubstanceStoreBuilder;
-import sys_q.QualityStore;
-import sys_q.QualityStoreBuilder;
 
-public final class IMSBuilder {
+public final class EntitySystemBuilder {
 	private Path output_folder;
 	private QualityStore qualityStore;
 	private SubstanceStore substanceStore;
 	
-	public IMSBuilder() {}
+	public EntitySystemBuilder() {}
 	
-	public static IMS test_ims() {
-		return new IMSBuilder()
+	public static EntitySystem test_ims() {
+		return new EntitySystemBuilder()
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
 				.setQualityStore(QualityStoreBuilder.test_qms())
 				.setSubstanceStore(SubstanceStoreBuilder.test_substore())
 				.build();
 	}
 	
-	public IMS build() {
+	public EntitySystem build() {
 		if (output_folder == null) {
 			throw new IllegalStateException("Output folder not specified");
 		} else if (qualityStore == null) {
@@ -31,10 +31,10 @@ public final class IMSBuilder {
 		} else if (substanceStore == null) {
 			throw new IllegalStateException("Substance Store not specified");
 		}
-		return new IMS(output_folder, qualityStore, substanceStore);
+		return new EntitySystem(output_folder, qualityStore, substanceStore);
 	}
 	
-	public IMSBuilder setOutputFolder(String pathname) {
+	public EntitySystemBuilder setOutputFolder(String pathname) {
 		if (pathname == null) {
 			throw new IllegalArgumentException("Output folder path cannot be null");
 		}
@@ -48,7 +48,7 @@ public final class IMSBuilder {
 		return this;	
 	}
 	
-	public IMSBuilder setQualityStore(QualityStore qualityStore) {
+	public EntitySystemBuilder setQualityStore(QualityStore qualityStore) {
 		if (qualityStore == null) {
 			throw new IllegalArgumentException("Quality Store cannot be null");
 		}
@@ -56,7 +56,7 @@ public final class IMSBuilder {
 		return this;
 	}
 	
-	public IMSBuilder setSubstanceStore(SubstanceStore substanceStore) {
+	public EntitySystemBuilder setSubstanceStore(SubstanceStore substanceStore) {
 		if (substanceStore == null) {
 			throw new IllegalArgumentException("Substance Store cannot be null");
 		}

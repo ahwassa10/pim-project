@@ -1,4 +1,4 @@
-package sys_i.types;
+package entity.types;
 
 public final class Note {
 	private static final int MAX_NOTE_LENGTH = 1024;

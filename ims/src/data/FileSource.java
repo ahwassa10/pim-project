@@ -1,4 +1,4 @@
-package DataSources;
+package data;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -13,7 +13,7 @@ public final class FileSource implements DataSource {
 	
 	FileSource(Path if_path) {
 		this.import_folder = if_path;
-		System.out.println("Successfully created a FileSource");
+		System.out.println("Successfully created a File Source");
 	}
 	
 	private Map<String, String> decomposeToInfo(Path input_file) throws IOException {
@@ -52,6 +52,6 @@ public final class FileSource implements DataSource {
 	}
 	
 	public String toString() {
-		return String.format("FileSource<Import Folder<%s>>", import_folder);
+		return String.format("File Source<Import Folder<%s>>", import_folder);
 	}
 }
