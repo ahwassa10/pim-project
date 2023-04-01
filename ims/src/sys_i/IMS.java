@@ -7,20 +7,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import substance.SubstanceStore;
 import sys_i.types.Filename;
 import sys_i.types.Filepath;
 import sys_i.types.Filesize;
 import sys_q.QualityStore;
-import util.Hashing;
 
-public final class IMS {	
-	private final QualityStore qms;
+public final class IMS {
 	private final Path output_folder;
-	private final Path substance_folder;
+	private final QualityStore qualityStore;
+	private final SubstanceStore substanceStore;
 	
-	IMS(QualityStore qms, Path of_folder) {
-		this.qms = qms;
-		this.output_folder = of_folder;
+	IMS(Path of, QualityStore qs, SubstanceStore ss) {
+		this.output_folder = of;
+		this.qualityStore = qs;
+		this.substanceStore = ss;
 		System.out.println("Sucessfully created the IMS");
 	}
 	
@@ -47,29 +48,18 @@ public final class IMS {
 		
 		validateFileData(filename, filepath, filesize);
 		
-		Path importFile = Path.of(filepath);
-		Path tempFile = substance_folder.resolve("temp");
+		Path file = Path.of(filepath);
 		try {
-			String hash = Hashing.hashStringAndCopy(importFile, tempFile);
-			Path substanceFile = substance_folder.resolve(hash);
-			
-			if (Files.exists(substanceFile)) {
-				// The case where the substance is a duplicate
-				Files.delete(tempFile);
-			} else {
-				// Rename the tempFile from "temp" to the string representation
-				// of the hash.
-				Files.move(tempFile, substanceFile);
-			}
+			String hash = substanceStore.capture(file);
 			
 			String identity = UUID.randomUUID().toString();
-			qms.saveQuality("System",     "Identity",  identity, "");
-			qms.saveQuality("System",     "Substance", identity, hash);
-			qms.saveQuality("FileSystem", "Filename",  identity, filename);
-			qms.saveQuality("FileSystem", "Filesize",  identity, filesize);
+			qualityStore.saveQuality("System",     "Identity",  identity, "");
+			qualityStore.saveQuality("System",     "Substance", identity, hash);
+			qualityStore.saveQuality("FileSystem", "Filename",  identity, filename);
+			qualityStore.saveQuality("FileSystem", "Filesize",  identity, filesize);
 			
 			Path outputFile = output_folder.resolve(filename);
-			Files.move(importFile, outputFile);
+			Files.move(file, outputFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -83,7 +73,7 @@ public final class IMS {
 		data.put("Identity", identity);
 		
 		try {
-			qms.saveData("System", identity, data);
+			qualityStore.saveData("System", identity, data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -92,7 +82,6 @@ public final class IMS {
 	}
 	
 	public String toString() {
-		return String.format("IMS<Output Folder<%>, Substance Folder<%s>>",
-				output_folder, substance_folder);
+		return String.format("IMS<Output Folder<%>>", output_folder);
 	}
 }
