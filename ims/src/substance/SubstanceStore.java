@@ -1,6 +1,7 @@
 package substance;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -35,6 +36,36 @@ public final class SubstanceStore {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public Path get(String hash) throws IOException {
+		if (hash == null) {
+			throw new IllegalArgumentException("Hash cannot be null");
+		}
+		try (DirectoryStream<Path> substances =
+				Files.newDirectoryStream(substance_folder)) {
+			for (Path substance : substances) {
+				if (substance.endsWith(hash)) {
+					return substance;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public boolean has(String hash) throws IOException {
+		if (hash == null) {
+			throw new IllegalArgumentException("Hash cannot be null");
+		}
+		try (DirectoryStream<Path> substances =
+				Files.newDirectoryStream(substance_folder)) {
+			for (Path substance : substances) {
+				if (substance.endsWith(hash)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public String toString() {
