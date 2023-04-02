@@ -12,8 +12,9 @@ public class Testing {
 		QualityStore qs = QualityStoreBuilder.test_qualitystore();
 		EntitySystem es = EntitySystemBuilder.test_entitysystem();
 		FileSource fs = FileSourceBuilder.test_rms(es);
+		fs.printFiles();
 		
-		fs.importFile();
+		System.out.println(fs.importFile());
 		
 		/*
 		try {
