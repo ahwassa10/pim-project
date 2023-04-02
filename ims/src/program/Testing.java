@@ -1,7 +1,5 @@
 package program;
 
-import java.util.Map;
-
 import data.FileSource;
 import data.FileSourceBuilder;
 import entity.EntitySystem;
@@ -11,14 +9,13 @@ import quality.QualityStoreBuilder;
 
 public class Testing {
 	public static void main(String[] args) {
-		QualityStore qs = QualityStoreBuilder.test_qms();
-		EntitySystem es = EntitySystemBuilder.test_ims();
+		QualityStore qs = QualityStoreBuilder.test_qualitystore();
+		EntitySystem es = EntitySystemBuilder.test_entitysystem();
 		FileSource fs = FileSourceBuilder.test_rms(es);
 		
-		Map<String, String> data = fs.getData();
-		System.out.println(data);
-		es.importFileData(data);
+		fs.importFile();
 		
+		/*
 		try {
 			qs.saveData("user", "entity0",
 					Map.of("Name", "Test name",
@@ -37,6 +34,6 @@ public class Testing {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

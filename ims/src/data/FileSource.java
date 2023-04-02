@@ -22,7 +22,7 @@ public final class FileSource {
 		System.out.println("Successfully created a file source");
 	}
 	
-	private Map<String, String> decomposeToInfo(Path input_file) throws IOException {
+	private static Map<String, String> decomposeToData(Path input_file) throws IOException {
 		Map<String, String> data = new HashMap<>();
 		
 		data.put("Filepath", input_file.toAbsolutePath().toString());
@@ -31,23 +31,38 @@ public final class FileSource {
 		return data;
 	}
 	
-	public Map<String, String> getData() {
-		try (DirectoryStream<Path> content = Files.newDirectoryStream(source_folder)) {
-			Iterator<Path> i = content.iterator();
-			if (i.hasNext()) {
-				return decomposeToInfo(i.next());
+	public String importFile() {
+		try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(source_folder)) {
+			Iterator<Path> content = dirStream.iterator();
+			
+			if (!content.hasNext()) {
+				return null;
 			}
+			
+			Path file = content.next();
+			String filename = file.getFileName().toString();
+			String filesize = Long.toString((long) Files.getAttribute(file, "basic:size"));
+			
+			String identity = entitySystem.createEntity();
+			entitySystem.setSubstance(identity, file);
+			entitySystem.attribute("FileSystem", "Filename", identity, filename);
+			entitySystem.attribute("FileSystem", "Filesize", identity, filesize);
+			
+			Path outputFile = output_folder.resolve(filename);
+			Files.move(file, outputFile);
+			
+			return identity;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 	
 	public void readImportFolder() {
 		try (DirectoryStream<Path> content = Files.newDirectoryStream(source_folder)) {
 			content.forEach(file -> {
 				try {
-					System.out.println(decomposeToInfo(file));
+					System.out.println(decomposeToData(file));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

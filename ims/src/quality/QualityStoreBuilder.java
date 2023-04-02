@@ -9,7 +9,7 @@ public final class QualityStoreBuilder {
 	
 	public QualityStoreBuilder() {}
 	
-	public static QualityStore test_qms() {
+	public static QualityStore test_qualitystore() {
 		return new QualityStoreBuilder()
 				.setExportFolder("C:\\Users\\Primary\\Desktop\\export")
 				.setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")

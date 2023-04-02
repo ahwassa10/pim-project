@@ -52,32 +52,31 @@ public final class SubstanceStore {
 		return digest.digest();
 	}
 	
-	public String capture(Path substanceSource) {
+	public String capture(Path substanceSource) throws IOException {
 		if (substanceSource == null) {
 			throw new IllegalArgumentException("Substance source cannot be null");
 		}
 		
+		// A temporary file to write the substance to.
 		Path tempFile = substance_folder.resolve("temp");
-		try {
-			String hash = Hashing.asString(hashAndCopy(substanceSource, tempFile));
-			
-			Path substanceFile = substance_folder.resolve(hash);
-			if (Files.exists(substanceFile)) {
-				// The case where the substance is a duplicate
-				Files.delete(tempFile);
-			} else {
-				// Rename the tempFile from "temp" to the string representation
-				// of the hash.
-				Files.move(tempFile, substanceFile);
-			}
-			// Whether the substance is a duplicate or not, we always return
-			// a hash of the substance.
-			return hash;
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+		
+		// Hash the substance and copy it to the temporary file.
+		String hash = Hashing.asString(hashAndCopy(substanceSource, tempFile));
+		
+		// The filename of the substance is the hash itself.
+		Path substanceFile = substance_folder.resolve(hash);
+		
+		if (Files.exists(substanceFile)) {
+			// The case where the substance is a duplicate
+			Files.delete(tempFile);
+		} else {
+			// Rename the tempFile from "temp" to the string representation
+			// of the hash.
+			Files.move(tempFile, substanceFile);
 		}
+		// Whether the substance is a duplicate or not, we always return
+		// a hash of the substance.
+		return hash;
 	}
 	
 	public Path get(String hash) throws IOException {
