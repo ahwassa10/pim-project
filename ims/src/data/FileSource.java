@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public final class FileSource implements DataSource {
-	private final Path import_folder;
+public final class FileSource {
+	private final Path output_folder;
+	private final Path source_folder;
 	
-	FileSource(Path if_path) {
-		this.import_folder = if_path;
+	FileSource(Path output_folder, Path source_folder) {
+		this.output_folder = output_folder;
+		this.source_folder = source_folder;
 		System.out.println("Successfully created a file source");
 	}
 	
@@ -26,7 +28,7 @@ public final class FileSource implements DataSource {
 	}
 	
 	public Map<String, String> getData() {
-		try (DirectoryStream<Path> content = Files.newDirectoryStream(import_folder)) {
+		try (DirectoryStream<Path> content = Files.newDirectoryStream(source_folder)) {
 			Iterator<Path> i = content.iterator();
 			if (i.hasNext()) {
 				return decomposeToInfo(i.next());
@@ -38,7 +40,7 @@ public final class FileSource implements DataSource {
 	}
 	
 	public void readImportFolder() {
-		try (DirectoryStream<Path> content = Files.newDirectoryStream(import_folder)) {
+		try (DirectoryStream<Path> content = Files.newDirectoryStream(source_folder)) {
 			content.forEach(file -> {
 				try {
 					System.out.println(decomposeToInfo(file));
@@ -52,6 +54,7 @@ public final class FileSource implements DataSource {
 	}
 	
 	public String toString() {
-		return String.format("File Source<Import Folder<%s>>", import_folder);
+		return String.format("File Source<Source Folder<%s>, Output Folder<%s>>",
+				source_folder, output_folder);
 	}
 }

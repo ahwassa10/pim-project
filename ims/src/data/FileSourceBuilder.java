@@ -4,34 +4,52 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class FileSourceBuilder {
-	private Path import_folder;
+	private Path output_folder;
+	private Path source_folder;
 	
 	public FileSourceBuilder() {}
 	
 	public static FileSource test_rms() {
 		return new FileSourceBuilder()
-				.setImportFolder("C:\\Users\\Primary\\Desktop\\import")
+				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
+				.setSourceFolder("C:\\Users\\Primary\\Desktop\\source")
 				.build();
 	}
 	
-	public FileSourceBuilder setImportFolder(String pathname) {
+	public FileSourceBuilder setOutputFolder(String pathname) {
 		if (pathname == null) {
-			throw new IllegalArgumentException("Import folder path cannot be null");
+			throw new IllegalArgumentException("Output folder path cannot be null");
 		}
 		Path test_path = Path.of(pathname);
 		if (!Files.exists(test_path)) {
-			throw new IllegalArgumentException("Import folder path does not exist");
+			throw new IllegalArgumentException("Output folder path does not exist");
 		} else if (!Files.isDirectory(test_path)) {
-			throw new IllegalArgumentException("Import folder path is not a directory");
+			throw new IllegalArgumentException("Output folder path is not a directory");
 		}
-		import_folder = test_path;
+		output_folder = test_path;
+		return this;	
+	}
+	
+	public FileSourceBuilder setSourceFolder(String pathname) {
+		if (pathname == null) {
+			throw new IllegalArgumentException("Source folder path cannot be null");
+		}
+		Path test_path = Path.of(pathname);
+		if (!Files.exists(test_path)) {
+			throw new IllegalArgumentException("Source folder path does not exist");
+		} else if (!Files.isDirectory(test_path)) {
+			throw new IllegalArgumentException("Source folder path is not a directory");
+		}
+		source_folder = test_path;
 		return this;
 	}
 	
 	public FileSource build() {
-		if (import_folder == null) {
-			throw new IllegalStateException("Import folder not specified");
+		if (output_folder == null) {
+			throw new IllegalStateException("Output folder not specified");
+		} else if (source_folder == null) {
+			throw new IllegalStateException("Source folder not specified");
 		}
-		return new FileSource(import_folder);
+		return new FileSource(output_folder, source_folder);
 	}
 }
