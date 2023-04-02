@@ -59,46 +59,50 @@ public final class QualityStore {
 		}
 	}
 	
-	public String getQuality(String agent, String key, String entity) throws IOException {
-		if (agent == null || key == null || entity == null) {
+	public String getQuality(String agent,
+							 String quality,
+							 String entity) throws IOException {
+		
+		if (agent == null || quality == null || entity == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
-		} else if (agent.isBlank() || key.isBlank() || entity.isBlank()) {
+		} else if (agent.isBlank() || quality.isBlank() || entity.isBlank()) {
 			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
 		}
 		
-		Path keyPath = quality_folder.resolve(agent).resolve(key);
-		if (!Files.exists(keyPath)) {
-			throw new IllegalArgumentException("Agent/Key does not exist");
+		Path qualityPath = quality_folder.resolve(agent).resolve(quality);
+		if (!Files.exists(qualityPath)) {
+			throw new IllegalArgumentException("Agent+Quality does not exist");
 		}
-		Path fileName = keyPath.resolve(entity);
-		if (!Files.exists(fileName)) {
-			throw new IllegalArgumentException("Qualifier does not have this key");
+		Path entityPath = qualityPath.resolve(entity);
+		if (!Files.exists(entityPath)) {
+			throw new IllegalArgumentException("Entity does not have this quality");
 		}
-		return Files.readString(fileName);
+		return Files.readString(entityPath);
 	}
 	
 	public void saveQuality(String agent,
-							String key,
+							String quality,
 							String entity,
 							String value) throws IOException {
 		
-		if (agent == null || key == null || entity == null || value == null) {
+		if (agent == null || quality == null || entity == null || value == null) {
 			throw new IllegalArgumentException("Inputs cannot be null");
 		}
-		if (agent.isBlank() || key.isBlank() || entity.isBlank()) {
-			throw new IllegalArgumentException("Agent, key, and entity cannot be blank");
+		if (agent.isBlank() || quality.isBlank() || entity.isBlank()) {
+			throw new IllegalArgumentException("Agent, quality, and entity cannot be blank");
 		}
 		
 		// Creates the Agent and InfoType folders if they don't exist.
 		// Does nothing if the folders do exist.
-		Path keyPath = Files.createDirectories(quality_folder.resolve(agent).resolve(key));
+		Path qualityPath = quality_folder.resolve(agent).resolve(quality);
+		Files.createDirectories(qualityPath);
 		
 		// The UUID of the entity becomes the fileName.
-		Path fileName = keyPath.resolve(entity);
+		Path entityPath = qualityPath.resolve(entity);
 		
 		// Creates the file (if it doesn't exist) and writes the string
 		// to the file, truncating the file if it already has data in it.
-		Files.writeString(fileName, value);
+		Files.writeString(entityPath, value);
 	}
 	
 	public void saveQuality(Quality q) throws IOException {

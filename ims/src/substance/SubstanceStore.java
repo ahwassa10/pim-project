@@ -3,7 +3,6 @@ package substance;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -79,34 +78,23 @@ public final class SubstanceStore {
 		return hash;
 	}
 	
-	public Path get(String hash) throws IOException {
+	public Path get(String hash) {
 		if (hash == null) {
 			throw new IllegalArgumentException("Hash cannot be null");
 		}
-		try (DirectoryStream<Path> substances =
-				Files.newDirectoryStream(substance_folder)) {
-			for (Path substance : substances) {
-				if (substance.endsWith(hash)) {
-					return substance;
-				}
-			}
-		}
-		return null;
+		
+		Path substancePath = substance_folder.resolve(hash);
+		// Return the path to the substance if it exists, otherwise
+		// return null.
+		return Files.exists(substancePath) ? substancePath : null;
 	}
 	
-	public boolean has(String hash) throws IOException {
+	public boolean has(String hash) {
 		if (hash == null) {
 			throw new IllegalArgumentException("Hash cannot be null");
 		}
-		try (DirectoryStream<Path> substances =
-				Files.newDirectoryStream(substance_folder)) {
-			for (Path substance : substances) {
-				if (substance.endsWith(hash)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		Path testPath = substance_folder.resolve(hash);
+		return Files.exists(testPath);
 	}
 	
 	public String toString() {
