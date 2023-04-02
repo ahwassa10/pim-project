@@ -8,11 +8,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import entity.EntitySystem;
+
 public final class FileSource {
+	private final EntitySystem entitySystem;
 	private final Path output_folder;
 	private final Path source_folder;
 	
-	FileSource(Path output_folder, Path source_folder) {
+	FileSource(EntitySystem entitySystem, Path output_folder, Path source_folder) {
+		this.entitySystem = entitySystem;
 		this.output_folder = output_folder;
 		this.source_folder = source_folder;
 		System.out.println("Successfully created a file source");

@@ -3,17 +3,40 @@ package data;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import entity.EntitySystem;
+
 public final class FileSourceBuilder {
+	private EntitySystem entitySystem;
 	private Path output_folder;
 	private Path source_folder;
 	
 	public FileSourceBuilder() {}
 	
-	public static FileSource test_rms() {
+	public static FileSource test_rms(EntitySystem entitySystem) {
 		return new FileSourceBuilder()
+				.setEntitySystem(entitySystem)
 				.setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
 				.setSourceFolder("C:\\Users\\Primary\\Desktop\\source")
 				.build();
+	}
+	
+	public FileSource build() {
+		if (entitySystem == null) {
+			throw new IllegalStateException("Entity system not specified");
+		} else if (output_folder == null) {
+			throw new IllegalStateException("Output folder not specified");
+		} else if (source_folder == null) {
+			throw new IllegalStateException("Source folder not specified");
+		}
+		return new FileSource(entitySystem, output_folder, source_folder);
+	}
+	
+	public FileSourceBuilder setEntitySystem(EntitySystem entitySystem) {
+		if (entitySystem == null) {
+			throw new IllegalArgumentException("Entity system cannot be null");
+		}
+		this.entitySystem = entitySystem;
+		return this;
 	}
 	
 	public FileSourceBuilder setOutputFolder(String pathname) {
@@ -42,14 +65,5 @@ public final class FileSourceBuilder {
 		}
 		source_folder = test_path;
 		return this;
-	}
-	
-	public FileSource build() {
-		if (output_folder == null) {
-			throw new IllegalStateException("Output folder not specified");
-		} else if (source_folder == null) {
-			throw new IllegalStateException("Source folder not specified");
-		}
-		return new FileSource(output_folder, source_folder);
 	}
 }

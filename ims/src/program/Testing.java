@@ -13,7 +13,7 @@ public class Testing {
 	public static void main(String[] args) {
 		QualityStore qs = QualityStoreBuilder.test_qms();
 		EntitySystem es = EntitySystemBuilder.test_ims();
-		FileSource fs = FileSourceBuilder.test_rms();
+		FileSource fs = FileSourceBuilder.test_rms(es);
 		
 		Map<String, String> data = fs.getData();
 		System.out.println(data);
