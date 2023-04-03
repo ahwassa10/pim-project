@@ -19,7 +19,7 @@ public final class EntitySystem {
 	
 	public void attribute(String agent, String quality, String entity, String value) {
 		try {
-			qualityStore.saveQuality(agent, quality, entity, value);
+			qualityStore.storeValue(agent, quality, entity, value);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -28,7 +28,7 @@ public final class EntitySystem {
 	public String createEntity() {
 		String identity = UUID.randomUUID().toString();
 		try {
-			qualityStore.saveQuality("System", "Identity", identity, identity);
+			qualityStore.storeValue("System", "Identity", identity, identity);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -39,7 +39,7 @@ public final class EntitySystem {
 	public void setSubstance(String identity, Path substanceFile) {
 		try {
 			String hash = substanceStore.capture(substanceFile);
-			qualityStore.saveQuality("System", "Substance", identity, hash);
+			qualityStore.storeValue("System", "Substance", identity, hash);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
