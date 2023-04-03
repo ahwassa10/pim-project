@@ -9,13 +9,23 @@ import quality.QualityStoreBuilder;
 
 public class Testing {
     public static void main(String[] args) {
-        QualityStore qs = QualityStoreBuilder.test_qualitystore();
         EntitySystem es = EntitySystemBuilder.test_entitysystem();
+        QualityStore qs = es.getQualityStore();
+        
         FileSource fs = FileSourceBuilder.test_rms(es);
-        fs.printFiles();
 
-        System.out.println(fs.importFile());
-
+        //System.out.println(fs.importFile());
+        qs.printIndex();
+        System.out.println();
+        
+        fs.importFile();
+        qs.printIndex();
+        System.out.println();
+        
+        fs.importFile();
+        qs.printIndex();
+        System.out.println();
+        
         /*
          * try { qs.saveData("user", "entity0", Map.of("Name", "Test name", "Note",
          * "This is a note", "Random", "1234", "Key", "Value"));
