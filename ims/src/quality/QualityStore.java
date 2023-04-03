@@ -33,8 +33,6 @@ public final class QualityStore {
 
         if (agent == null || type == null || entity == null) {
             throw new IllegalArgumentException("Inputs cannot be null");
-        } else if (agent.isBlank() || type.isBlank() || entity.isBlank()) {
-            throw new IllegalArgumentException("Agent, type, and entity cannot be blank");
         }
         
         String qualityType = agent+type;
@@ -77,8 +75,8 @@ public final class QualityStore {
         if (agent == null || type == null || entity == null || data == null) {
             throw new IllegalArgumentException("Inputs cannot be null");
         }
-        if (agent.isBlank() || type.isBlank() || entity.isBlank()) {
-            throw new IllegalArgumentException("Agent, type, and entity cannot be blank");
+        if (!Key.isValid(agent) || !Key.isValid(type) || !Key.isValid(entity)) {
+            throw new IllegalArgumentException("Agent, type, and entity need to be valid keys");
         }
 
         // Creates the Agent and Type folders if they don't exist.
@@ -95,7 +93,7 @@ public final class QualityStore {
     }
 
     public String toString() {
-        return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>", export_folder,
-                quality_folder);
+        return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
+                export_folder, quality_folder);
     }
 }
