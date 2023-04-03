@@ -13,8 +13,10 @@ public final class EntitySystemBuilder {
     }
 
     public static EntitySystem test_entitysystem() {
-        return new EntitySystemBuilder().setQualityStore(QualityStoreBuilder.test_qualitystore())
-                .setSubstanceStore(SubstanceStoreBuilder.test_substore()).build();
+        return new EntitySystemBuilder()
+                .setQualityStore(QualityStoreBuilder.test_qualitystore())
+                .setSubstanceStore(SubstanceStoreBuilder.test_substore())
+                .build();
     }
 
     public EntitySystem build() {

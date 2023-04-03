@@ -14,9 +14,11 @@ public final class FileSourceBuilder {
     }
 
     public static FileSource test_rms(EntitySystem entitySystem) {
-        return new FileSourceBuilder().setEntitySystem(entitySystem)
+        return new FileSourceBuilder()
+                .setEntitySystem(entitySystem)
                 .setOutputFolder("C:\\Users\\Primary\\Desktop\\output")
-                .setSourceFolder("C:\\Users\\Primary\\Desktop\\source").build();
+                .setSourceFolder("C:\\Users\\Primary\\Desktop\\source")
+                .build();
     }
 
     public FileSource build() {

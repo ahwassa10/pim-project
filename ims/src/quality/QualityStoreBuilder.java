@@ -11,8 +11,10 @@ public final class QualityStoreBuilder {
     }
 
     public static QualityStore test_qualitystore() {
-        return new QualityStoreBuilder().setExportFolder("C:\\Users\\Primary\\Desktop\\export")
-                .setQualityFolder("C:\\Users\\Primary\\Desktop\\quality").build();
+        return new QualityStoreBuilder()
+                .setExportFolder("C:\\Users\\Primary\\Desktop\\export")
+                .setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
+                .build();
     }
 
     public QualityStore build() {

@@ -11,7 +11,8 @@ public final class SubstanceStoreBuilder {
 
     public static SubstanceStore test_substore() {
         return new SubstanceStoreBuilder()
-                .setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance").build();
+                .setSubstanceFolder("C:\\Users\\Primary\\Desktop\\substance")
+                .build();
     }
 
     public SubstanceStore build() {
