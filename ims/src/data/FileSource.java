@@ -25,12 +25,12 @@ public final class FileSource {
     }
 
     private static Map<String, String> decompose(Path input_file) throws IOException {
-        Map<String, String> data = new HashMap<>();
+        Map<String, String> info = new HashMap<>();
 
-        data.put("Filepath", input_file.toAbsolutePath().toString());
-        data.put("Filename", input_file.getFileName().toString());
-        data.put("Filesize", Long.toString((long) Files.getAttribute(input_file, "basic:size")));
-        return data;
+        info.put("Filepath", input_file.toAbsolutePath().toString());
+        info.put("Filename", input_file.getFileName().toString());
+        info.put("Filesize", Long.toString((long) Files.getAttribute(input_file, "basic:size")));
+        return info;
     }
 
     public List<String> importAllFiles() {
@@ -100,7 +100,7 @@ public final class FileSource {
     }
 
     public String toString() {
-        return String.format("File Source<Source Folder<%s>, Output Folder<%s>>", source_folder,
-                output_folder);
+        return String.format("File Source<Source Folder<%s>, Output Folder<%s>>",
+                source_folder, output_folder);
     }
 }

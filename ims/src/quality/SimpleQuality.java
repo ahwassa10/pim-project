@@ -2,35 +2,35 @@ package quality;
 
 final class SimpleQuality implements Quality {
     private final String agent;
-    private final String key;
+    private final String type;
     private final String entity;
-    private final String value;
+    private final String data;
 
-    SimpleQuality(String agent, String key, String entity, String value) {
+    SimpleQuality(String agent, String type, String entity, String data) {
         this.agent = agent;
-        this.key = key;
+        this.type = type;
         this.entity = entity;
-        this.value = value;
+        this.data = data;
     }
 
     public String getAgent() {
         return agent;
     }
 
-    public String getKey() {
-        return key;
+    public String getType() {
+        return type;
     }
 
     public String getEntity() {
         return entity;
     }
 
-    public String getValue() {
-        return value;
+    public String getData() {
+        return data;
     }
 
     public String toString() {
-        return String.format("Quality<Agent: %s, Key: %s, Entity: %s, Value: %s>", agent, key,
-                entity, value);
+        return String.format("Quality<Agent: %s, Type: %s, Entity: %s, Data: %s>",
+                agent, type, entity, data);
     }
 }
