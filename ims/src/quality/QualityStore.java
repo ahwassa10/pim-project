@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public final class QualityStore {
-    private final Map<String, Set<String>> index;
+    private final Map<String, Map<String, Set<String>>> index;
     private final Path export_folder;
     private final Path quality_folder;
 
@@ -27,6 +28,7 @@ public final class QualityStore {
         }
     }
     
+    /*
     public boolean delete(String agent,
                           String type,
                           String entity) throws IOException {
@@ -58,35 +60,48 @@ public final class QualityStore {
         
         // Returns true as long as something was deleted from either the on-disk or in-index.
         return foundOnDisk || foundInIndex;
-    }
+    }*/
     
     private void loadIndex() throws IOException {
-        for (Path agentPath : Files.newDirectoryStream(quality_folder)) {
-            String agent = agentPath.getFileName().toString();
-
-            for (Path typePath : Files.newDirectoryStream(agentPath)) {
-                String type = typePath.getFileName().toString();
+        try (Stream<Path> walk = Files.walk(quality_folder, 3)) {
+            walk.forEach(path -> {
+                path = quality_folder.relativize(path);
                 
-                Set<String> entitySet = new HashSet<>();
-                for (Path entityPath : Files.newDirectoryStream(typePath)) {
-                    String entity = entityPath.getFileName().toString();
-                    entitySet.add(entity);
+                if (path.endsWith("")) {
+                    // Path is the quality_folder itself
+                } else if (path.getParent() == null) {
+                    // Path is an agent
+                    String agent = path.getFileName().toString();
+                    index.put(agent, new HashMap<>());
+                    
+                } else if (path.getParent().getParent() == null) {
+                    // Path is a qualityType
+                    String type = path.getFileName().toString();
+                    String agent = path.getParent().getFileName().toString();
+                    index.get(agent).put(type, new HashSet<>());
+                    
+                } else {
+                    // Path is an event
+                    String entity = path.getFileName().toString();
+                    String type = path.getParent().getFileName().toString();
+                    String agent = path.getParent().getParent().getFileName().toString();
+                    
+                    index.get(agent).get(type).add(entity);
                 }
-
-                String qualityType = QualityType.from(agent, type);
-                index.put(qualityType, entitySet);
-            }
+            });
         }
     }
     
+    
     public void printIndex() {
-        for (String qualityType : index.keySet()) {
-            for (String entity : index.get(qualityType)) {
-                System.out.println(qualityType + " " + entity);
-            }
-        }
+        System.out.println(index);
     }
-
+    
+    public void purge() throws IOException {
+        index.clear();
+    }
+    
+    /*
     public String retrieve(String agent,
                            String type,
                            String entity) throws IOException {
@@ -106,8 +121,9 @@ public final class QualityStore {
         
         Path dataPath = quality_folder.resolve(agent).resolve(type).resolve(entity); 
         return Files.readString(dataPath);
-    }
+    }*/
 
+    /*
     public void store(String agent,
                       String type,
                       String entity,
@@ -141,7 +157,7 @@ public final class QualityStore {
             entitySet.add(entity);
             index.put(qualityType, entitySet);
         }
-    }
+    }*/
 
     public String toString() {
         return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
