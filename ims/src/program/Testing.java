@@ -1,5 +1,7 @@
 package program;
 
+import java.io.IOException;
+
 import data.FileSource;
 import data.FileSourceBuilder;
 import entity.EntitySystem;
@@ -13,31 +15,21 @@ public class Testing {
         QualityStore qs = es.getQualityStore();
         
         FileSource fs = FileSourceBuilder.test_rms(es);
-
-        //System.out.println(fs.importFile());
+        
+        String entity = fs.importFile();
         qs.printIndex();
         System.out.println();
-        
-        fs.importFile();
+        try {
+            System.out.println(qs.delete("FileSystem", "Filesize", entity));
+            System.out.println(qs.delete("FileSystem", "Filesize", entity));
+            System.out.println(qs.delete("FileSystem", "Filesize", entity));
+            System.out.println(qs.delete("Filesystem", "Filesize", entity));
+            System.out.println(qs.delete("FileSystem", "Filename", entity));
+            System.out.println(qs.delete("FileSystem", "Filesize", "12342"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         qs.printIndex();
-        System.out.println();
         
-        fs.importFile();
-        qs.printIndex();
-        System.out.println();
-        
-        /*
-         * try { qs.saveData("user", "entity0", Map.of("Name", "Test name", "Note",
-         * "This is a note", "Random", "1234", "Key", "Value"));
-         * 
-         * qs.saveData("user", "entity1", Map.of("Name", "Entity One", "Score", "123",
-         * "Random", "4321"));
-         * 
-         * System.out.println(qs.getData("user", "entity0"));
-         * System.out.println(qs.getData("user", "entity1"));
-         * System.out.println(qs.getData("user", "entity2"));
-         * 
-         * } catch (Exception e) { e.printStackTrace(); }
-         */
     }
 }

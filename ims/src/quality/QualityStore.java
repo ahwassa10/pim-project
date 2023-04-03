@@ -27,6 +27,39 @@ public final class QualityStore {
         }
     }
     
+    public boolean delete(String agent,
+                          String type,
+                          String entity) throws IOException {
+        
+        if (agent == null || type == null || entity == null) {
+            throw new IllegalArgumentException("Inputs cannot be null");
+        }
+        if (!Key.isValid(agent) || !Key.isValid(type) || !Key.isValid(entity)) {
+            throw new IllegalArgumentException("Agent, type, and entity need to be valid keys");
+        }
+        
+        Path eventPath = quality_folder.resolve(agent).resolve(type).resolve(entity);
+        boolean foundOnDisk = Files.deleteIfExists(eventPath);
+        boolean foundInIndex = false;
+        
+        String qualityType = QualityType.from(agent, type);
+        if (index.containsKey(qualityType)) {
+            foundInIndex = index.get(qualityType).remove(entity);
+        }
+        
+        if (foundOnDisk != foundInIndex) {
+            // Issues a warning when an inconsistency is found between the the disk and 
+            // the index. The system recovers from this inconsistency by trying to 
+            // delete both the file on disk, and the mapping in the index. 
+            System.out.println(String.format("Warning: Event<%s, %s, %s> was found %s",
+                    agent, type, entity,
+                    foundOnDisk ? "on-disk but not in-index" : "in-index but not on-disk"));
+        }
+        
+        // Returns true as long as something was deleted from either the on-disk or in-index.
+        return foundOnDisk || foundInIndex;
+    }
+    
     private void loadIndex() throws IOException {
         for (Path agentPath : Files.newDirectoryStream(quality_folder)) {
             String agent = agentPath.getFileName().toString();
