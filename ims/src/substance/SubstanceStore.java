@@ -3,12 +3,15 @@ package substance;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 import util.Hashing;
 
@@ -24,6 +27,67 @@ public final class SubstanceStore {
         System.out.println("Successfully created a substance store");
     }
 
+    public String capture(Path substanceSource) {
+        if (substanceSource == null) {
+            throw new IllegalArgumentException("Substance source cannot be null");
+        }
+        
+        // A temporary file to write the substance to.
+        Path tempFile = substance_folder.resolve("temp");
+        
+        try {
+            // Hash the substance and copy it to the temporary file.
+            String hash = Hashing.asString(hashAndCopy(substanceSource, tempFile));
+    
+            // The filename of the substance is the hash itself.
+            Path substanceFile = substance_folder.resolve(hash);
+    
+            if (Files.exists(substanceFile)) {
+                // The case where the substance is a duplicate
+                Files.delete(tempFile);
+            } else {
+                // Rename the tempFile from "temp" to the string representation
+                // of the hash.
+                Files.move(tempFile, substanceFile);
+            }
+            // Whether the substance is a duplicate or not, we always return
+            // a hash of the substance.
+            return hash;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public boolean contains(String hash) {
+        if (hash == null) {
+            throw new IllegalArgumentException("Hash cannot be null");
+        }
+        return get(hash) != null;
+    }
+    
+    public boolean delete(String hash) {
+        if (hash == null) {
+            throw new IllegalArgumentException("Hash cannot be null");
+        }
+        Path substancePath = substance_folder.resolve(hash);
+        try {
+            return Files.deleteIfExists(substancePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public Path get(String hash) {
+        if (hash == null) {
+            throw new IllegalArgumentException("Hash cannot be null");
+        }
+
+        Path substancePath = substance_folder.resolve(hash);
+        return Files.exists(substancePath) ? substancePath : null;
+    }
+    
     private static byte[] hashAndCopy(Path src, Path dest) throws IOException {
         MessageDigest digest = null;
         try {
@@ -49,53 +113,21 @@ public final class SubstanceStore {
         }
         return digest.digest();
     }
-
-    public String capture(Path substanceSource) throws IOException {
-        if (substanceSource == null) {
-            throw new IllegalArgumentException("Substance source cannot be null");
+    
+    public Set<String> substanceSet() {
+        Set<String> substances = new HashSet<>();
+        
+        try (DirectoryStream<Path> substanceStream = Files.newDirectoryStream(substance_folder)) {
+            for (Path substance : substanceStream) {
+                substances.add(substance.getFileName().toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        // A temporary file to write the substance to.
-        Path tempFile = substance_folder.resolve("temp");
-
-        // Hash the substance and copy it to the temporary file.
-        String hash = Hashing.asString(hashAndCopy(substanceSource, tempFile));
-
-        // The filename of the substance is the hash itself.
-        Path substanceFile = substance_folder.resolve(hash);
-
-        if (Files.exists(substanceFile)) {
-            // The case where the substance is a duplicate
-            Files.delete(tempFile);
-        } else {
-            // Rename the tempFile from "temp" to the string representation
-            // of the hash.
-            Files.move(tempFile, substanceFile);
-        }
-        // Whether the substance is a duplicate or not, we always return
-        // a hash of the substance.
-        return hash;
+        
+        return substances;
     }
-
-    public Path get(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
-
-        Path substancePath = substance_folder.resolve(hash);
-        // Return the path to the substance if it exists, otherwise
-        // return null.
-        return Files.exists(substancePath) ? substancePath : null;
-    }
-
-    public boolean has(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
-        Path testPath = substance_folder.resolve(hash);
-        return Files.exists(testPath);
-    }
-
+    
     public String toString() {
         return String.format("Substance Store<Substance Folder<%s>", substance_folder);
     }
