@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import util.Hashing;
@@ -28,9 +29,7 @@ public final class SubstanceStore {
     }
 
     public String capture(Path substanceSource) {
-        if (substanceSource == null) {
-            throw new IllegalArgumentException("Substance source cannot be null");
-        }
+        Objects.requireNonNull(substanceSource, "Substance source cannot be null");
         
         // A temporary file to write the substance to.
         Path tempFile = substance_folder.resolve("temp");
@@ -59,17 +58,12 @@ public final class SubstanceStore {
     }
     
     public boolean contains(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
-        
+        Objects.requireNonNull(hash, "Hash cannot be null");
         return get(hash) != null;
     }
     
     public boolean delete(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
+        Objects.requireNonNull(hash, "Hash cannot be null");
         
         Path substancePath = substance_folder.resolve(hash);
         try {
@@ -81,9 +75,7 @@ public final class SubstanceStore {
     }
     
     public Path get(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
+        Objects.requireNonNull(hash, "Hash cannot be null");
 
         Path substancePath = substance_folder.resolve(hash);
         return Files.exists(substancePath) ? substancePath : null;
@@ -115,10 +107,13 @@ public final class SubstanceStore {
         return digest.digest();
     }
     
+    public boolean isCoherent(String hash) {
+        Objects.requireNonNull(hash, "Hash cannot be null");
+        return hash.equals(rehash(hash));
+    }
+    
     public String rehash(String hash) {
-        if (hash == null) {
-            throw new IllegalArgumentException("Hash cannot be null");
-        }
+        Objects.requireNonNull(hash, "Hash cannot be null");
         
         Path substancePath = substance_folder.resolve(hash);
         try {
