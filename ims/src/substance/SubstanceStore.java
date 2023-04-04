@@ -34,7 +34,6 @@ public final class SubstanceStore {
         
         // A temporary file to write the substance to.
         Path tempFile = substance_folder.resolve("temp");
-        
         try {
             // Hash the substance and copy it to the temporary file.
             String hash = Hashing.asString(hashAndCopy(substanceSource, tempFile));
@@ -63,6 +62,7 @@ public final class SubstanceStore {
         if (hash == null) {
             throw new IllegalArgumentException("Hash cannot be null");
         }
+        
         return get(hash) != null;
     }
     
@@ -70,6 +70,7 @@ public final class SubstanceStore {
         if (hash == null) {
             throw new IllegalArgumentException("Hash cannot be null");
         }
+        
         Path substancePath = substance_folder.resolve(hash);
         try {
             return Files.deleteIfExists(substancePath);
@@ -114,6 +115,23 @@ public final class SubstanceStore {
         return digest.digest();
     }
     
+    public String rehash(String hash) {
+        if (hash == null) {
+            throw new IllegalArgumentException("Hash cannot be null");
+        }
+        
+        Path substancePath = substance_folder.resolve(hash);
+        try {
+            return Files.exists(substancePath) 
+                    ? Hashing.asString(Hashing.calculateSHA256(substancePath)) 
+                    : null; // Return null if the substance does not exist
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public Set<String> substanceSet() {
         Set<String> substances = new HashSet<>();
         
@@ -124,7 +142,6 @@ public final class SubstanceStore {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
         return substances;
     }
     
