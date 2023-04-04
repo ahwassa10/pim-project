@@ -11,12 +11,12 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public final class QualityStore {
-    private final Map<String, Map<String, Set<String>>> index;
+    private final Map<String, Map<String, Set<String>>> events;
     private final Path export_folder;
     private final Path quality_folder;
 
     QualityStore(Path ef_path, Path qf_path) {
-        this.index = new HashMap<>();
+        this.events = new HashMap<>();
         this.export_folder = ef_path;
         this.quality_folder = qf_path;
 
@@ -28,7 +28,7 @@ public final class QualityStore {
             System.out.println("Failed to create a quality store");
         }
     }
-    /*
+    
     public boolean delete(String agent,
                           String type,
                           String entity) throws IOException {
@@ -41,13 +41,13 @@ public final class QualityStore {
         }
         
         Path eventPath = quality_folder.resolve(agent).resolve(type).resolve(entity);
+       
         boolean foundOnDisk = Files.deleteIfExists(eventPath);
-        boolean foundInIndex = false;
+        boolean foundInIndex = events.containsKey(agent) && // Checks if agent exists
+                               events.get(agent).containsKey(type) && // if qualityType exists
+                               events.get(agent).get(type).remove(entity); // if event exists
+                               // Note that remove() returns boolean if the entity was removed.
         
-        String qualityType = QualityType.from(agent, type);
-        if (index.containsKey(qualityType)) {
-            foundInIndex = index.get(qualityType).remove(entity);
-        }
         
         if (foundOnDisk != foundInIndex) {
             // Issues a warning when an inconsistency is found between the the disk and 
@@ -60,10 +60,10 @@ public final class QualityStore {
         
         // Returns true as long as something was deleted from either the on-disk or in-index.
         return foundOnDisk || foundInIndex;
-    }*/
+    }
     
     public void deleteAll() throws IOException {
-        index.clear();
+        events.clear();
         try (Stream<Path> walk = Files.walk(quality_folder, 3)) {
             walk.filter(path -> path.compareTo(quality_folder) != 0)
                 .sorted(Comparator.reverseOrder())
@@ -86,29 +86,27 @@ public final class QualityStore {
                 if (count == 1 && !path.endsWith("")) {
                     // Case where path is an agent
                     String agent = path.toString();
-                    index.put(agent, new HashMap<>());
+                    events.put(agent, new HashMap<>());
                 } else if (count == 2) {
                     // Case where path is a type
                     String agent = path.subpath(0, 1).toString();
                     String type = path.subpath(1, 2).toString();
-                    index.get(agent).put(type, new HashSet<>());
+                    events.get(agent).put(type, new HashSet<>());
                 } else if (count == 3) {
                     // Case where path is an entity
                     String agent = path.subpath(0, 1).toString();
                     String type = path.subpath(1, 2).toString();
                     String entity = path.subpath(2, 3).toString();
-                    index.get(agent).get(type).add(entity);
+                    events.get(agent).get(type).add(entity);
                 }
             });
         }
     }
     
-    
     public void printIndex() {
-        System.out.println(index);
+        System.out.println(events);
     }
     
-    /*
     public String retrieve(String agent,
                            String type,
                            String entity) throws IOException {
@@ -117,20 +115,20 @@ public final class QualityStore {
             throw new IllegalArgumentException("Inputs cannot be null");
         }
         
-        String qualityType = QualityType.from(agent, type);
-        if (!index.containsKey(qualityType)) {
+        if (!events.containsKey(agent)) {
+            throw new IllegalArgumentException("This agent does not exist");
+        }
+        if (!events.get(agent).containsKey(type)) {
             throw new IllegalArgumentException("This qualityType does not exist");
         }
-        
-        if (!index.get(qualityType).contains(entity)) {
-            throw new IllegalArgumentException("The entity does not have this qualityType");
+        if (!events.get(agent).get(type).contains(entity)) {
+            throw new IllegalArgumentException("This event does not exist");
         }
         
-        Path dataPath = quality_folder.resolve(agent).resolve(type).resolve(entity); 
+        Path dataPath = quality_folder.resolve(agent).resolve(type).resolve(entity);
         return Files.readString(dataPath);
-    }*/
-
-    /*
+    }
+    
     public void store(String agent,
                       String type,
                       String entity,
@@ -145,26 +143,27 @@ public final class QualityStore {
 
         // Creates the Agent and Type folders if they don't exist.
         // Does nothing if the folders do exist.
-        Path typePath = quality_folder.resolve(agent).resolve(type);
-        Files.createDirectories(typePath);
+        Path qualityTypePath = quality_folder.resolve(agent).resolve(type);
+        Files.createDirectories(qualityTypePath);
 
         // The UUID of the entity becomes the fileName.
-        Path entityPath = typePath.resolve(entity);
+        Path eventPath = qualityTypePath.resolve(entity);
 
         // Creates the file (if it doesn't exist) and writes the string
         // to the file, truncating the file if it already has data in it.
-        Files.writeString(entityPath, data);
+        Files.writeString(eventPath, data);
         
-        // Add the agent+type -> entity to the index.
-        String qualityType = QualityType.from(agent, type);
-        if (index.containsKey(qualityType)) {
-            index.get(qualityType).add(entity);
-        } else {
-            Set<String> entitySet = new HashSet<>();
-            entitySet.add(entity);
-            index.put(qualityType, entitySet);
+        // Index the agent if it doesn't exist.
+        if (!events.containsKey(agent)) {
+            events.put(agent, new HashMap<>());
         }
-    }*/
+        // Index the type if it doesn't exist.
+        if (!events.get(agent).containsKey(type)) {
+            events.get(agent).put(type, new HashSet<>());
+        }
+        // Create the agent+type -> entity association.
+        events.get(agent).get(type).add(entity);
+    }
 
     public String toString() {
         return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
