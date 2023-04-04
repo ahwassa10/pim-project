@@ -39,6 +39,10 @@ public final class EntitySystem {
     public QualityStore getQualityStore() {
         return qualityStore;
     }
+    
+    public SubstanceStore getSubstanceStore() {
+        return substanceStore;
+    }
 
     public void setSubstance(String identity, Path substanceFile) {
         try {
