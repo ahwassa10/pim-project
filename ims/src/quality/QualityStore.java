@@ -3,6 +3,7 @@ package quality;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,7 +28,6 @@ public final class QualityStore {
             System.out.println("Failed to create a quality store");
         }
     }
-    
     /*
     public boolean delete(String agent,
                           String type,
@@ -62,6 +62,21 @@ public final class QualityStore {
         return foundOnDisk || foundInIndex;
     }*/
     
+    public void deleteAll() throws IOException {
+        index.clear();
+        try (Stream<Path> walk = Files.walk(quality_folder, 3)) {
+            walk.filter(path -> path.compareTo(quality_folder) != 0)
+                .sorted(Comparator.reverseOrder())
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        }
+    }
+    
     private void loadIndex() throws IOException {
         try (Stream<Path> walk = Files.walk(quality_folder, 3)) {
             walk.forEach(path -> {
@@ -91,10 +106,6 @@ public final class QualityStore {
     
     public void printIndex() {
         System.out.println(index);
-    }
-    
-    public void purge() throws IOException {
-        index.clear();
     }
     
     /*
