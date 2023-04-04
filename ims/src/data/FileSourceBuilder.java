@@ -2,6 +2,7 @@ package data;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import entity.EntitySystem;
 
@@ -33,17 +34,14 @@ public final class FileSourceBuilder {
     }
 
     public FileSourceBuilder setEntitySystem(EntitySystem entitySystem) {
-        if (entitySystem == null) {
-            throw new IllegalArgumentException("Entity system cannot be null");
-        }
+        Objects.requireNonNull(entitySystem, "Entity system cannot be null");
         this.entitySystem = entitySystem;
         return this;
     }
 
     public FileSourceBuilder setOutputFolder(String pathname) {
-        if (pathname == null) {
-            throw new IllegalArgumentException("Output folder path cannot be null");
-        }
+        Objects.requireNonNull(pathname, "Output folder path cannot be null");
+        
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
             throw new IllegalArgumentException("Output folder path does not exist");
@@ -55,9 +53,8 @@ public final class FileSourceBuilder {
     }
 
     public FileSourceBuilder setSourceFolder(String pathname) {
-        if (pathname == null) {
-            throw new IllegalArgumentException("Source folder path cannot be null");
-        }
+        Objects.requireNonNull(pathname, "Source folder path cannot be null");
+        
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
             throw new IllegalArgumentException("Source folder path does not exist");

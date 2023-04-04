@@ -2,6 +2,7 @@ package quality;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public final class QualityStoreBuilder {
     private Path export_folder;
@@ -27,9 +28,8 @@ public final class QualityStoreBuilder {
     }
 
     public QualityStoreBuilder setExportFolder(String pathname) {
-        if (pathname == null) {
-            throw new IllegalArgumentException("Export folder path cannot be null");
-        }
+        Objects.requireNonNull(pathname, "Export folder path cannot be null");
+        
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
             throw new IllegalArgumentException("Export folder does not exist");
@@ -41,9 +41,8 @@ public final class QualityStoreBuilder {
     }
 
     public QualityStoreBuilder setQualityFolder(String pathname) {
-        if (pathname == null) {
-            throw new IllegalArgumentException("Quality folder path cannot be null");
-        }
+        Objects.requireNonNull(pathname, "Quality folder path cannot be null");
+        
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
             throw new IllegalArgumentException("Quality folder does not exist");

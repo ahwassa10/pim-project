@@ -2,6 +2,7 @@ package substance;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public final class SubstanceStoreBuilder {
     private Path substance_folder;
@@ -23,9 +24,8 @@ public final class SubstanceStoreBuilder {
     }
 
     public SubstanceStoreBuilder setSubstanceFolder(String pathname) {
-        if (pathname == null) {
-            throw new IllegalArgumentException("Substance folder path cannot be null");
-        }
+        Objects.requireNonNull(pathname, "Substance folder path cannot be null");
+        
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
             throw new IllegalArgumentException("Substance folder does not exist");

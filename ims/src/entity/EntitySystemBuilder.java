@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 import quality.QualityStore;
 import quality.QualityStoreBuilder;
 import substance.SubstanceStore;
@@ -29,17 +31,13 @@ public final class EntitySystemBuilder {
     }
 
     public EntitySystemBuilder setQualityStore(QualityStore qualityStore) {
-        if (qualityStore == null) {
-            throw new IllegalArgumentException("Quality Store cannot be null");
-        }
+        Objects.requireNonNull(qualityStore, "Quality Store cannot be null");
         this.qualityStore = qualityStore;
         return this;
     }
 
     public EntitySystemBuilder setSubstanceStore(SubstanceStore substanceStore) {
-        if (substanceStore == null) {
-            throw new IllegalArgumentException("Substance Store cannot be null");
-        }
+        Objects.requireNonNull(substanceStore, "Substance Store cannot be null");
         this.substanceStore = substanceStore;
         return this;
     }
