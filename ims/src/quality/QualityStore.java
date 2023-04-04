@@ -66,26 +66,22 @@ public final class QualityStore {
         try (Stream<Path> walk = Files.walk(quality_folder, 3)) {
             walk.forEach(path -> {
                 path = quality_folder.relativize(path);
+                int count = path.getNameCount();
                 
-                if (path.endsWith("")) {
-                    // Path is the quality_folder itself
-                } else if (path.getParent() == null) {
-                    // Path is an agent
-                    String agent = path.getFileName().toString();
+                if (count == 1 && !path.endsWith("")) {
+                    // Case where path is an agent
+                    String agent = path.toString();
                     index.put(agent, new HashMap<>());
-                    
-                } else if (path.getParent().getParent() == null) {
-                    // Path is a qualityType
-                    String type = path.getFileName().toString();
-                    String agent = path.getParent().getFileName().toString();
+                } else if (count == 2) {
+                    // Case where path is a type
+                    String agent = path.subpath(0, 1).toString();
+                    String type = path.subpath(1, 2).toString();
                     index.get(agent).put(type, new HashSet<>());
-                    
-                } else {
-                    // Path is an event
-                    String entity = path.getFileName().toString();
-                    String type = path.getParent().getFileName().toString();
-                    String agent = path.getParent().getParent().getFileName().toString();
-                    
+                } else if (count == 3) {
+                    // Case where path is an entity
+                    String agent = path.subpath(0, 1).toString();
+                    String type = path.subpath(1, 2).toString();
+                    String entity = path.subpath(2, 3).toString();
                     index.get(agent).get(type).add(entity);
                 }
             });
