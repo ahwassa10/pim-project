@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import util.Hashing;
@@ -65,6 +66,29 @@ public final class SubstanceStore {
     public boolean contains(String hash) {
         Objects.requireNonNull(hash, "Hash cannot be null");
         return get(hash) != null;
+    }
+    
+    private boolean damagedHandler(Path damagedSubstance) {
+        // We are prepending the filename (hash) with a random 8 character string.
+        // This prevents problems with duplicate damaged substances in the damaged folder.
+        String randomPrefix = UUID.randomUUID().toString().substring(0, 8);
+        String damagedFilename = randomPrefix + "_" + damagedSubstance.getFileName().toString();
+        
+        Path damagedPath = damaged_folder.resolve(damagedFilename);
+        try {
+            Files.move(damagedSubstance, damagedPath);
+        } catch (IOException e) {
+            System.out.println("Failed to move " + damagedSubstance);
+            e.printStackTrace();
+            try {
+                Files.delete(damagedSubstance);
+            } catch (IOException e2) {
+                System.out.println("Failed to delete " + damagedSubstance);
+                e2.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
     
     public boolean delete(String hash) {
@@ -155,6 +179,26 @@ public final class SubstanceStore {
         return Files.exists(substancePath) 
                 ? Hashing.asString(Hashing.calculateSHA256(substancePath)) 
                 : null; // Return null if the substance does not exist
+    }
+    
+    public boolean repair() {
+        boolean allRepairsSuccessful = true;
+        try (DirectoryStream<Path> substanceStream = Files.newDirectoryStream(substance_folder)) {
+            for (Path substance : substanceStream) {
+                String diskHash = substance.getFileName().toString();
+                String actualHash = Hashing.asString(Hashing.calculateSHA256(substance));
+                
+                if (!diskHash.equals(actualHash)) {
+                    boolean repairSuccessful = damagedHandler(substance);
+                    allRepairsSuccessful &= repairSuccessful;
+                }       
+            }
+        } catch (IOException e) {
+            System.out.println("Encountered problem during the repair process");
+            e.printStackTrace();
+            return false;
+        }
+        return allRepairsSuccessful;
     }
     
     public Set<String> substanceSet() {
