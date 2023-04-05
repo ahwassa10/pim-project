@@ -13,7 +13,7 @@ public class Testing4 {
         List<Long> times = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             long startTime = System.nanoTime();
-            ss.findProblems();
+            ss.findDamages();
             long endTime = System.nanoTime();
             times.add(endTime - startTime);
         }

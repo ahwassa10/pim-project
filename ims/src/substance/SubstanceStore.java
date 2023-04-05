@@ -22,10 +22,12 @@ import util.Hashing;
 public final class SubstanceStore {
     private static final EnumSet<StandardOpenOption> WRITE_OPTIONS = EnumSet
             .of(StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
-
+    
+    private final Path damaged_folder;
     private final Path substance_folder;
 
-    SubstanceStore(Path substance_folder) {
+    SubstanceStore(Path damaged_folder, Path substance_folder) {
+        this.damaged_folder = damaged_folder;
         this.substance_folder = substance_folder;
 
         System.out.println("Successfully created a substance store");
@@ -77,7 +79,7 @@ public final class SubstanceStore {
         }
     }
     
-    public Map<String, String> findProblems() {
+    public Map<String, String> findDamages() {
         Map<String, String> mismatchedHashes = new HashMap<>();
         
         try (DirectoryStream<Path> substanceStream = Files.newDirectoryStream(substance_folder)) {
@@ -168,6 +170,7 @@ public final class SubstanceStore {
     }
     
     public String toString() {
-        return String.format("Substance Store<Substance Folder<%s>", substance_folder);
+        return String.format("Substance Store<Damaged Folder<%s>, Substance Folder<%s>",
+                damaged_folder, substance_folder);
     }
 }
