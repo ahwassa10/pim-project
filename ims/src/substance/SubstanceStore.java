@@ -9,10 +9,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import util.Hashing;
 
@@ -74,6 +77,25 @@ public final class SubstanceStore {
         }
     }
     
+    public Map<String, String> findProblems() {
+        Map<String, String> mismatchedHashes = new HashMap<>();
+        
+        try (DirectoryStream<Path> substanceStream = Files.newDirectoryStream(substance_folder)) {
+            for (Path substance : substanceStream) {
+                String diskHash = substance.getFileName().toString();
+                String actualHash = Hashing.asString(Hashing.calculateSHA256(substance));
+                
+                if (!diskHash.equals(actualHash)) {
+                    mismatchedHashes.put(diskHash, actualHash);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return mismatchedHashes;
+    }
+    
     public Path get(String hash) {
         Objects.requireNonNull(hash, "Hash cannot be null");
 
@@ -92,7 +114,7 @@ public final class SubstanceStore {
 
         ByteBuffer buffer = ByteBuffer.allocate(8192);
         try (ByteChannel srcChannel = Files.newByteChannel(src);
-                ByteChannel destChannel = Files.newByteChannel(dest, WRITE_OPTIONS)) {
+             ByteChannel destChannel = Files.newByteChannel(dest, WRITE_OPTIONS)) {
 
             // Calculate hash and copy to destination buffer without having to read
             // the input file twice.
@@ -107,6 +129,18 @@ public final class SubstanceStore {
         return digest.digest();
     }
     
+    public boolean isCoherent() {
+        try {
+            return Files.list(substance_folder)
+                        .map(path -> path.getFileName().toString())
+                        .allMatch(this::isCoherent);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean isCoherent(String hash) {
         Objects.requireNonNull(hash, "Hash cannot be null");
         return hash.equals(rehash(hash));
@@ -116,28 +150,21 @@ public final class SubstanceStore {
         Objects.requireNonNull(hash, "Hash cannot be null");
         
         Path substancePath = substance_folder.resolve(hash);
-        try {
-            return Files.exists(substancePath) 
-                    ? Hashing.asString(Hashing.calculateSHA256(substancePath)) 
-                    : null; // Return null if the substance does not exist
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return Files.exists(substancePath) 
+                ? Hashing.asString(Hashing.calculateSHA256(substancePath)) 
+                : null; // Return null if the substance does not exist
     }
     
     public Set<String> substanceSet() {
-        Set<String> substances = new HashSet<>();
-        
-        try (DirectoryStream<Path> substanceStream = Files.newDirectoryStream(substance_folder)) {
-            for (Path substance : substanceStream) {
-                substances.add(substance.getFileName().toString());
-            }
+        try {
+            return Files.list(substance_folder)
+                        .map(path -> path.getFileName().toString())
+                        .collect(Collectors.toSet());
+            
         } catch (IOException e) {
             e.printStackTrace();
+            return Collections.emptySet();
         }
-        return substances;
     }
     
     public String toString() {

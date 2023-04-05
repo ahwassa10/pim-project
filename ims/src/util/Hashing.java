@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+import java.util.Objects;
 
 public final class Hashing {
     private static final HexFormat HEX_FORMATTER = HexFormat.of().withUpperCase();
@@ -21,9 +22,8 @@ public final class Hashing {
 
     public static byte[] calculateHash(Path file, String algorithm)
             throws IOException, NoSuchAlgorithmException {
-        if (file == null || algorithm == null) {
-            throw new IllegalArgumentException("Inputs cannot be null");
-        }
+        Objects.requireNonNull(file, "Filepath cannot be null");
+        Objects.requireNonNull(algorithm, "Algorithm cannot be null");
 
         MessageDigest digest = MessageDigest.getInstance(algorithm);
 
@@ -38,15 +38,16 @@ public final class Hashing {
         return digest.digest();
     }
 
-    public static byte[] calculateSHA256(Path file) throws IOException {
-        if (file == null) {
-            throw new IllegalArgumentException("File cannot be null");
-        }
+    public static byte[] calculateSHA256(Path file) {
+        Objects.requireNonNull(file, "Filepath cannot be null");
+        
         try {
             return calculateHash(file, "SHA-256");
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 }
