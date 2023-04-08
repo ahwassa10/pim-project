@@ -33,12 +33,9 @@ public final class QualityStore {
                           String type,
                           String entity) throws IOException {
         
-        if (agent == null || type == null || entity == null) {
-            throw new IllegalArgumentException("Inputs cannot be null");
-        }
-        if (!Key.isValid(agent) || !Key.isValid(type) || !Key.isValid(entity)) {
-            throw new IllegalArgumentException("Agent, type, and entity need to be valid keys");
-        }
+        Keys.requireValidKey(agent);
+        Keys.requireValidKey(type);
+        Keys.requireValidKey(entity);
         
         Path eventPath = quality_folder.resolve(agent).resolve(type).resolve(entity);
        
@@ -111,9 +108,9 @@ public final class QualityStore {
                            String type,
                            String entity) throws IOException {
 
-        if (agent == null || type == null || entity == null) {
-            throw new IllegalArgumentException("Inputs cannot be null");
-        }
+        Keys.requireValidKey(agent);
+        Keys.requireValidKey(type);
+        Keys.requireValidKey(entity);
         
         if (!events.containsKey(agent)) {
             throw new IllegalArgumentException("This agent does not exist");
@@ -134,12 +131,9 @@ public final class QualityStore {
                       String entity,
                       String data) throws IOException {
 
-        if (agent == null || type == null || entity == null || data == null) {
-            throw new IllegalArgumentException("Inputs cannot be null");
-        }
-        if (!Key.isValid(agent) || !Key.isValid(type) || !Key.isValid(entity)) {
-            throw new IllegalArgumentException("Agent, type, and entity need to be valid keys");
-        }
+        Keys.requireValidKey(agent);
+        Keys.requireValidKey(type);
+        Keys.requireValidKey(entity);
 
         // Creates the Agent and Type folders if they don't exist.
         // Does nothing if the folders do exist.

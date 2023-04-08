@@ -2,7 +2,7 @@ package program;
 
 import java.util.List;
 
-import quality.Key;
+import quality.Keys;
 
 public class Testing3 {
     public static void main(String[] args) {
@@ -12,7 +12,9 @@ public class Testing3 {
                 "user.name.1234", "filesystem.file_size.entity-2431", "....", "user$name");
         
         for (String test : testKeys) {
-            System.out.println(Key.isValid(test) + " " + test);
+            System.out.println(Keys.isValid(test) + " " + test);
         }
+        
+        Keys.requireValidKey("User$name");
     }
 }
