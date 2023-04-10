@@ -2,6 +2,7 @@ package quality;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -90,6 +91,25 @@ public final class QualityStore {
     
     public void printIndex() {
         System.out.println(keyMap);
+    }
+    
+    public void put(String primaryKey,
+                    String secondaryKey) throws IOException {
+        
+        Keys.requireValidKey(primaryKey);
+        Keys.requireValidKey(secondaryKey);
+        
+        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        Path fullKeyPath = quality_folder.resolve(fullKey);
+        
+        try {
+            if (!Files.exists(fullKeyPath)) {
+                Files.createFile(fullKeyPath);
+            }
+        } catch (FileAlreadyExistsException e) {
+            System.out.println("Strange race condition between Files.exists() being"
+                    + " false and Files.createFile() seeing that the file exists.");
+        }
     }
     
     public void put(String primaryKey,

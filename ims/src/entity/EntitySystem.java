@@ -16,6 +16,14 @@ public final class EntitySystem {
         this.substanceStore = substanceStore;
         System.out.println("Successfully created an entity system");
     }
+    
+    public void tag(String qualifier, String entity) {
+        try {
+            qualityStore.put(qualifier, entity);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void attribute(String qualifier, String entity, String data) {
         try {
@@ -28,7 +36,7 @@ public final class EntitySystem {
     public String createEntity() {
         String identity = UUID.randomUUID().toString();
         try {
-            qualityStore.put("identity", identity, "");
+            qualityStore.put("identity", identity);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
