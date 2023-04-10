@@ -7,5 +7,8 @@ public class Testing5 {
         b &= false;
         b &= true;
         System.out.println(b);
+        
+        String h = "hello";
+        System.out.println(h.equals(null));
     }
 }

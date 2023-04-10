@@ -4,30 +4,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public final class QualityStoreBuilder {
+public final class FileQualityStoreBuilder {
     private Path export_folder;
     private Path quality_folder;
 
-    public QualityStoreBuilder() {
+    public FileQualityStoreBuilder() {
     }
 
-    public static QualityStore test_qualitystore() {
-        return new QualityStoreBuilder()
+    public static FileQualityStore test_qualitystore() {
+        return new FileQualityStoreBuilder()
                 .setExportFolder("C:\\Users\\Primary\\Desktop\\export")
                 .setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
                 .build();
     }
 
-    public QualityStore build() {
+    public FileQualityStore build() {
         if (quality_folder == null) {
             throw new IllegalStateException("Quality folder not specified");
         } else if (export_folder == null) {
             throw new IllegalStateException("Output folder not specified");
         }
-        return new QualityStore(export_folder, quality_folder);
+        return new FileQualityStore(export_folder, quality_folder);
     }
 
-    public QualityStoreBuilder setExportFolder(String pathname) {
+    public FileQualityStoreBuilder setExportFolder(String pathname) {
         Objects.requireNonNull(pathname, "Export folder path cannot be null");
         
         Path test_path = Path.of(pathname);
@@ -40,7 +40,7 @@ public final class QualityStoreBuilder {
         return this;
     }
 
-    public QualityStoreBuilder setQualityFolder(String pathname) {
+    public FileQualityStoreBuilder setQualityFolder(String pathname) {
         Objects.requireNonNull(pathname, "Quality folder path cannot be null");
         
         Path test_path = Path.of(pathname);

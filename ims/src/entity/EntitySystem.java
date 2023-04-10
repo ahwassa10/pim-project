@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import quality.QualityStore;
+import quality.FileQualityStore;
 import substance.SubstanceStore;
 
 public final class EntitySystem {
-    private final QualityStore qualityStore;
+    private final FileQualityStore qualityStore;
     private final SubstanceStore substanceStore;
 
-    EntitySystem(QualityStore qualityStore, SubstanceStore substanceStore) {
+    EntitySystem(FileQualityStore qualityStore, SubstanceStore substanceStore) {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
@@ -50,7 +50,7 @@ public final class EntitySystem {
         return identity;
     }
     
-    public QualityStore getQualityStore() {
+    public FileQualityStore getQualityStore() {
         return qualityStore;
     }
     
