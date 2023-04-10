@@ -14,6 +14,12 @@ public final class EntitySystem {
     EntitySystem(QualityStore qualityStore, SubstanceStore substanceStore) {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
+        
+        try {
+            qualityStore.put("tag", "identity");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("Successfully created an entity system");
     }
     

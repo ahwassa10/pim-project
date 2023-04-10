@@ -110,6 +110,9 @@ public final class QualityStore {
             System.out.println("Strange race condition between Files.exists() being"
                     + " false and Files.createFile() seeing that the file exists.");
         }
+        
+        keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
+              .add(secondaryKey);
     }
     
     public void put(String primaryKey,
@@ -125,6 +128,24 @@ public final class QualityStore {
         Files.writeString(fullKeyPath, value);
         
         // Add the full key to the keyMap
+        keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
+              .add(secondaryKey);
+    }
+    
+    public void putIfAbsent(String primaryKey,
+                            String secondaryKey,
+                            String value) throws IOException {
+        
+        Keys.requireValidKey(primaryKey);
+        Keys.requireValidKey(secondaryKey);
+        
+        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        Path fullKeyPath = quality_folder.resolve(fullKey);
+        
+        if (!Files.exists(fullKeyPath)) {
+            Files.writeString(fullKeyPath, value);
+        }
+        
         keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
               .add(secondaryKey);
     }
