@@ -72,8 +72,8 @@ public final class FileSource {
 
             String identity = entitySystem.createEntity();
             entitySystem.setSubstance(identity, sourceFile);
-            entitySystem.attribute("FileSystem", "Filename", identity, filename);
-            entitySystem.attribute("FileSystem", "Filesize", identity, filesize);
+            entitySystem.attribute("filename", identity, filename);
+            entitySystem.attribute("filesize", identity, filesize);
 
             Path outputFile = output_folder.resolve(filename);
             Files.move(sourceFile, outputFile);

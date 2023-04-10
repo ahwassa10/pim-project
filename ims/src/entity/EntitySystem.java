@@ -17,9 +17,9 @@ public final class EntitySystem {
         System.out.println("Successfully created an entity system");
     }
 
-    public void attribute(String agent, String quality, String entity, String value) {
+    public void attribute(String qualifier, String entity, String data) {
         try {
-            qualityStore.store(agent, quality, entity, value);
+            qualityStore.put(qualifier, entity, data);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,7 +28,7 @@ public final class EntitySystem {
     public String createEntity() {
         String identity = UUID.randomUUID().toString();
         try {
-            qualityStore.store("System", "Identity", identity, identity);
+            qualityStore.put("identity", identity, "");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -47,7 +47,7 @@ public final class EntitySystem {
     public void setSubstance(String identity, Path substanceFile) {
         try {
             String hash = substanceStore.capture(substanceFile);
-            qualityStore.store("System", "Substance", identity, hash);
+            qualityStore.put("substance", identity, hash);
         } catch (IOException e) {
             e.printStackTrace();
         }
