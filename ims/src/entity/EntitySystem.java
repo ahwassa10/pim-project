@@ -1,6 +1,5 @@
 package entity;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -15,38 +14,23 @@ public final class EntitySystem {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
-        try {
-            qualityStore.put("tag", "identity");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        qualityStore.put("tag", "identity");
+        
         System.out.println("Successfully created an entity system");
     }
     
     public void tag(String qualifier, String entity) {
-        try {
-            qualityStore.put(qualifier, entity);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        qualityStore.put(qualifier, entity);
     }
 
     public void attribute(String qualifier, String entity, String data) {
-        try {
-            qualityStore.put(qualifier, entity, data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        qualityStore.put(qualifier, entity, data);
     }
 
     public String createEntity() {
         String identity = UUID.randomUUID().toString();
-        try {
-            qualityStore.put("identity", identity);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        qualityStore.put("identity", identity);
+        
         return identity;
     }
     
@@ -59,12 +43,8 @@ public final class EntitySystem {
     }
 
     public void setSubstance(String identity, Path substanceFile) {
-        try {
-            String hash = substanceStore.capture(substanceFile);
-            qualityStore.put("substance", identity, hash);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String hash = substanceStore.capture(substanceFile);
+        qualityStore.put("substance", identity, hash);
     }
 
     public String toString() {

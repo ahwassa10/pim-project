@@ -18,6 +18,6 @@ public class Testing {
         String entity2 = fs.importFile();
         qs.remove("filename", entity1);
         qs.remove("filesize", entity2);
-        qs.printIndex();
+        qs.printKeyMap();
     }
 }

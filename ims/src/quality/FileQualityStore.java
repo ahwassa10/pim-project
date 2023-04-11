@@ -139,7 +139,7 @@ public final class FileQualityStore implements QualityStore {
             }
         } else {
             keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                   .add(secondaryKey);
+                  .add(secondaryKey);
             try {
                 Files.createFile(fullKeyPath);
             } catch (FileAlreadyExistsException e) {
@@ -178,7 +178,6 @@ public final class FileQualityStore implements QualityStore {
                   .add(secondaryKey);
             try {
                 Files.writeString(fullKeyPath, value);
-                return null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
