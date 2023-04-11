@@ -91,7 +91,7 @@ public interface QualityStore {
         return onDisk == null ? defaultValue : onDisk;
     }
     
-    default Set<String> getSecondaryKeysBy(String primaryKey, String value) {
+    default Set<String> getSecondaryKeysWith(String primaryKey, String value) {
         Values.requireValidValue(value);
         
         Set<String> set = new HashSet<>();
@@ -140,6 +140,55 @@ public interface QualityStore {
         } else {
             return false;
         }
+    }
+    
+    default Map<String, String> removeAllWithPrimaryKey(String primaryKey) {
+        Map<String, String> map = new HashMap<>();
+        
+        for (String secondaryKey : secondaryKeySet(primaryKey)) {
+            String value = remove(primaryKey, secondaryKey);
+            map.put(secondaryKey, value);
+        }
+        return map;
+    }
+    
+    default Map<String, String> removeAllWithSecondaryKey(String secondaryKey) {
+        Map<String, String> map = new HashMap<>();
+        
+        for (String primaryKey : primaryKeySet()) {
+            if (containsFullKey(primaryKey, secondaryKey)) {
+                String value = remove(primaryKey, secondaryKey);
+                map.put(primaryKey, value);
+            }
+        }
+        return map;
+    }
+    
+    default Map<String, Set<String>> removeAllWithValue(String value) {
+        Values.requireValidValue(value);
+        Map<String, Set<String>> map = new HashMap<>();
+        
+        for (String primaryKey : primaryKeySet()) {
+            for (String secondaryKey : secondaryKeySet(primaryKey)) {
+                if (remove(primaryKey, secondaryKey, value)) {
+                    map.computeIfAbsent(primaryKey, k -> new HashSet<>())
+                       .add(secondaryKey);
+                }
+            }
+        }
+        return map;
+    }
+    
+    default Set<String> removeSecondaryKeysWith(String primaryKey, String value) {
+        Values.requireValidValue(value);
+        
+        Set<String> set = new HashSet<>();
+        for (String secondaryKey : secondaryKeySet(primaryKey)) {
+            if (remove(primaryKey, secondaryKey, value)) {
+                set.add(secondaryKey);
+            }
+        }
+        return set;
     }
     
     default String replace(String primaryKey,
