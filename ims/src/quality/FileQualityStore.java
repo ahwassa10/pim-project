@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public final class FileQualityStore implements QualityStore {
@@ -63,7 +64,7 @@ public final class FileQualityStore implements QualityStore {
         try {
             return Files.readString(fullKeyPath);
         } catch (NoSuchFileException e) {
-            String message = String.format("%s found in memory but not on disk", fullKey);
+            String message = String.format("%s found in-memory but not on-disk", fullKey);
             System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,7 +133,7 @@ public final class FileQualityStore implements QualityStore {
             try {
                 return Files.readString(fullKeyPath);
             } catch (NoSuchFileException e) {
-                String message = String.format("%s found on-memory but not on-disk");
+                String message = String.format("%s found in-memory but not on-disk", fullKey);
                 System.out.println(message);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -143,7 +144,7 @@ public final class FileQualityStore implements QualityStore {
             try {
                 Files.createFile(fullKeyPath);
             } catch (FileAlreadyExistsException e) {
-                String message = String.format("%s found on-disk but not in-memory");
+                String message = String.format("%s found on-disk but not in-memory", fullKey);
                 System.out.println(message);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -158,6 +159,7 @@ public final class FileQualityStore implements QualityStore {
 
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
+        Objects.requireNonNull(value, "Value cannot be null");
         
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
@@ -168,7 +170,7 @@ public final class FileQualityStore implements QualityStore {
                 Files.writeString(fullKeyPath, value);
                 return oldValue;
             } catch (NoSuchFileException e) {
-                String message = String.format("%s found on-memory but not on-disk", fullKey);
+                String message = String.format("%s found in-memory but not on-disk", fullKey);
                 System.out.println(message);
             } catch (IOException e) {
                 e.printStackTrace();

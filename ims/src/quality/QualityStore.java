@@ -1,5 +1,8 @@
 package quality;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,8 +33,7 @@ public interface QualityStore {
         
         for (String pkey : primaryKeySet()) {
             for (String skey : secondaryKeySet(pkey)) {
-                String onDisk = get(pkey, skey);
-                if (value.equals(onDisk)) {
+                if (value.equals(get(pkey, skey))) {
                     return true;
                 }
             }
@@ -41,11 +43,67 @@ public interface QualityStore {
     
     String get(String primaryKey, String secondaryKey);
     
+    default Map<String, String> getAllWithPrimaryKey(String primaryKey) {
+        Keys.requireValidKey(primaryKey);
+        Map<String, String> map = new HashMap<>();
+        
+        for (String secondaryKey : secondaryKeySet(primaryKey)) {
+            String value = get(primaryKey, secondaryKey);
+            map.put(secondaryKey, value);
+        }
+        return map;
+    }
+    
+    default Map<String, String> getAllWithSecondaryKey(String secondaryKey) {
+        Keys.requireValidKey(secondaryKey);
+        Map<String, String> map = new HashMap<>();
+        
+        for (String primaryKey : primaryKeySet()) {
+            if (containsFullKey(primaryKey, secondaryKey)) {
+                String value = get(primaryKey, secondaryKey);
+                map.put(primaryKey, value);
+            }
+        }
+        return map;
+    }
+    
+    default Map<String, Set<String>> getAllWithValue(String value) {
+        Objects.requireNonNull(value, "Value cannot be null");
+        Map<String, Set<String>> map = new HashMap<>();
+        
+        for (String primaryKey : primaryKeySet()) {
+            for (String secondaryKey : secondaryKeySet(primaryKey)) {
+                String onDisk = get(primaryKey, secondaryKey);
+                
+                if (value.equals(onDisk)) {
+                    map.computeIfAbsent(primaryKey, k -> new HashSet<>())
+                       .add(secondaryKey);
+                }
+            }
+        }
+        return map;
+    }
+    
     default String getOrDefault(String primaryKey,
                                 String secondaryKey,
                                 String defaultValue) {
+        Objects.requireNonNull(defaultValue, "Default value cannot be null");
         String onDisk = get(primaryKey, secondaryKey);
         return onDisk == null ? defaultValue : onDisk;
+    }
+    
+    default Set<String> getSecondaryKeysBy(String primaryKey, String value) {
+        Objects.requireNonNull(value, "Value cannot be null");
+        
+        Set<String> set = new HashSet<>();
+        for (String secondaryKey : secondaryKeySet(primaryKey)) {
+            if (containsFullKey(primaryKey, secondaryKey) &&
+                value.equals(get(primaryKey, secondaryKey))) {
+                
+                set.add(secondaryKey);
+            }
+        }
+        return set;
     }
     
     default boolean isEmpty() {
@@ -54,7 +112,7 @@ public interface QualityStore {
     
     Set<String> primaryKeySet();
     
-    String put(String primarykey, String secondaryKey);
+    String put(String primaryKey, String secondaryKey);
     
     String put(String primaryKey, String secondaryKey, String value);
     
@@ -62,7 +120,7 @@ public interface QualityStore {
                                String secondaryKey,
                                String value) {
         String onDisk = get(primaryKey, secondaryKey);
-        if (onDisk != null) {
+        if (onDisk == null) {
             put(primaryKey, secondaryKey, value);
         }
         return onDisk;
@@ -74,8 +132,6 @@ public interface QualityStore {
                            String secondaryKey, 
                            String value) {
         Objects.requireNonNull(value, "Value cannot be null");
-        // This null check is needed, otherwise the .equals()
-        // method might blow up below. 
         
         if (containsFullKey(primaryKey, secondaryKey) &&
             value.equals(get(primaryKey, secondaryKey))) {
