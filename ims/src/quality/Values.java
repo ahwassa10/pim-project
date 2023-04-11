@@ -3,10 +3,10 @@ package quality;
 import java.util.Objects;
 
 public final class Values {
-    private static final int MAX_LENGTH = 256;
+    private static final int MAX_LENGTH = 257; //Exclusive
     
     public static boolean isValid(String test_value) {
-        return test_value != null && test_value.length() <= MAX_LENGTH;
+        return test_value != null && test_value.length() < MAX_LENGTH;
     }
     
     public static String requireValidValue(String test_value) {

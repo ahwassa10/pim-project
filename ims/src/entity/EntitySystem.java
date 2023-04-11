@@ -14,13 +14,13 @@ public final class EntitySystem {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
-        qualityStore.put("tag", "identity");
+        qualityStore.putKeys("tag", "identity");
         
         System.out.println("Successfully created an entity system");
     }
     
     public void tag(String qualifier, String entity) {
-        qualityStore.put(qualifier, entity);
+        qualityStore.putKeys(qualifier, entity);
     }
 
     public void attribute(String qualifier, String entity, String data) {
@@ -29,7 +29,7 @@ public final class EntitySystem {
 
     public String createEntity() {
         String identity = UUID.randomUUID().toString();
-        qualityStore.put("identity", identity);
+        qualityStore.putKeys("identity", identity);
         
         return identity;
     }

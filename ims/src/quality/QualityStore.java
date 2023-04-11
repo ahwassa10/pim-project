@@ -3,7 +3,6 @@ package quality;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public interface QualityStore {
@@ -112,9 +111,9 @@ public interface QualityStore {
     
     Set<String> primaryKeySet();
     
-    String put(String primaryKey, String secondaryKey);
-    
     String put(String primaryKey, String secondaryKey, String value);
+    
+    String putKeys(String primaryKey, String secondaryKey);
     
     default String putIfAbsent(String primaryKey,
                                String secondaryKey,

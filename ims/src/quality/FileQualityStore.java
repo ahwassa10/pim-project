@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 public final class FileQualityStore implements QualityStore {
@@ -121,39 +120,6 @@ public final class FileQualityStore implements QualityStore {
     }
     
     public String put(String primaryKey,
-                      String secondaryKey) {
-        
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
-        
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
-        
-        if (containsFullKey(primaryKey, secondaryKey)) {
-            try {
-                return Files.readString(fullKeyPath);
-            } catch (NoSuchFileException e) {
-                String message = String.format("%s found in-memory but not on-disk", fullKey);
-                System.out.println(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                  .add(secondaryKey);
-            try {
-                Files.createFile(fullKeyPath);
-            } catch (FileAlreadyExistsException e) {
-                String message = String.format("%s found on-disk but not in-memory", fullKey);
-                System.out.println(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-    
-    public String put(String primaryKey,
                       String secondaryKey,
                       String value) {
 
@@ -180,6 +146,39 @@ public final class FileQualityStore implements QualityStore {
                   .add(secondaryKey);
             try {
                 Files.writeString(fullKeyPath, value);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    
+    public String putKeys(String primaryKey,
+                          String secondaryKey) {
+
+        Keys.requireValidKey(primaryKey);
+        Keys.requireValidKey(secondaryKey);
+
+        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        Path fullKeyPath = quality_folder.resolve(fullKey);
+
+        if (containsFullKey(primaryKey, secondaryKey)) {
+            try {
+                return Files.readString(fullKeyPath);
+            } catch (NoSuchFileException e) {
+                String message = String.format("%s found in-memory but not on-disk", fullKey);
+                System.out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
+                  .add(secondaryKey);
+            try {
+                Files.createFile(fullKeyPath);
+            } catch (FileAlreadyExistsException e) {
+                String message = String.format("%s found on-disk but not in-memory", fullKey);
+                System.out.println(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
