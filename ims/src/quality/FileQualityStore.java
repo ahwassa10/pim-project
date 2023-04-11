@@ -119,8 +119,8 @@ public final class FileQualityStore implements QualityStore {
         System.out.println(keyMap);
     }
     
-    public void put(String primaryKey,
-                    String secondaryKey) throws IOException {
+    public String put(String primaryKey,
+                      String secondaryKey) {
         
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
@@ -128,81 +128,99 @@ public final class FileQualityStore implements QualityStore {
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         
-        try {
-            if (!Files.exists(fullKeyPath)) {
-                Files.createFile(fullKeyPath);
+        if (containsFullKey(primaryKey, secondaryKey)) {
+            try {
+                return Files.readString(fullKeyPath);
+            } catch (NoSuchFileException e) {
+                String message = String.format("%s found on-memory but not on-disk");
+                System.out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (FileAlreadyExistsException e) {
-            System.out.println("Strange race condition between Files.exists() being"
-                    + " false and Files.createFile() seeing that the file exists.");
+        } else {
+            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
+                   .add(secondaryKey);
+            try {
+                Files.createFile(fullKeyPath);
+            } catch (FileAlreadyExistsException e) {
+                String message = String.format("%s found on-disk but not in-memory");
+                System.out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        
-        keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-              .add(secondaryKey);
+        return null;
     }
     
-    public void put(String primaryKey,
-                    String secondaryKey,
-                    String value) throws IOException {
+    public String put(String primaryKey,
+                      String secondaryKey,
+                      String value) {
 
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
-        
-        // Write the quality to disk
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
-        Files.writeString(fullKeyPath, value);
-        
-        // Add the full key to the keyMap
-        keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-              .add(secondaryKey);
-    }
-    
-    public void putIfAbsent(String primaryKey,
-                            String secondaryKey,
-                            String value) throws IOException {
-        
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
         
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         
-        if (!Files.exists(fullKeyPath)) {
-            Files.writeString(fullKeyPath, value);
+        if (containsFullKey(primaryKey, secondaryKey)) {
+            try {
+                String oldValue = Files.readString(fullKeyPath);
+                Files.writeString(fullKeyPath, value);
+                return oldValue;
+            } catch (NoSuchFileException e) {
+                String message = String.format("%s found on-memory but not on-disk", fullKey);
+                System.out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
+                  .add(secondaryKey);
+            try {
+                Files.writeString(fullKeyPath, value);
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        
-        keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-              .add(secondaryKey);
+        return null;
     }
     
-    public boolean remove(String primaryKey,
-                          String secondaryKey) throws IOException {
+    public String remove(String primaryKey,
+                          String secondaryKey) {
 
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
         
         String fullKey = Keys.combine(primaryKey, secondaryKey);
-        Path keyPath = quality_folder.resolve(fullKey);
+        Path fullKeyPath = quality_folder.resolve(fullKey);
         
-        boolean foundOnDisk = Files.deleteIfExists(keyPath);
-        boolean foundInMap = keyMap.containsKey(primaryKey) &&
-                             keyMap.get(primaryKey).contains(secondaryKey);
-        
-        
-        if (foundOnDisk != foundInMap) {
-        // Issues a warning when an inconsistency is found between the the disk and 
-        // the map. The system recovers from this inconsistency by trying to 
-        // delete both the file on disk, and the mapping in the index. 
-        System.out.println(String.format("Warning: FullKey<%s, %s> was found %s",
-              primaryKey, secondaryKey,
-              foundOnDisk ? "on-disk but not in-map" : "in-map but not on-disk"));
+        if (containsFullKey(primaryKey, secondaryKey)) {
+            try {
+                String value = Files.readString(fullKeyPath);
+                Files.delete(fullKeyPath);
+                
+                keyMap.get(primaryKey).remove(secondaryKey);
+                // Remove the primaryKey as well if it isn't mapped to
+                // any secondary keys.
+                if (keyMap.get(primaryKey).size() == 0) {
+                    keyMap.remove(primaryKey);
+                }
+                return value;
+            } catch (NoSuchFileException e) {
+                String message = String.format("%s found in-memory but not on-disk", fullKey);
+                System.out.println(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        
-        // Returns true as long as something was deleted from either the on-disk or in-index.
-        return foundOnDisk || foundInMap;
+        return null;
     }
-
+    
+    public Set<String> secondaryKeySet(String primaryKey) {
+        Keys.requireValidKey(primaryKey);
+        return Collections.unmodifiableSet(keyMap.get(primaryKey));
+    }
 
     public String toString() {
         return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
