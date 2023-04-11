@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,7 +39,7 @@ public final class FileQualityStore implements QualityStore {
                 if (Files.isRegularFile(qualityPath)) {
                     Files.delete(qualityPath);
                 } else {
-                    String message = String.format("%s is not a quality", qualityPath);
+                    String message = String.format("%s is not a file", qualityPath);
                     System.out.println(message);
                 }
             }
@@ -46,28 +48,27 @@ public final class FileQualityStore implements QualityStore {
         }
     }
     
-    public boolean containsPrimaryKey(String primaryKey) {
-        return keyMap.containsKey(primaryKey);
-    }
-    
     public String get(String primaryKey,
-                      String secondaryKey) throws IOException {
+                      String secondaryKey) {
 
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
         
-        if (!keyMap.containsKey(primaryKey)) {
-          String message = String.format("Primary key: %s does not exist", primaryKey);
-          throw new IllegalArgumentException(message);
-        }
-        if (!keyMap.get(primaryKey).contains(secondaryKey)) {
-          String message = String.format("Seconday key: %s does not exist", secondaryKey);
-          throw new IllegalArgumentException(message);
+        if (!containsFullKey(primaryKey, secondaryKey)) {
+            return null;
         }
         
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
-        return Files.readString(fullKeyPath);
+        try {
+            return Files.readString(fullKeyPath);
+        } catch (NoSuchFileException e) {
+            String message = String.format("%s found in memory but not on disk", fullKey);
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     private void load() throws IOException {
@@ -110,7 +111,11 @@ public final class FileQualityStore implements QualityStore {
         }
     }
     
-    public void printIndex() {
+    public Set<String> primaryKeySet() {
+        return Collections.unmodifiableSet(keyMap.keySet());
+    }
+    
+    public void printKeyMap() {
         System.out.println(keyMap);
     }
     
