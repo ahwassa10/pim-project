@@ -159,7 +159,7 @@ public final class FileQualityStore implements QualityStore {
 
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
-        Objects.requireNonNull(value, "Value cannot be null");
+        Values.requireValidValue(value);
         
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);

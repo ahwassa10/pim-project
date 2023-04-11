@@ -29,7 +29,7 @@ public interface QualityStore {
     }
     
     default boolean containsValue(String value) {
-        Objects.requireNonNull(value, "Value cannot be null");
+        Values.requireValidValue(value);
         
         for (String pkey : primaryKeySet()) {
             for (String skey : secondaryKeySet(pkey)) {
@@ -68,7 +68,7 @@ public interface QualityStore {
     }
     
     default Map<String, Set<String>> getAllWithValue(String value) {
-        Objects.requireNonNull(value, "Value cannot be null");
+        Values.requireValidValue(value);
         Map<String, Set<String>> map = new HashMap<>();
         
         for (String primaryKey : primaryKeySet()) {
@@ -87,13 +87,13 @@ public interface QualityStore {
     default String getOrDefault(String primaryKey,
                                 String secondaryKey,
                                 String defaultValue) {
-        Objects.requireNonNull(defaultValue, "Default value cannot be null");
+        Values.requireValidValue(defaultValue);
         String onDisk = get(primaryKey, secondaryKey);
         return onDisk == null ? defaultValue : onDisk;
     }
     
     default Set<String> getSecondaryKeysBy(String primaryKey, String value) {
-        Objects.requireNonNull(value, "Value cannot be null");
+        Values.requireValidValue(value);
         
         Set<String> set = new HashSet<>();
         for (String secondaryKey : secondaryKeySet(primaryKey)) {
@@ -131,7 +131,7 @@ public interface QualityStore {
     default boolean remove(String primaryKey,
                            String secondaryKey, 
                            String value) {
-        Objects.requireNonNull(value, "Value cannot be null");
+        Values.requireValidValue(value);
         
         if (containsFullKey(primaryKey, secondaryKey) &&
             value.equals(get(primaryKey, secondaryKey))) {
@@ -157,7 +157,7 @@ public interface QualityStore {
                             String secondaryKey,
                             String oldValue,
                             String newValue) {
-        Objects.requireNonNull(oldValue, "Old value cannot be null");
+        Values.requireValidValue(oldValue);
         
         if (containsFullKey(primaryKey, secondaryKey) &&
             oldValue.equals(get(primaryKey, secondaryKey))) {
