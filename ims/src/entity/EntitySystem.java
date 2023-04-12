@@ -14,7 +14,12 @@ public final class EntitySystem {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
+        qualityStore.putKeys("capability", "tag");
+        qualityStore.putKeys("capability", "attribute");
+        
         qualityStore.putKeys("tag", "identity");
+        qualityStore.putKeys("attribute", "substance");
+        qualityStore.putKeys("attribute", "creation-time");
         
         System.out.println("Successfully created an entity system");
     }
@@ -32,14 +37,6 @@ public final class EntitySystem {
         qualityStore.putKeys("identity", identity);
         
         return identity;
-    }
-    
-    public FileQualityStore getQualityStore() {
-        return qualityStore;
-    }
-    
-    public SubstanceStore getSubstanceStore() {
-        return substanceStore;
     }
 
     public void setSubstance(String identity, Path substanceFile) {
