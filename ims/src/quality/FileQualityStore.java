@@ -187,17 +187,54 @@ public final class FileQualityStore implements QualityStore {
     }
     
     public String remove(String primaryKey,
-                          String secondaryKey) {
+                         String secondaryKey) {
 
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
         
+        if (!containsFullKey(primaryKey, secondaryKey)) {
+            return null;
+        }
+        
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
+        try {
+            String value = Files.readString(fullKeyPath);
+            Files.delete(fullKeyPath);
+            
+            keyMap.get(primaryKey).remove(secondaryKey);
+            // Remove the primaryKey as well if it isn't mapped to
+            // any secondary keys.
+            if (keyMap.get(primaryKey).size() == 0) {
+                keyMap.remove(primaryKey);
+            }
+            return value;
+        } catch (NoSuchFileException e) {
+            String message = String.format("%s found in-memory but not on-disk", fullKey);
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public boolean remove(String primaryKey,
+                          String secondaryKey,
+                          String value) {
         
-        if (containsFullKey(primaryKey, secondaryKey)) {
-            try {
-                String value = Files.readString(fullKeyPath);
+        Keys.requireValidKey(primaryKey);
+        Keys.requireValidKey(secondaryKey);
+        Values.requireValidValue(value);
+        
+        if (!containsFullKey(primaryKey, secondaryKey)) {
+            return false;
+        }
+        
+        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        Path fullKeyPath = quality_folder.resolve(fullKey);
+        try {
+            String onDisk = Files.readString(fullKeyPath);
+            if (value.equals(onDisk)) {
                 Files.delete(fullKeyPath);
                 
                 keyMap.get(primaryKey).remove(secondaryKey);
@@ -206,15 +243,16 @@ public final class FileQualityStore implements QualityStore {
                 if (keyMap.get(primaryKey).size() == 0) {
                     keyMap.remove(primaryKey);
                 }
-                return value;
-            } catch (NoSuchFileException e) {
-                String message = String.format("%s found in-memory but not on-disk", fullKey);
-                System.out.println(message);
-            } catch (IOException e) {
-                e.printStackTrace();
+                return true;
             }
+        } catch (NoSuchFileException e) {
+            String message = String.format("%s found in-memory but not on-disk", fullKey);
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
+        
+        return false;
     }
     
     public Set<String> secondaryKeySet(String primaryKey) {

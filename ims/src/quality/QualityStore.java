@@ -127,20 +127,7 @@ public interface QualityStore {
     
     String remove(String primaryKey, String secondaryKey);
     
-    default boolean remove(String primaryKey,
-                           String secondaryKey, 
-                           String value) {
-        Values.requireValidValue(value);
-        
-        if (containsFullKey(primaryKey, secondaryKey) &&
-            value.equals(get(primaryKey, secondaryKey))) {
-            
-            remove(primaryKey, secondaryKey);
-            return true;
-        } else {
-            return false;
-        }
-    }
+    boolean remove(String primaryKey, String secondaryKey, String value);
     
     default Map<String, String> removeAllWithPrimaryKey(String primaryKey) {
         Map<String, String> map = new HashMap<>();
