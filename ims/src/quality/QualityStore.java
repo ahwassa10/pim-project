@@ -220,13 +220,12 @@ public interface QualityStore {
     
     default boolean replace(String primaryKey,
                             String secondaryKey,
-                            String oldValue,
+                            Predicate<String> ovTester,
                             String newValue) {
-        Values.requireValidValue(oldValue);
+        Objects.requireNonNull(ovTester, "OldValue tester predicate cannot be null");
         
-        if (containsFullKey(primaryKey, secondaryKey) &&
-            oldValue.equals(get(primaryKey, secondaryKey))) {
-            
+        String onDisk = get(primaryKey, secondaryKey);
+        if (onDisk != null && ovTester.test(onDisk)) {
             put(primaryKey, secondaryKey, newValue);
             return true;
         } else {
