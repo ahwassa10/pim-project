@@ -21,6 +21,7 @@ public interface QualityStore {
     }
     
     default boolean containsSecondaryKey(String secondaryKey) {
+        Objects.requireNonNull(secondaryKey);
         for (String pkey : primaryKeySet()) {
             if (secondaryKeySet(pkey).contains(secondaryKey)) {
                 return true;
@@ -45,7 +46,6 @@ public interface QualityStore {
     String get(String primaryKey, String secondaryKey);
     
     default Map<String, String> getAllWithPrimaryKey(String primaryKey) {
-        Keys.requireValidKey(primaryKey);
         Map<String, String> map = new HashMap<>();
         
         for (String secondaryKey : secondaryKeySet(primaryKey)) {
@@ -104,14 +104,13 @@ public interface QualityStore {
         return onDisk == null ? defaultValue : onDisk;
     }
     
-    default Set<String> getSecondaryKeysWith(String primaryKey, String value) {
-        Values.requireValidValue(value);
+    default Set<String> getSecondaryKeysWith(String primaryKey, Predicate<String> vTester) {
+        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
         Set<String> set = new HashSet<>();
         for (String secondaryKey : secondaryKeySet(primaryKey)) {
-            if (containsFullKey(primaryKey, secondaryKey) &&
-                value.equals(get(primaryKey, secondaryKey))) {
-                
+            String onDisk = get(primaryKey, secondaryKey);
+            if (onDisk != null && vTester.test(onDisk)) {
                 set.add(secondaryKey);
             }
         }
@@ -155,6 +154,7 @@ public interface QualityStore {
     }
     
     default Map<String, String> removeAllWithSecondaryKey(String secondaryKey) {
+        Keys.requireValidKey(secondaryKey);
         Map<String, String> map = new HashMap<>();
         
         for (String primaryKey : primaryKeySet()) {
@@ -193,6 +193,19 @@ public interface QualityStore {
         }
         
         return map;
+    }
+    
+    default Set<String> removeSecondaryKeysWith(String primaryKey, Predicate<String> vTester) {
+        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
+        
+        Set<String> set = new HashSet<>();
+        for (String secondaryKey : secondaryKeySet(primaryKey)) {
+            String onDisk = remove(primaryKey, secondaryKey, vTester);
+            if (onDisk != null) {
+                set.add(secondaryKey);
+            }
+        }
+        return set;
     }
     
     default String replace(String primaryKey,
