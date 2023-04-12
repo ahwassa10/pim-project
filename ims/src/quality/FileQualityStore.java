@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public final class FileQualityStore implements QualityStore {
     private final Map<String, Set<String>> keyMap;
@@ -187,10 +189,12 @@ public final class FileQualityStore implements QualityStore {
     }
     
     public String remove(String primaryKey,
-                         String secondaryKey) {
-
+                         String secondaryKey,
+                         Predicate<String> valueTester) {
+        
         Keys.requireValidKey(primaryKey);
         Keys.requireValidKey(secondaryKey);
+        Objects.requireNonNull(valueTester, "Value tester predicate cannot be null");
         
         if (!containsFullKey(primaryKey, secondaryKey)) {
             return null;
@@ -199,42 +203,8 @@ public final class FileQualityStore implements QualityStore {
         String fullKey = Keys.combine(primaryKey, secondaryKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         try {
-            String value = Files.readString(fullKeyPath);
-            Files.delete(fullKeyPath);
-            
-            keyMap.get(primaryKey).remove(secondaryKey);
-            // Remove the primaryKey as well if it isn't mapped to
-            // any secondary keys.
-            if (keyMap.get(primaryKey).size() == 0) {
-                keyMap.remove(primaryKey);
-            }
-            return value;
-        } catch (NoSuchFileException e) {
-            String message = String.format("%s found in-memory but not on-disk", fullKey);
-            System.out.println(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    public boolean remove(String primaryKey,
-                          String secondaryKey,
-                          String value) {
-        
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
-        Values.requireValidValue(value);
-        
-        if (!containsFullKey(primaryKey, secondaryKey)) {
-            return false;
-        }
-        
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
-        try {
             String onDisk = Files.readString(fullKeyPath);
-            if (value.equals(onDisk)) {
+            if (valueTester.test(onDisk)) {
                 Files.delete(fullKeyPath);
                 
                 keyMap.get(primaryKey).remove(secondaryKey);
@@ -243,7 +213,7 @@ public final class FileQualityStore implements QualityStore {
                 if (keyMap.get(primaryKey).size() == 0) {
                     keyMap.remove(primaryKey);
                 }
-                return true;
+                return onDisk;
             }
         } catch (NoSuchFileException e) {
             String message = String.format("%s found in-memory but not on-disk", fullKey);
@@ -251,8 +221,7 @@ public final class FileQualityStore implements QualityStore {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-        return false;
+        return null;
     }
     
     public Set<String> secondaryKeySet(String primaryKey) {

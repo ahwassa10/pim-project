@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public interface QualityStore {
     void clear();
@@ -125,9 +126,16 @@ public interface QualityStore {
         return onDisk;
     }
     
-    String remove(String primaryKey, String secondaryKey);
+    default String remove(String primaryKey, String secondaryKey) {
+        return remove(primaryKey, secondaryKey, onDisk -> true);
+    }
     
-    boolean remove(String primaryKey, String secondaryKey, String value);
+    String remove(String primaryKey, String secondaryKey, Predicate<String> valueTester);
+    
+    default boolean remove(String primaryKey, String secondaryKey, String value) {
+        Values.requireValidValue(value);
+        return remove(primaryKey, secondaryKey, onDisk -> value.equals(onDisk)) != null;
+    }
     
     default Map<String, String> removeAllWithPrimaryKey(String primaryKey) {
         Map<String, String> map = new HashMap<>();
