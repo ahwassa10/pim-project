@@ -3,6 +3,7 @@ package quality;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -59,25 +60,36 @@ public interface QualityStore {
         Map<String, String> map = new HashMap<>();
         
         for (String primaryKey : primaryKeySet()) {
-            if (containsFullKey(primaryKey, secondaryKey)) {
-                String value = get(primaryKey, secondaryKey);
-                map.put(primaryKey, value);
+            String onDisk = get(primaryKey, secondaryKey);
+            if (onDisk != null) {
+                map.put(primaryKey, onDisk);
             }
         }
         return map;
     }
     
-    default Map<String, Set<String>> getAllWithValue(String value) {
-        Values.requireValidValue(value);
-        Map<String, Set<String>> map = new HashMap<>();
-        
+    default Map<String, Map<String, String>> getMatching(Predicate<String> pkeyTester,
+                                                         Predicate<String> skeyTester,
+                                                         Predicate<String> vTester) {
+        Objects.requireNonNull(pkeyTester, "PrimaryKey tester predicate cannot be null");
+        Objects.requireNonNull(skeyTester, "SecondaryKey tester predicate cannot be null");
+        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
+
+        Map<String, Map<String, String>> map = new HashMap<>();
+
         for (String primaryKey : primaryKeySet()) {
+            if (!pkeyTester.test(primaryKey)) {
+                continue;
+            }
             for (String secondaryKey : secondaryKeySet(primaryKey)) {
+                if (!skeyTester.test(secondaryKey)) {
+                    continue;
+                }
+
                 String onDisk = get(primaryKey, secondaryKey);
-                
-                if (value.equals(onDisk)) {
-                    map.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                       .add(secondaryKey);
+                if (onDisk != null && vTester.test(onDisk)) {
+                    map.computeIfAbsent(primaryKey, k -> new HashMap<>())
+                       .put(secondaryKey, onDisk);
                 }
             }
         }
@@ -146,9 +158,9 @@ public interface QualityStore {
         Map<String, String> map = new HashMap<>();
         
         for (String primaryKey : primaryKeySet()) {
-            if (containsFullKey(primaryKey, secondaryKey)) {
-                String value = remove(primaryKey, secondaryKey);
-                map.put(primaryKey, value);
+            String onDisk = remove(primaryKey, secondaryKey);
+            if (onDisk != null) {
+                map.put(primaryKey, onDisk);
             }
         }
         return map;
@@ -157,6 +169,9 @@ public interface QualityStore {
     default Map<String, Map<String, String>> removeMatching(Predicate<String> pkeyTester,
                                                             Predicate<String> skeyTester,
                                                             Predicate<String> vTester) {
+        Objects.requireNonNull(pkeyTester, "PrimaryKey tester predicate cannot be null");
+        Objects.requireNonNull(skeyTester, "SecondaryKey tester predicate cannot be null");
+        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
         Map<String, Map<String, String>> map = new HashMap<>();
         

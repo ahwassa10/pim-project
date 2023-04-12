@@ -52,9 +52,6 @@ public final class FileQualityStore implements QualityStore {
     
     public String get(String primaryKey,
                       String secondaryKey) {
-
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
         
         if (!containsFullKey(primaryKey, secondaryKey)) {
             return null;
@@ -191,9 +188,6 @@ public final class FileQualityStore implements QualityStore {
     public String remove(String primaryKey,
                          String secondaryKey,
                          Predicate<String> valueTester) {
-        
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
         Objects.requireNonNull(valueTester, "Value tester predicate cannot be null");
         
         if (!containsFullKey(primaryKey, secondaryKey)) {
