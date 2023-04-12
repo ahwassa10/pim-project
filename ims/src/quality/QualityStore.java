@@ -126,15 +126,10 @@ public interface QualityStore {
         return onDisk;
     }
     
-    default String remove(String primaryKey, String secondaryKey) {
-        return remove(primaryKey, secondaryKey, onDisk -> true);
-    }
-    
     String remove(String primaryKey, String secondaryKey, Predicate<String> valueTester);
     
-    default boolean remove(String primaryKey, String secondaryKey, String value) {
-        Values.requireValidValue(value);
-        return remove(primaryKey, secondaryKey, onDisk -> value.equals(onDisk)) != null;
+    default String remove(String primaryKey, String secondaryKey) {
+        return remove(primaryKey, secondaryKey, onDisk -> true);
     }
     
     default Map<String, String> removeAllWithPrimaryKey(String primaryKey) {
@@ -159,31 +154,30 @@ public interface QualityStore {
         return map;
     }
     
-    default Map<String, Set<String>> removeAllWithValue(String value) {
-        Values.requireValidValue(value);
-        Map<String, Set<String>> map = new HashMap<>();
+    default Map<String, Map<String, String>> removeMatching(Predicate<String> pkeyTester,
+                                                            Predicate<String> skeyTester,
+                                                            Predicate<String> vTester) {
+        
+        Map<String, Map<String, String>> map = new HashMap<>();
         
         for (String primaryKey : primaryKeySet()) {
+            if (!pkeyTester.test(primaryKey)) {
+                continue;
+            }
             for (String secondaryKey : secondaryKeySet(primaryKey)) {
-                if (remove(primaryKey, secondaryKey, value)) {
-                    map.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                       .add(secondaryKey);
+                if (!skeyTester.test(secondaryKey)) {
+                    continue;
+                }
+                
+                String onDisk = remove(primaryKey, secondaryKey, vTester);
+                if (onDisk != null) {
+                    map.computeIfAbsent(primaryKey, k -> new HashMap<>())
+                       .put(secondaryKey, onDisk);
                 }
             }
         }
-        return map;
-    }
-    
-    default Set<String> removeSecondaryKeysWith(String primaryKey, String value) {
-        Values.requireValidValue(value);
         
-        Set<String> set = new HashSet<>();
-        for (String secondaryKey : secondaryKeySet(primaryKey)) {
-            if (remove(primaryKey, secondaryKey, value)) {
-                set.add(secondaryKey);
-            }
-        }
-        return set;
+        return map;
     }
     
     default String replace(String primaryKey,
