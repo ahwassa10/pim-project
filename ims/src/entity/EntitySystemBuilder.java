@@ -2,13 +2,13 @@ package entity;
 
 import java.util.Objects;
 
-import quality.FileQualityStore;
-import quality.FileQualityStoreBuilder;
 import substance.SubstanceStore;
 import substance.SubstanceStoreBuilder;
+import triple.FileTripleStore;
+import triple.FileTripleStoreBuilder;
 
 public final class EntitySystemBuilder {
-    private FileQualityStore qualityStore;
+    private FileTripleStore qualityStore;
     private SubstanceStore substanceStore;
 
     public EntitySystemBuilder() {
@@ -16,7 +16,7 @@ public final class EntitySystemBuilder {
 
     public static EntitySystem test_entitysystem() {
         return new EntitySystemBuilder()
-                .setQualityStore(FileQualityStoreBuilder.test_qualitystore())
+                .setQualityStore(FileTripleStoreBuilder.test_triplestore())
                 .setSubstanceStore(SubstanceStoreBuilder.test_substore())
                 .build();
     }
@@ -30,7 +30,7 @@ public final class EntitySystemBuilder {
         return new EntitySystem(qualityStore, substanceStore);
     }
 
-    public EntitySystemBuilder setQualityStore(FileQualityStore qualityStore) {
+    public EntitySystemBuilder setQualityStore(FileTripleStore qualityStore) {
         Objects.requireNonNull(qualityStore, "Quality Store cannot be null");
         this.qualityStore = qualityStore;
         return this;

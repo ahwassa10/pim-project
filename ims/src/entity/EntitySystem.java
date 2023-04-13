@@ -3,29 +3,29 @@ package entity;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import quality.FileQualityStore;
 import substance.SubstanceStore;
+import triple.FileTripleStore;
 
 public final class EntitySystem {
-    private final FileQualityStore qualityStore;
+    private final FileTripleStore qualityStore;
     private final SubstanceStore substanceStore;
 
-    EntitySystem(FileQualityStore qualityStore, SubstanceStore substanceStore) {
+    EntitySystem(FileTripleStore qualityStore, SubstanceStore substanceStore) {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
-        qualityStore.putKeys("capability", "tag");
-        qualityStore.putKeys("capability", "attribute");
+        qualityStore.putDescriptor("capability", "tag");
+        qualityStore.putDescriptor("capability", "attribute");
         
-        qualityStore.putKeys("tag", "identity");
-        qualityStore.putKeys("attribute", "substance");
-        qualityStore.putKeys("attribute", "creation-time");
+        qualityStore.putDescriptor("tag", "identity");
+        qualityStore.putDescriptor("attribute", "substance");
+        qualityStore.putDescriptor("attribute", "creation-time");
         
         System.out.println("Successfully created an entity system");
     }
     
     public void tag(String qualifier, String entity) {
-        qualityStore.putKeys(qualifier, entity);
+        qualityStore.putDescriptor(qualifier, entity);
     }
 
     public void attribute(String qualifier, String entity, String data) {
@@ -34,7 +34,7 @@ public final class EntitySystem {
 
     public String createEntity() {
         String identity = UUID.randomUUID().toString();
-        qualityStore.putKeys("identity", identity);
+        qualityStore.putDescriptor("identity", identity);
         
         return identity;
     }

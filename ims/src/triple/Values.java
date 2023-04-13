@@ -1,4 +1,4 @@
-package quality;
+package triple;
 
 import java.util.Objects;
 

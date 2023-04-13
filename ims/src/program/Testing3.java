@@ -2,7 +2,7 @@ package program;
 
 import java.util.List;
 
-import quality.Keys;
+import triple.Keys;
 
 public class Testing3 {
     public static void main(String[] args) {

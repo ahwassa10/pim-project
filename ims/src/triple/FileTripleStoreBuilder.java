@@ -1,25 +1,25 @@
-package quality;
+package triple;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public final class FileQualityStoreBuilder {
+public final class FileTripleStoreBuilder {
     private Path export_folder;
     private Path quality_folder;
 
-    public FileQualityStoreBuilder() {
+    public FileTripleStoreBuilder() {
     }
 
-    public static FileQualityStore test_qualitystore() {
-        return new FileQualityStoreBuilder()
+    public static FileTripleStore test_triplestore() {
+        return new FileTripleStoreBuilder()
                 .setExportFolder("C:\\Users\\Primary\\Desktop\\export")
                 .setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
                 .build();
     }
 
-    public FileQualityStore build() {
+    public FileTripleStore build() {
         if (quality_folder == null) {
             throw new IllegalStateException("Quality folder not specified");
         } else if (export_folder == null) {
@@ -27,18 +27,18 @@ public final class FileQualityStoreBuilder {
         }
         
         try {
-            FileQualityStore f = new FileQualityStore(export_folder, quality_folder);
-            String message = "Successfully created a file quality store";
+            FileTripleStore f = new FileTripleStore(export_folder, quality_folder);
+            String message = "Successfully created a file-based triple store";
             System.out.println(message);
             return f;
         } catch (IOException e) {
-            String message = "Failed to create a file quality store";
+            String message = "Failed to create a file-based triple store";
             System.out.println(message);
             return null;
         }
     }
 
-    public FileQualityStoreBuilder setExportFolder(String pathname) {
+    public FileTripleStoreBuilder setExportFolder(String pathname) {
         Objects.requireNonNull(pathname, "Export folder path cannot be null");
         
         Path test_path = Path.of(pathname);
@@ -51,7 +51,7 @@ public final class FileQualityStoreBuilder {
         return this;
     }
 
-    public FileQualityStoreBuilder setQualityFolder(String pathname) {
+    public FileTripleStoreBuilder setQualityFolder(String pathname) {
         Objects.requireNonNull(pathname, "Quality folder path cannot be null");
         
         Path test_path = Path.of(pathname);

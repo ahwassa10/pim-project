@@ -1,4 +1,4 @@
-package quality;
+package triple;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -14,12 +14,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public final class FileQualityStore implements QualityStore {
+public final class FileTripleStore implements TripleStore {
     private final Map<String, Set<String>> keyMap;
     private final Path export_folder;
     private final Path quality_folder;
 
-    FileQualityStore(Path ef_path, Path qf_path) throws IOException {
+    FileTripleStore(Path ef_path, Path qf_path) throws IOException {
         this.keyMap = new HashMap<>();
         this.export_folder = ef_path;
         this.quality_folder = qf_path;
@@ -44,14 +44,19 @@ public final class FileQualityStore implements QualityStore {
         }
     }
     
-    public String get(String primaryKey,
-                      String secondaryKey) {
+    public Set<String> entitySetFor(String qualifierKey) {
+        Keys.requireValidKey(qualifierKey);
+        return Collections.unmodifiableSet(keyMap.get(qualifierKey));
+    }
+    
+    public String get(String qualifierKey,
+                      String entityKey) {
         
-        if (!containsFullKey(primaryKey, secondaryKey)) {
+        if (!containsDescriptor(qualifierKey, entityKey)) {
             return null;
         }
         
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        String fullKey = Keys.combine(qualifierKey, entityKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         try {
             return Files.readString(fullKeyPath);
@@ -104,7 +109,7 @@ public final class FileQualityStore implements QualityStore {
         }
     }
     
-    public Set<String> primaryKeySet() {
+    public Set<String> qualifierSet() {
         return Collections.unmodifiableSet(keyMap.keySet());
     }
     
@@ -112,18 +117,18 @@ public final class FileQualityStore implements QualityStore {
         System.out.println(keyMap);
     }
     
-    public String put(String primaryKey,
-                      String secondaryKey,
+    public String put(String qualifierKey,
+                      String entityKey,
                       String value) {
 
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
+        Keys.requireValidKey(qualifierKey);
+        Keys.requireValidKey(entityKey);
         Values.requireValidValue(value);
         
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        String fullKey = Keys.combine(qualifierKey, entityKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         
-        if (containsFullKey(primaryKey, secondaryKey)) {
+        if (containsDescriptor(qualifierKey, entityKey)) {
             try {
                 String oldValue = Files.readString(fullKeyPath);
                 Files.writeString(fullKeyPath, value);
@@ -135,8 +140,8 @@ public final class FileQualityStore implements QualityStore {
                 e.printStackTrace();
             }
         } else {
-            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                  .add(secondaryKey);
+            keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
+                  .add(entityKey);
             try {
                 Files.writeString(fullKeyPath, value);
             } catch (IOException e) {
@@ -146,16 +151,16 @@ public final class FileQualityStore implements QualityStore {
         return null;
     }
     
-    public String putKeys(String primaryKey,
-                          String secondaryKey) {
+    public String putDescriptor(String qualifierKey,
+                                String entityKey) {
 
-        Keys.requireValidKey(primaryKey);
-        Keys.requireValidKey(secondaryKey);
+        Keys.requireValidKey(qualifierKey);
+        Keys.requireValidKey(entityKey);
 
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        String fullKey = Keys.combine(qualifierKey, entityKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
 
-        if (containsFullKey(primaryKey, secondaryKey)) {
+        if (containsDescriptor(qualifierKey, entityKey)) {
             try {
                 return Files.readString(fullKeyPath);
             } catch (NoSuchFileException e) {
@@ -165,8 +170,8 @@ public final class FileQualityStore implements QualityStore {
                 e.printStackTrace();
             }
         } else {
-            keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                  .add(secondaryKey);
+            keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
+                  .add(entityKey);
             try {
                 Files.createFile(fullKeyPath);
             } catch (FileAlreadyExistsException e) {
@@ -179,27 +184,27 @@ public final class FileQualityStore implements QualityStore {
         return null;
     }
     
-    public String remove(String primaryKey,
-                         String secondaryKey,
+    public String remove(String qualifierKey,
+                         String entityKey,
                          Predicate<String> valueTester) {
         Objects.requireNonNull(valueTester, "Value tester predicate cannot be null");
         
-        if (!containsFullKey(primaryKey, secondaryKey)) {
+        if (!containsDescriptor(qualifierKey, entityKey)) {
             return null;
         }
         
-        String fullKey = Keys.combine(primaryKey, secondaryKey);
+        String fullKey = Keys.combine(qualifierKey, entityKey);
         Path fullKeyPath = quality_folder.resolve(fullKey);
         try {
             String onDisk = Files.readString(fullKeyPath);
             if (valueTester.test(onDisk)) {
                 Files.delete(fullKeyPath);
                 
-                keyMap.get(primaryKey).remove(secondaryKey);
-                // Remove the primaryKey as well if it isn't mapped to
-                // any secondary keys.
-                if (keyMap.get(primaryKey).size() == 0) {
-                    keyMap.remove(primaryKey);
+                keyMap.get(qualifierKey).remove(entityKey);
+                // Remove the qualifier key as well if it isn't mapped to
+                // any entity keys.
+                if (keyMap.get(qualifierKey).size() == 0) {
+                    keyMap.remove(qualifierKey);
                 }
                 return onDisk;
             }
@@ -211,14 +216,9 @@ public final class FileQualityStore implements QualityStore {
         }
         return null;
     }
-    
-    public Set<String> secondaryKeySet(String primaryKey) {
-        Keys.requireValidKey(primaryKey);
-        return Collections.unmodifiableSet(keyMap.get(primaryKey));
-    }
 
     public String toString() {
-        return String.format("Quality Store<Export Folder<%s>, Quality Folder<%s>>",
+        return String.format("Triple Store<Export Folder<%s>, Quality Folder<%s>>",
                 export_folder, quality_folder);
     }
 }
