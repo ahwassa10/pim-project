@@ -19,18 +19,12 @@ public final class FileQualityStore implements QualityStore {
     private final Path export_folder;
     private final Path quality_folder;
 
-    FileQualityStore(Path ef_path, Path qf_path) {
+    FileQualityStore(Path ef_path, Path qf_path) throws IOException {
         this.keyMap = new HashMap<>();
         this.export_folder = ef_path;
         this.quality_folder = qf_path;
-
-        try {
-            load();
-            System.out.println("Successfully created a quality store");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Failed to create a quality store");
-        }
+        
+        load();
     }
     
     public void clear() {

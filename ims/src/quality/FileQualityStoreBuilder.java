@@ -1,5 +1,6 @@
 package quality;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -24,7 +25,17 @@ public final class FileQualityStoreBuilder {
         } else if (export_folder == null) {
             throw new IllegalStateException("Output folder not specified");
         }
-        return new FileQualityStore(export_folder, quality_folder);
+        
+        try {
+            FileQualityStore f = new FileQualityStore(export_folder, quality_folder);
+            String message = "Successfully created a file quality store";
+            System.out.println(message);
+            return f;
+        } catch (IOException e) {
+            String message = "Failed to create a file quality store";
+            System.out.println(message);
+            return null;
+        }
     }
 
     public FileQualityStoreBuilder setExportFolder(String pathname) {
