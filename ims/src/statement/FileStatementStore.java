@@ -1,4 +1,4 @@
-package triple;
+package statement;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

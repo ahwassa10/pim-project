@@ -2,7 +2,7 @@ package program;
 
 import java.util.List;
 
-import triple.Keys;
+import statement.Keys;
 
 public class Testing3 {
     public static void main(String[] args) {

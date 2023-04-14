@@ -3,8 +3,8 @@ package entity;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import statement.FileStatementStore;
 import substance.SubstanceStore;
-import triple.FileStatementStore;
 
 public final class EntitySystem {
     private final FileStatementStore qualityStore;

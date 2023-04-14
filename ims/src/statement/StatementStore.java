@@ -1,4 +1,4 @@
-package triple;
+package statement;
 
 import java.util.HashMap;
 import java.util.HashSet;

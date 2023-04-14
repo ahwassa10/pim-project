@@ -2,10 +2,10 @@ package entity;
 
 import java.util.Objects;
 
+import statement.FileStatementStore;
+import statement.FileStatementStoreBuilder;
 import substance.SubstanceStore;
 import substance.SubstanceStoreBuilder;
-import triple.FileStatementStore;
-import triple.FileStatementStoreBuilder;
 
 public final class EntitySystemBuilder {
     private FileStatementStore qualityStore;
