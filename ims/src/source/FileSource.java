@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import entity.EntitySystem;
+import entity.Identifier;
 
 public final class FileSource {
     private final EntitySystem entitySystem;
@@ -33,16 +34,16 @@ public final class FileSource {
         return info;
     }
 
-    public List<String> importAllFiles() {
-        List<String> identities = new ArrayList<>();
+    public List<Identifier> importAllFiles() {
+        List<Identifier> identities = new ArrayList<>();
 
         try (DirectoryStream<Path> sourceStream = Files.newDirectoryStream(source_folder)) {
             Iterator<Path> sourceFiles = sourceStream.iterator();
 
             while (sourceFiles.hasNext()) {
                 // Import a source file.
-                String identity = importFile(sourceFiles.next());
-                identities.add(identity);
+                Identifier i = importFile(sourceFiles.next());
+                identities.add(i);
             }
 
         } catch (IOException e) {
@@ -51,7 +52,7 @@ public final class FileSource {
         return identities;
     }
 
-    public String importFile() {
+    public Identifier importFile() {
         try (DirectoryStream<Path> sourceStream = Files.newDirectoryStream(source_folder)) {
             Iterator<Path> sourceFiles = sourceStream.iterator();
 
@@ -65,19 +66,19 @@ public final class FileSource {
         return null;
     }
 
-    private String importFile(Path sourceFile) {
+    private Identifier importFile(Path sourceFile) {
         try {
             String filename = sourceFile.getFileName().toString();
             String filesize = Long.toString((long) Files.getAttribute(sourceFile, "basic:size"));
 
-            String identity = entitySystem.createEntity();
-            entitySystem.setSubstance(identity, sourceFile);
-            entitySystem.attribute("filename", identity, filename);
-            entitySystem.attribute("filesize", identity, filesize);
+            Identifier i = entitySystem.createEntity();
+            entitySystem.setSubstance(i, sourceFile);
+            entitySystem.attribute("filename", i, filename);
+            entitySystem.attribute("filesize", i, filesize);
 
             Path outputFile = output_folder.resolve(filename);
             Files.move(sourceFile, outputFile);
-            return identity;
+            return i;
 
         } catch (IOException e) {
             e.printStackTrace();

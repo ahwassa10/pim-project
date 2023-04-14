@@ -1,7 +1,8 @@
 package entity;
 
 import java.nio.file.Path;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.Objects;
 
 import statement.FileStatementStore;
 import substance.SubstanceStore;
@@ -14,34 +15,60 @@ public final class EntitySystem {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
-        qualityStore.putDescriptor("capability", "tag");
-        qualityStore.putDescriptor("capability", "attribute");
-        
-        qualityStore.putDescriptor("tag", "identity");
-        qualityStore.putDescriptor("attribute", "substance");
-        qualityStore.putDescriptor("attribute", "creation-time");
+        qualityStore.putDescriptor("keyword", "identity");
+        qualityStore.putDescriptor("metadata", "substance");
+        qualityStore.putDescriptor("metadata", "creation-time");
+        qualityStore.putDescriptor("metadata", "happened-on");
         
         System.out.println("Successfully created an entity system");
     }
     
-    public void tag(String qualifier, String entity) {
-        qualityStore.putDescriptor(qualifier, entity);
-    }
-
-    public void attribute(String qualifier, String entity, String data) {
-        qualityStore.put(qualifier, entity, data);
-    }
-
-    public String createEntity() {
-        String identity = UUID.randomUUID().toString();
-        qualityStore.putDescriptor("identity", identity);
+    public Identifier tag(String keyword, Identifier entity) {
+        Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
-        return identity;
+        String holder = entity.asHolder();
+        qualityStore.putDescriptor(keyword, holder);
+        
+        Identifier event = Identifiers.combine(keyword, entity);
+        String holder2 = event.asHolder();
+        String happenedOn = Instant.now().toString();
+        qualityStore.put("happened-on", holder2, happenedOn);
+        
+        return event;
     }
 
-    public void setSubstance(String identity, Path substanceFile) {
+    public Identifier attribute(String type, Identifier entity, String data) {
+        Objects.requireNonNull(entity, "Entity identifier cannot be null");
+        
+        String holder = entity.asHolder();
+        qualityStore.put(type, holder, data);
+        
+        Identifier event = Identifiers.combine(type, entity);
+        String holder2 = event.asHolder();
+        String happenedOn = Instant.now().toString();
+        qualityStore.put("happened-on", holder2, happenedOn);
+        
+        return event;
+    }
+
+    public Identifier createEntity() {
+        Identifier entity = Identifiers.newIdentifier();
+        String holder = entity.asHolder();
+        qualityStore.putDescriptor("identity", holder);
+        
+        String creationTime = Instant.now().toString();
+        qualityStore.put("creation-time", holder, creationTime);
+        
+        return entity;
+    }
+
+    public void setSubstance(Identifier entity, Path substanceFile) {
+        Objects.requireNonNull(entity, "Entity identifier cannot be null");
+        
+        String holder = entity.asHolder();
+        
         String hash = substanceStore.capture(substanceFile);
-        qualityStore.put("substance", identity, hash);
+        qualityStore.put("substance", holder, hash);
     }
 
     public String toString() {
