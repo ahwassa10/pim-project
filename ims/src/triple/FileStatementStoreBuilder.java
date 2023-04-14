@@ -5,40 +5,39 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public final class FileTripleStoreBuilder {
+public final class FileStatementStoreBuilder {
     private Path export_folder;
-    private Path quality_folder;
+    private Path statement_folder;
 
-    public FileTripleStoreBuilder() {
-    }
+    public FileStatementStoreBuilder() {}
 
-    public static FileTripleStore test_triplestore() {
-        return new FileTripleStoreBuilder()
+    public static FileStatementStore test_triplestore() {
+        return new FileStatementStoreBuilder()
                 .setExportFolder("C:\\Users\\Primary\\Desktop\\export")
-                .setQualityFolder("C:\\Users\\Primary\\Desktop\\quality")
+                .setStatementFolder("C:\\Users\\Primary\\Desktop\\statement")
                 .build();
     }
 
-    public FileTripleStore build() {
-        if (quality_folder == null) {
-            throw new IllegalStateException("Quality folder not specified");
+    public FileStatementStore build() {
+        if (statement_folder == null) {
+            throw new IllegalStateException("Statement folder not specified");
         } else if (export_folder == null) {
             throw new IllegalStateException("Output folder not specified");
         }
         
         try {
-            FileTripleStore f = new FileTripleStore(export_folder, quality_folder);
-            String message = "Successfully created a file-based triple store";
+            FileStatementStore f = new FileStatementStore(export_folder, statement_folder);
+            String message = "Successfully created a file-based statement store";
             System.out.println(message);
             return f;
         } catch (IOException e) {
-            String message = "Failed to create a file-based triple store";
+            String message = "Failed to create a file-based statement store";
             System.out.println(message);
             return null;
         }
     }
 
-    public FileTripleStoreBuilder setExportFolder(String pathname) {
+    public FileStatementStoreBuilder setExportFolder(String pathname) {
         Objects.requireNonNull(pathname, "Export folder path cannot be null");
         
         Path test_path = Path.of(pathname);
@@ -51,16 +50,16 @@ public final class FileTripleStoreBuilder {
         return this;
     }
 
-    public FileTripleStoreBuilder setQualityFolder(String pathname) {
-        Objects.requireNonNull(pathname, "Quality folder path cannot be null");
+    public FileStatementStoreBuilder setStatementFolder(String pathname) {
+        Objects.requireNonNull(pathname, "Statement folder path cannot be null");
         
         Path test_path = Path.of(pathname);
         if (!Files.exists(test_path)) {
-            throw new IllegalArgumentException("Quality folder does not exist");
+            throw new IllegalArgumentException("Statement folder does not exist");
         } else if (!Files.isDirectory(test_path)) {
-            throw new IllegalArgumentException("Storage folder path is not a directory");
+            throw new IllegalArgumentException("Statement folder path is not a directory");
         }
-        this.quality_folder = test_path;
+        this.statement_folder = test_path;
         return this;
     }
 }

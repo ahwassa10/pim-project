@@ -7,18 +7,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public interface TripleStore {
+public interface StatementStore {
     void clear();
     
     default boolean containsDescriptor(String qualifierKey,
-                                       String entityKey) {
+                                       String holderKey) {
         return qualifierSet().contains(qualifierKey) &&
-               entitySetFor(qualifierKey).contains(entityKey);
+               holderSetFor(qualifierKey).contains(holderKey);
     }
     
-    default boolean containsEntity(String entityKey) {
-        for (String pkey : qualifierSet()) {
-            if (entitySetFor(pkey).contains(entityKey)) {
+    default boolean containsHolder(String holderKey) {
+        for (String qualifierKey : qualifierSet()) {
+            if (holderSetFor(qualifierKey).contains(holderKey)) {
                 return true;
             }
         }
@@ -32,9 +32,9 @@ public interface TripleStore {
     default boolean containsValue(String value) {
         Values.requireValidValue(value);
         
-        for (String qkey : qualifierSet()) {
-            for (String ekey : entitySetFor(qkey)) {
-                if (value.equals(get(qkey, ekey))) {
+        for (String qualifierKey : qualifierSet()) {
+            for (String holderKey : holderSetFor(qualifierKey)) {
+                if (value.equals(get(qualifierKey, holderKey))) {
                     return true;
                 }
             }
@@ -42,47 +42,47 @@ public interface TripleStore {
         return false;
     }
     
-    Set<String> entitySetFor(String qualifierKey);
+    Set<String> holderSetFor(String qualifierKey);
     
-    String get(String qualifierKey, String entityKey);
+    String get(String qualifierKey, String holderKey);
     
-    default Set<String> getEntitiesWith(String qualifierKey, Predicate<String> vTester) {
+    default Set<String> getHoldersWith(String qualifierKey, Predicate<String> vTester) {
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
         Set<String> set = new HashSet<>();
-        for (String entityKey : entitySetFor(qualifierKey)) {
-            String onDisk = get(qualifierKey, entityKey);
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String onDisk = get(qualifierKey, holderKey);
             if (onDisk != null && vTester.test(onDisk)) {
-                set.add(entityKey);
+                set.add(holderKey);
             }
         }
         return set;
     }
     
     default String getOrDefault(String qualifierKey,
-                                String entityKey,
+                                String holderKey,
                                 String defaultValue) {
         Values.requireValidValue(defaultValue);
-        String onDisk = get(qualifierKey, entityKey);
+        String onDisk = get(qualifierKey, holderKey);
         return onDisk == null ? defaultValue : onDisk;
 }
     
     default Map<String, String> getQualifications(String qualifierKey) {
         Map<String, String> map = new HashMap<>();
         
-        for (String entityKey : entitySetFor(qualifierKey)) {
-            String value = get(qualifierKey, entityKey);
-            map.put(entityKey, value);
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String value = get(qualifierKey, holderKey);
+            map.put(holderKey, value);
         }
         return map;
     }
     
-    default Map<String, String> getQualities(String entityKey) {
-        Keys.requireValidKey(entityKey);
+    default Map<String, String> getQualities(String holderKey) {
+        Keys.requireValidKey(holderKey);
         Map<String, String> map = new HashMap<>();
         
         for (String qualifierKey : qualifierSet()) {
-            String onDisk = get(qualifierKey, entityKey);
+            String onDisk = get(qualifierKey, holderKey);
             if (onDisk != null) {
                 map.put(qualifierKey, onDisk);
             }
@@ -90,11 +90,11 @@ public interface TripleStore {
         return map;
     }
     
-    default Map<String, Map<String, String>> getTriples(Predicate<String> qkeyTester,
-                                                        Predicate<String> ekeyTester,
-                                                        Predicate<String> vTester) {
+    default Map<String, Map<String, String>> getStatements(Predicate<String> qkeyTester,
+                                                           Predicate<String> hkeyTester,
+                                                           Predicate<String> vTester) {
         Objects.requireNonNull(qkeyTester, "Qualifier key tester predicate cannot be null");
-        Objects.requireNonNull(ekeyTester, "Entity key tester predicate cannot be null");
+        Objects.requireNonNull(hkeyTester, "Holder key tester predicate cannot be null");
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
 
         Map<String, Map<String, String>> map = new HashMap<>();
@@ -103,15 +103,15 @@ public interface TripleStore {
             if (!qkeyTester.test(qualifierKey)) {
                 continue;
             }
-            for (String entityKey : entitySetFor(qualifierKey)) {
-                if (!ekeyTester.test(entityKey)) {
+            for (String holderKey : holderSetFor(qualifierKey)) {
+                if (!hkeyTester.test(holderKey)) {
                     continue;
                 }
 
-                String onDisk = get(qualifierKey, entityKey);
+                String onDisk = get(qualifierKey, holderKey);
                 if (onDisk != null && vTester.test(onDisk)) {
                     map.computeIfAbsent(qualifierKey, k -> new HashMap<>())
-                       .put(entityKey, onDisk);
+                       .put(holderKey, onDisk);
                 }
             }
         }
@@ -122,44 +122,44 @@ public interface TripleStore {
         return size() == 0;
     }
     
-    String put(String qualifierKey, String entityKey, String value);
+    String put(String qualifierKey, String holderKey, String value);
     
-    String putDescriptor(String qualifierKey, String entityKey);
+    String putDescriptor(String qualifierKey, String holderKey);
     
     default String putIfAbsent(String qualifierKey,
-                               String entityKey,
+                               String holderKey,
                                String value) {
-        String onDisk = get(qualifierKey, entityKey);
+        String onDisk = get(qualifierKey, holderKey);
         if (onDisk == null) {
-            put(qualifierKey, entityKey, value);
+            put(qualifierKey, holderKey, value);
         }
         return onDisk;
     }
     
     Set<String> qualifierSet();
     
-    String remove(String qualifierKey, String entityKey, Predicate<String> valueTester);
+    String remove(String qualifierKey, String holderKey, Predicate<String> valueTester);
     
-    default String remove(String qualifierKey, String entityKey) {
-        return remove(qualifierKey, entityKey, onDisk -> true);
+    default String remove(String qualifierKey, String holderKey) {
+        return remove(qualifierKey, holderKey, onDisk -> true);
     }
     
     default Map<String, String> removeQualifications(String qualifierKey) {
         Map<String, String> map = new HashMap<>();
         
-        for (String entityKey : entitySetFor(qualifierKey)) {
-            String onDisk = remove(qualifierKey, entityKey);
-            map.put(entityKey, onDisk);
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String onDisk = remove(qualifierKey, holderKey);
+            map.put(holderKey, onDisk);
         }
         return map;
     }
     
-    default Map<String, String> removeQualities(String entityKey) {
-        Keys.requireValidKey(entityKey);
+    default Map<String, String> removeQualities(String holderKey) {
+        Keys.requireValidKey(holderKey);
         Map<String, String> map = new HashMap<>();
         
         for (String qualifierKey : qualifierSet()) {
-            String onDisk = remove(qualifierKey, entityKey);
+            String onDisk = remove(qualifierKey, holderKey);
             if (onDisk != null) {
                 map.put(qualifierKey, onDisk);
             }
@@ -167,11 +167,11 @@ public interface TripleStore {
         return map;
     }
     
-    default Map<String, Map<String, String>> removeTriples(Predicate<String> qkeyTester,
-                                                           Predicate<String> ekeyTester,
-                                                           Predicate<String> vTester) {
+    default Map<String, Map<String, String>> removeStatements(Predicate<String> qkeyTester,
+                                                              Predicate<String> hkeyTester,
+                                                              Predicate<String> vTester) {
         Objects.requireNonNull(qkeyTester, "Qualifier key tester predicate cannot be null");
-        Objects.requireNonNull(ekeyTester, "Entity key tester predicate cannot be null");
+        Objects.requireNonNull(hkeyTester, "Holder key tester predicate cannot be null");
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
         Map<String, Map<String, String>> map = new HashMap<>();
@@ -180,15 +180,15 @@ public interface TripleStore {
             if (!qkeyTester.test(qualifierKey)) {
                 continue;
             }
-            for (String entityKey : entitySetFor(qualifierKey)) {
-                if (!ekeyTester.test(entityKey)) {
+            for (String holderKey : holderSetFor(qualifierKey)) {
+                if (!hkeyTester.test(holderKey)) {
                     continue;
                 }
                 
-                String onDisk = remove(qualifierKey, entityKey, vTester);
+                String onDisk = remove(qualifierKey, holderKey, vTester);
                 if (onDisk != null) {
                     map.computeIfAbsent(qualifierKey, k -> new HashMap<>())
-                       .put(entityKey, onDisk);
+                       .put(holderKey, onDisk);
                 }
             }
         }
@@ -196,38 +196,38 @@ public interface TripleStore {
         return map;
     }
     
-    default Set<String> removeEntitiesWith(String qualifierKey, Predicate<String> vTester) {
+    default Set<String> removeHoldersWith(String qualifierKey, Predicate<String> vTester) {
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
         Set<String> set = new HashSet<>();
-        for (String entityKey : entitySetFor(qualifierKey)) {
-            String onDisk = remove(qualifierKey, entityKey, vTester);
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String onDisk = remove(qualifierKey, holderKey, vTester);
             if (onDisk != null) {
-                set.add(entityKey);
+                set.add(holderKey);
             }
         }
         return set;
     }
     
     default String replace(String qualifierKey,
-                           String entityKey,
+                           String holderKey,
                            String value) {  
-        if (containsDescriptor(qualifierKey, entityKey)) {
-            return put(qualifierKey, entityKey, value);
+        if (containsDescriptor(qualifierKey, holderKey)) {
+            return put(qualifierKey, holderKey, value);
         } else {
             return null;
         }
     }
     
     default boolean replace(String qualifierKey,
-                            String entityKey,
+                            String holderKey,
                             Predicate<String> ovTester,
                             String newValue) {
         Objects.requireNonNull(ovTester, "OldValue tester predicate cannot be null");
         
-        String onDisk = get(qualifierKey, entityKey);
+        String onDisk = get(qualifierKey, holderKey);
         if (onDisk != null && ovTester.test(onDisk)) {
-            put(qualifierKey, entityKey, newValue);
+            put(qualifierKey, holderKey, newValue);
             return true;
         } else {
             return false;
@@ -237,7 +237,7 @@ public interface TripleStore {
     default int size() {
         int total = 0;
         for (String qualifierKey : qualifierSet()) {
-            total += entitySetFor(qualifierKey).size();
+            total += holderSetFor(qualifierKey).size();
         }
         return total;
     }

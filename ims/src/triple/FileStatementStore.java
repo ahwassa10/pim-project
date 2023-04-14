@@ -14,15 +14,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public final class FileTripleStore implements TripleStore {
+public final class FileStatementStore implements StatementStore {
     private final Map<String, Set<String>> keyMap;
     private final Path export_folder;
-    private final Path quality_folder;
+    private final Path statement_folder;
 
-    FileTripleStore(Path ef_path, Path qf_path) throws IOException {
+    FileStatementStore(Path ef_path, Path sf_path) throws IOException {
         this.keyMap = new HashMap<>();
         this.export_folder = ef_path;
-        this.quality_folder = qf_path;
+        this.statement_folder = sf_path;
         
         load();
     }
@@ -30,12 +30,12 @@ public final class FileTripleStore implements TripleStore {
     public void clear() {
         keyMap.clear();
         
-        try (DirectoryStream<Path> QualityStream = Files.newDirectoryStream(quality_folder)) {
-            for (Path qualityPath : QualityStream) {
-                if (Files.isRegularFile(qualityPath)) {
-                    Files.delete(qualityPath);
+        try (DirectoryStream<Path> statementStream = Files.newDirectoryStream(statement_folder)) {
+            for (Path statementPath : statementStream) {
+                if (Files.isRegularFile(statementPath)) {
+                    Files.delete(statementPath);
                 } else {
-                    String message = String.format("%s is not a file", qualityPath);
+                    String message = String.format("%s is not a file", statementPath);
                     System.out.println(message);
                 }
             }
@@ -44,7 +44,7 @@ public final class FileTripleStore implements TripleStore {
         }
     }
     
-    public Set<String> entitySetFor(String qualifierKey) {
+    public Set<String> holderSetFor(String qualifierKey) {
         Keys.requireValidKey(qualifierKey);
         return Collections.unmodifiableSet(keyMap.get(qualifierKey));
     }
@@ -57,7 +57,7 @@ public final class FileTripleStore implements TripleStore {
         }
         
         String fullKey = Keys.combine(qualifierKey, entityKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
+        Path fullKeyPath = statement_folder.resolve(fullKey);
         try {
             return Files.readString(fullKeyPath);
         } catch (NoSuchFileException e) {
@@ -70,10 +70,10 @@ public final class FileTripleStore implements TripleStore {
     }
     
     private void load() throws IOException {
-        try (DirectoryStream<Path> qualityStream = Files.newDirectoryStream(quality_folder)) {
-            for (Path qualityPath : qualityStream) {
-                if (Files.isRegularFile(qualityPath)) {
-                    String fullKey = qualityPath.getFileName().toString();
+        try (DirectoryStream<Path> statementStream = Files.newDirectoryStream(statement_folder)) {
+            for (Path statementPath : statementStream) {
+                if (Files.isRegularFile(statementPath)) {
+                    String fullKey = statementPath.getFileName().toString();
                     String[] keys = Keys.split(fullKey);
                     
                     if (keys.length != 2) {
@@ -82,27 +82,27 @@ public final class FileTripleStore implements TripleStore {
                         continue;
                     }
                     
-                    String primaryKey = keys[0];
-                    String secondaryKey = keys[1];
+                    String qualifierKey = keys[0];
+                    String holderKey = keys[1];
                     
-                    if (!Keys.isValid(primaryKey)) {
-                        String message = String.format("%s is not a valid primary key in %s",
-                                primaryKey, fullKey);
+                    if (!Keys.isValid(qualifierKey)) {
+                        String message = String.format("%s is not a valid qualifier key in %s",
+                                qualifierKey, fullKey);
                         System.out.println(message);
                         continue;
-                    } else if (!Keys.isValid(secondaryKey)) {
-                        String message = String.format("%s is not a valid secondary key in %s",
-                                secondaryKey, fullKey);
+                    } else if (!Keys.isValid(holderKey)) {
+                        String message = String.format("%s is not a valid holder key in %s",
+                                holderKey, fullKey);
                         System.out.println(message);
                         continue;
                     }
                     
                     // Add the full key to the keyMap
-                    keyMap.computeIfAbsent(primaryKey, k -> new HashSet<>())
-                          .add(secondaryKey);
+                    keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
+                          .add(holderKey);
                     
                 } else {
-                    String message = String.format("%s is not a quality", qualityPath);
+                    String message = String.format("%s is not a statement", statementPath);
                     System.out.println(message);
                 }
             }
@@ -118,17 +118,17 @@ public final class FileTripleStore implements TripleStore {
     }
     
     public String put(String qualifierKey,
-                      String entityKey,
+                      String holderKey,
                       String value) {
 
         Keys.requireValidKey(qualifierKey);
-        Keys.requireValidKey(entityKey);
+        Keys.requireValidKey(holderKey);
         Values.requireValidValue(value);
         
-        String fullKey = Keys.combine(qualifierKey, entityKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
+        String fullKey = Keys.combine(qualifierKey, holderKey);
+        Path fullKeyPath = statement_folder.resolve(fullKey);
         
-        if (containsDescriptor(qualifierKey, entityKey)) {
+        if (containsDescriptor(qualifierKey, holderKey)) {
             try {
                 String oldValue = Files.readString(fullKeyPath);
                 Files.writeString(fullKeyPath, value);
@@ -141,7 +141,7 @@ public final class FileTripleStore implements TripleStore {
             }
         } else {
             keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
-                  .add(entityKey);
+                  .add(holderKey);
             try {
                 Files.writeString(fullKeyPath, value);
             } catch (IOException e) {
@@ -152,15 +152,15 @@ public final class FileTripleStore implements TripleStore {
     }
     
     public String putDescriptor(String qualifierKey,
-                                String entityKey) {
+                                String holderKey) {
 
         Keys.requireValidKey(qualifierKey);
-        Keys.requireValidKey(entityKey);
+        Keys.requireValidKey(holderKey);
 
-        String fullKey = Keys.combine(qualifierKey, entityKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
+        String fullKey = Keys.combine(qualifierKey, holderKey);
+        Path fullKeyPath = statement_folder.resolve(fullKey);
 
-        if (containsDescriptor(qualifierKey, entityKey)) {
+        if (containsDescriptor(qualifierKey, holderKey)) {
             try {
                 return Files.readString(fullKeyPath);
             } catch (NoSuchFileException e) {
@@ -171,7 +171,7 @@ public final class FileTripleStore implements TripleStore {
             }
         } else {
             keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
-                  .add(entityKey);
+                  .add(holderKey);
             try {
                 Files.createFile(fullKeyPath);
             } catch (FileAlreadyExistsException e) {
@@ -185,24 +185,24 @@ public final class FileTripleStore implements TripleStore {
     }
     
     public String remove(String qualifierKey,
-                         String entityKey,
+                         String holderKey,
                          Predicate<String> valueTester) {
         Objects.requireNonNull(valueTester, "Value tester predicate cannot be null");
         
-        if (!containsDescriptor(qualifierKey, entityKey)) {
+        if (!containsDescriptor(qualifierKey, holderKey)) {
             return null;
         }
         
-        String fullKey = Keys.combine(qualifierKey, entityKey);
-        Path fullKeyPath = quality_folder.resolve(fullKey);
+        String fullKey = Keys.combine(qualifierKey, holderKey);
+        Path fullKeyPath = statement_folder.resolve(fullKey);
         try {
             String onDisk = Files.readString(fullKeyPath);
             if (valueTester.test(onDisk)) {
                 Files.delete(fullKeyPath);
                 
-                keyMap.get(qualifierKey).remove(entityKey);
+                keyMap.get(qualifierKey).remove(holderKey);
                 // Remove the qualifier key as well if it isn't mapped to
-                // any entity keys.
+                // any holder keys.
                 if (keyMap.get(qualifierKey).size() == 0) {
                     keyMap.remove(qualifierKey);
                 }
@@ -218,7 +218,7 @@ public final class FileTripleStore implements TripleStore {
     }
 
     public String toString() {
-        return String.format("Triple Store<Export Folder<%s>, Quality Folder<%s>>",
-                export_folder, quality_folder);
+        return String.format("Statement Store<Export Folder<%s>, Statement Folder<%s>>",
+                export_folder, statement_folder);
     }
 }

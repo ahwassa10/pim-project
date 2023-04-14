@@ -4,13 +4,13 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import substance.SubstanceStore;
-import triple.FileTripleStore;
+import triple.FileStatementStore;
 
 public final class EntitySystem {
-    private final FileTripleStore qualityStore;
+    private final FileStatementStore qualityStore;
     private final SubstanceStore substanceStore;
 
-    EntitySystem(FileTripleStore qualityStore, SubstanceStore substanceStore) {
+    EntitySystem(FileStatementStore qualityStore, SubstanceStore substanceStore) {
         this.qualityStore = qualityStore;
         this.substanceStore = substanceStore;
         
