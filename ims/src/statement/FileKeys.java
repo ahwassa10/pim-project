@@ -4,13 +4,14 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class FileKeys {
-    private static final Pattern KEY_PATTERN = Pattern.compile("^[a-z0-9_.\\-]{1,127}$");
+    private static final Pattern FILE_KEY_PATTERN =
+            Pattern.compile("^[a-z0-9_.\\-]{1,127}$");
     
     private FileKeys() {}
     
     public static boolean isValid(String test_key) {
         return test_key != null &&
-               KEY_PATTERN.matcher(test_key).matches();
+               FILE_KEY_PATTERN.matcher(test_key).matches();
     }
     
     public static String requireValidKey(String test_key) {
