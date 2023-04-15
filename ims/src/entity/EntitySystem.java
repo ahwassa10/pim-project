@@ -26,11 +26,11 @@ public final class EntitySystem {
     public Identifier tag(String keyword, Identifier entity) {
         Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
-        String holder = entity.asHolder();
+        String holder = entity.asKey();
         qualityStore.putDescriptor(keyword, holder);
         
         Identifier event = Identifiers.combine(keyword, entity);
-        String holder2 = event.asHolder();
+        String holder2 = event.asKey();
         String happenedOn = Instant.now().toString();
         qualityStore.put("happened-on", holder2, happenedOn);
         
@@ -40,11 +40,11 @@ public final class EntitySystem {
     public Identifier attribute(String type, Identifier entity, String data) {
         Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
-        String holder = entity.asHolder();
+        String holder = entity.asKey();
         qualityStore.put(type, holder, data);
         
         Identifier event = Identifiers.combine(type, entity);
-        String holder2 = event.asHolder();
+        String holder2 = event.asKey();
         String happenedOn = Instant.now().toString();
         qualityStore.put("happened-on", holder2, happenedOn);
         
@@ -53,7 +53,7 @@ public final class EntitySystem {
 
     public Identifier createEntity() {
         Identifier entity = Identifiers.newIdentifier();
-        String holder = entity.asHolder();
+        String holder = entity.asKey();
         qualityStore.putDescriptor("identity", holder);
         
         String creationTime = Instant.now().toString();
@@ -65,7 +65,7 @@ public final class EntitySystem {
     public void setSubstance(Identifier entity, Path substanceFile) {
         Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
-        String holder = entity.asHolder();
+        String holder = entity.asKey();
         
         String hash = substanceStore.capture(substanceFile);
         qualityStore.put("substance", holder, hash);

@@ -50,19 +50,19 @@ public final class FileStatementStore implements StatementStore {
     }
     
     public String get(String qualifierKey,
-                      String entityKey) {
+                      String holderKey) {
         
-        if (!containsDescriptor(qualifierKey, entityKey)) {
+        if (!containsDescriptor(qualifierKey, holderKey)) {
             return null;
         }
         
-        String fullKey = Keys.combine(qualifierKey, entityKey);
-        Path fullKeyPath = statement_folder.resolve(fullKey);
+        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
+        Path descriptorPath = statement_folder.resolve(descriptor);
         try {
-            return Files.readString(fullKeyPath);
+            return Files.readString(descriptorPath);
         } catch (NoSuchFileException e) {
-            String message = String.format("%s found in-memory but not on-disk", fullKey);
-            System.out.println(message);
+            String msg = String.format("%s found in-memory but not on-disk", descriptor);
+            System.out.println(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,29 +73,16 @@ public final class FileStatementStore implements StatementStore {
         try (DirectoryStream<Path> statementStream = Files.newDirectoryStream(statement_folder)) {
             for (Path statementPath : statementStream) {
                 if (Files.isRegularFile(statementPath)) {
-                    String fullKey = statementPath.getFileName().toString();
-                    String[] keys = Keys.split(fullKey);
+                    String descriptor = statementPath.getFileName().toString();
                     
-                    if (keys.length != 2) {
-                        String message = String.format("%s is not a valid full key", fullKey);
-                        System.out.println(message);
-                        continue;
+                    if (!FileDescriptors.isValid(descriptor)) {
+                        String msg = String.format("%s is not a valid file-based descriptor",
+                                descriptor);
+                        System.out.println(msg);
                     }
                     
-                    String qualifierKey = keys[0];
-                    String holderKey = keys[1];
-                    
-                    if (!Keys.isValid(qualifierKey)) {
-                        String message = String.format("%s is not a valid qualifier key in %s",
-                                qualifierKey, fullKey);
-                        System.out.println(message);
-                        continue;
-                    } else if (!Keys.isValid(holderKey)) {
-                        String message = String.format("%s is not a valid holder key in %s",
-                                holderKey, fullKey);
-                        System.out.println(message);
-                        continue;
-                    }
+                    String qualifierKey = FileDescriptors.getQualifier(descriptor);
+                    String holderKey = FileDescriptors.getHolder(descriptor);
                     
                     // Add the full key to the keyMap
                     keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
@@ -125,25 +112,26 @@ public final class FileStatementStore implements StatementStore {
         Keys.requireValidKey(holderKey);
         Values.requireValidValue(value);
         
-        String fullKey = Keys.combine(qualifierKey, holderKey);
-        Path fullKeyPath = statement_folder.resolve(fullKey);
+        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
+        Path descriptorPath = statement_folder.resolve(descriptor);
         
         if (containsDescriptor(qualifierKey, holderKey)) {
             try {
-                String oldValue = Files.readString(fullKeyPath);
-                Files.writeString(fullKeyPath, value);
+                String oldValue = Files.readString(descriptorPath);
+                Files.writeString(descriptorPath, value);
                 return oldValue;
             } catch (NoSuchFileException e) {
-                String message = String.format("%s found in-memory but not on-disk", fullKey);
-                System.out.println(message);
+                String msg = String.format("%s found in-memory but not on-disk", descriptor);
+                System.out.println(msg);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            
         } else {
             keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
                   .add(holderKey);
             try {
-                Files.writeString(fullKeyPath, value);
+                Files.writeString(descriptorPath, value);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -157,15 +145,15 @@ public final class FileStatementStore implements StatementStore {
         Keys.requireValidKey(qualifierKey);
         Keys.requireValidKey(holderKey);
 
-        String fullKey = Keys.combine(qualifierKey, holderKey);
-        Path fullKeyPath = statement_folder.resolve(fullKey);
+        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
+        Path descriptorPath = statement_folder.resolve(descriptor);
 
         if (containsDescriptor(qualifierKey, holderKey)) {
             try {
-                return Files.readString(fullKeyPath);
+                return Files.readString(descriptorPath);
             } catch (NoSuchFileException e) {
-                String message = String.format("%s found in-memory but not on-disk", fullKey);
-                System.out.println(message);
+                String msg = String.format("%s found in-memory but not on-disk", descriptor);
+                System.out.println(msg);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -173,10 +161,10 @@ public final class FileStatementStore implements StatementStore {
             keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
                   .add(holderKey);
             try {
-                Files.createFile(fullKeyPath);
+                Files.createFile(descriptorPath);
             } catch (FileAlreadyExistsException e) {
-                String message = String.format("%s found on-disk but not in-memory", fullKey);
-                System.out.println(message);
+                String msg = String.format("%s found on-disk but not in-memory", descriptor);
+                System.out.println(msg);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -193,12 +181,12 @@ public final class FileStatementStore implements StatementStore {
             return null;
         }
         
-        String fullKey = Keys.combine(qualifierKey, holderKey);
-        Path fullKeyPath = statement_folder.resolve(fullKey);
+        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
+        Path descriptorPath = statement_folder.resolve(descriptor);
         try {
-            String onDisk = Files.readString(fullKeyPath);
+            String onDisk = Files.readString(descriptorPath);
             if (valueTester.test(onDisk)) {
-                Files.delete(fullKeyPath);
+                Files.delete(descriptorPath);
                 
                 keyMap.get(qualifierKey).remove(holderKey);
                 // Remove the qualifier key as well if it isn't mapped to
@@ -209,8 +197,8 @@ public final class FileStatementStore implements StatementStore {
                 return onDisk;
             }
         } catch (NoSuchFileException e) {
-            String message = String.format("%s found in-memory but not on-disk", fullKey);
-            System.out.println(message);
+            String msg = String.format("%s found in-memory but not on-disk", descriptor);
+            System.out.println(msg);
         } catch (IOException e) {
             e.printStackTrace();
         }

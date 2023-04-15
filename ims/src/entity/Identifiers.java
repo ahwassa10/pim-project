@@ -5,7 +5,7 @@ import java.util.UUID;
 public final class Identifiers {
     private static String IDENTIFIER_SEPARATOR = ".";
     
-    public Identifiers() {}
+    private Identifiers() {}
     
     public static Identifier combine(String qualifier, Identifier i) {
         String identifier = i.toString();
@@ -25,7 +25,7 @@ public final class Identifiers {
             this.identifier = identifier;
         }
         
-        public String asHolder() {
+        public String asKey() {
             return identifier;
         }
         
