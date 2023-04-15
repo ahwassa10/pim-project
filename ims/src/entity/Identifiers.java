@@ -3,13 +3,13 @@ package entity;
 import java.util.UUID;
 
 public final class Identifiers {
-    private static String IDENTIFIER_SEPARATOR = ".";
-    
     private Identifiers() {}
     
     public static Identifier combine(String qualifier, Identifier i) {
-        String identifier = i.toString();
-        return new StringIdentifier(qualifier + IDENTIFIER_SEPARATOR + identifier);
+        String identiferKey = i.asKey();
+        String combinedKey = Keys.combine(qualifier, identiferKey);
+        
+        return new StringIdentifier(combinedKey);
     }
     
     public static Identifier newIdentifier() {
@@ -45,7 +45,7 @@ public final class Identifiers {
         }
         
         public String toString() {
-            return identifier;
+            return String.format("StringIdentifier: %s", identifier);
         }
     }
 }
