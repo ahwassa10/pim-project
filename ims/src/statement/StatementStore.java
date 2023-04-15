@@ -30,7 +30,7 @@ public interface StatementStore {
     }
     
     default boolean containsValue(String value) {
-        Values.requireValidValue(value);
+        Objects.requireNonNull(value, "Value cannot be null");
         
         for (String qualifierKey : qualifierSet()) {
             for (String holderKey : holderSetFor(qualifierKey)) {
@@ -62,7 +62,7 @@ public interface StatementStore {
     default String getOrDefault(String qualifierKey,
                                 String holderKey,
                                 String defaultValue) {
-        Values.requireValidValue(defaultValue);
+        Objects.requireNonNull(defaultValue, "Default value cannot be null");
         String onDisk = get(qualifierKey, holderKey);
         return onDisk == null ? defaultValue : onDisk;
 }
@@ -78,7 +78,6 @@ public interface StatementStore {
     }
     
     default Map<String, String> getQualities(String holderKey) {
-        Keys.requireValidKey(holderKey);
         Map<String, String> map = new HashMap<>();
         
         for (String qualifierKey : qualifierSet()) {
@@ -155,7 +154,6 @@ public interface StatementStore {
     }
     
     default Map<String, String> removeQualities(String holderKey) {
-        Keys.requireValidKey(holderKey);
         Map<String, String> map = new HashMap<>();
         
         for (String qualifierKey : qualifierSet()) {

@@ -17,5 +17,7 @@ public class Testing {
         es.tag("anime", entity1);
         es.tag("future", entity1);
         //String entity2 = fs.importFile();
+        
+        es.printSS();
     }
 }

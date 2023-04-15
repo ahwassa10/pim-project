@@ -3,10 +3,10 @@ package statement;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public final class Keys {
+public final class FileKeys {
     private static final Pattern KEY_PATTERN = Pattern.compile("^[a-z0-9_.\\-]{1,127}$");
     
-    private Keys() {}
+    private FileKeys() {}
     
     public static boolean isValid(String test_key) {
         return test_key != null &&
@@ -14,12 +14,12 @@ public final class Keys {
     }
     
     public static String requireValidKey(String test_key) {
-        Objects.requireNonNull(test_key, "Key cannot be null");
+        Objects.requireNonNull(test_key, "File-based Key cannot be null");
         
-        if (Keys.isValid(test_key)) {
+        if (FileKeys.isValid(test_key)) {
             return test_key;
         } else {
-            String msg = String.format("%s is not a valid key", test_key);
+            String msg = String.format("%s is not a valid file-based key", test_key);
             throw new IllegalArgumentException(msg);
         }
     }

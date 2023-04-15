@@ -3,7 +3,7 @@ package statement;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-final class FileDescriptors {
+public final class FileDescriptors {
     private static final Pattern FILE_DESCRIPTOR_PATTERN =
             Pattern.compile("^[a-z0-9_.\\-]{1,127}\\$[a-z0-9_.\\-]{1,127}$");
     private static char SEPARATOR = '$';

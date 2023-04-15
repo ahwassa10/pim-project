@@ -45,7 +45,7 @@ public final class FileStatementStore implements StatementStore {
     }
     
     public Set<String> holderSetFor(String qualifierKey) {
-        Keys.requireValidKey(qualifierKey);
+        FileKeys.requireValidKey(qualifierKey);
         return Collections.unmodifiableSet(keyMap.get(qualifierKey));
     }
     
@@ -53,6 +53,9 @@ public final class FileStatementStore implements StatementStore {
                       String holderKey) {
         
         if (!containsDescriptor(qualifierKey, holderKey)) {
+            // Ensure that the passed-in keys were valid.
+            FileKeys.requireValidKey(qualifierKey);
+            FileKeys.requireValidKey(holderKey);
             return null;
         }
         
@@ -108,9 +111,9 @@ public final class FileStatementStore implements StatementStore {
                       String holderKey,
                       String value) {
 
-        Keys.requireValidKey(qualifierKey);
-        Keys.requireValidKey(holderKey);
-        Values.requireValidValue(value);
+        FileKeys.requireValidKey(qualifierKey);
+        FileKeys.requireValidKey(holderKey);
+        FileValues.requireValidValue(value);
         
         String descriptor = FileDescriptors.from(qualifierKey, holderKey);
         Path descriptorPath = statement_folder.resolve(descriptor);
@@ -142,8 +145,8 @@ public final class FileStatementStore implements StatementStore {
     public String putDescriptor(String qualifierKey,
                                 String holderKey) {
 
-        Keys.requireValidKey(qualifierKey);
-        Keys.requireValidKey(holderKey);
+        FileKeys.requireValidKey(qualifierKey);
+        FileKeys.requireValidKey(holderKey);
 
         String descriptor = FileDescriptors.from(qualifierKey, holderKey);
         Path descriptorPath = statement_folder.resolve(descriptor);
@@ -178,6 +181,8 @@ public final class FileStatementStore implements StatementStore {
         Objects.requireNonNull(valueTester, "Value tester predicate cannot be null");
         
         if (!containsDescriptor(qualifierKey, holderKey)) {
+            FileKeys.requireValidKey(qualifierKey);
+            FileKeys.requireValidKey(holderKey);
             return null;
         }
         

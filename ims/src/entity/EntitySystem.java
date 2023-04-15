@@ -8,17 +8,17 @@ import statement.FileStatementStore;
 import substance.SubstanceStore;
 
 public final class EntitySystem {
-    private final FileStatementStore qualityStore;
+    private final FileStatementStore statementStore;
     private final SubstanceStore substanceStore;
 
-    EntitySystem(FileStatementStore qualityStore, SubstanceStore substanceStore) {
-        this.qualityStore = qualityStore;
+    EntitySystem(FileStatementStore statementStore, SubstanceStore substanceStore) {
+        this.statementStore = statementStore;
         this.substanceStore = substanceStore;
         
-        qualityStore.putDescriptor("keyword", "identity");
-        qualityStore.putDescriptor("metadata", "substance");
-        qualityStore.putDescriptor("metadata", "creation-time");
-        qualityStore.putDescriptor("metadata", "happened-on");
+        statementStore.putDescriptor("keyword", "identity");
+        statementStore.putDescriptor("metadata", "substance");
+        statementStore.putDescriptor("metadata", "creation-time");
+        statementStore.putDescriptor("metadata", "happened-on");
         
         System.out.println("Successfully created an entity system");
     }
@@ -27,12 +27,12 @@ public final class EntitySystem {
         Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
         String holder = entity.asKey();
-        qualityStore.putDescriptor(keyword, holder);
+        statementStore.putDescriptor(keyword, holder);
         
         Identifier event = Identifiers.combine(keyword, entity);
         String holder2 = event.asKey();
         String happenedOn = Instant.now().toString();
-        qualityStore.put("happened-on", holder2, happenedOn);
+        statementStore.put("happened-on", holder2, happenedOn);
         
         return event;
     }
@@ -41,12 +41,12 @@ public final class EntitySystem {
         Objects.requireNonNull(entity, "Entity identifier cannot be null");
         
         String holder = entity.asKey();
-        qualityStore.put(type, holder, data);
+        statementStore.put(type, holder, data);
         
         Identifier event = Identifiers.combine(type, entity);
         String holder2 = event.asKey();
         String happenedOn = Instant.now().toString();
-        qualityStore.put("happened-on", holder2, happenedOn);
+        statementStore.put("happened-on", holder2, happenedOn);
         
         return event;
     }
@@ -54,10 +54,10 @@ public final class EntitySystem {
     public Identifier createEntity() {
         Identifier entity = Identifiers.newIdentifier();
         String holder = entity.asKey();
-        qualityStore.putDescriptor("identity", holder);
+        statementStore.putDescriptor("identity", holder);
         
         String creationTime = Instant.now().toString();
-        qualityStore.put("creation-time", holder, creationTime);
+        statementStore.put("creation-time", holder, creationTime);
         
         return entity;
     }
@@ -68,10 +68,14 @@ public final class EntitySystem {
         String holder = entity.asKey();
         
         String hash = substanceStore.capture(substanceFile);
-        qualityStore.put("substance", holder, hash);
+        statementStore.put("substance", holder, hash);
     }
 
     public String toString() {
         return String.format("Entity System<>");
+    }
+    
+    public void printSS() {
+        statementStore.printKeyMap();
     }
 }
