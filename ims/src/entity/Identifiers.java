@@ -5,6 +5,12 @@ import java.util.UUID;
 public final class Identifiers {
     private Identifiers() {}
     
+    public static Identifier combine(Identifier i1, Identifier i2) {
+        String combinedKey = Keys.combine(i1.asKey(), i2.asKey());
+        
+        return new StringIdentifier(combinedKey);
+    }
+    
     public static Identifier combine(String qualifier, Identifier i) {
         String identiferKey = i.asKey();
         String combinedKey = Keys.combine(qualifier, identiferKey);

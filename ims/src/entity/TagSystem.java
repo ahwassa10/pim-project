@@ -21,8 +21,9 @@ public final class TagSystem {
         initTagSet();
     }
     
-    public void add(Tag tag) {
+    public Identifier associate(TagIdentifier tag, Identifier identifier) {
         Objects.requireNonNull(tag, "Tag cannot be null");
+        Objects.requireNonNull(identifier, "Identifier cannot be null");
         
         if (!tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
             String msg = String.format("%s is not from the TagSystem: %s",
@@ -30,22 +31,59 @@ public final class TagSystem {
             throw new IllegalArgumentException(msg);
         }
         
-        String tagNameKey = tag.getNameKey();
-        if (tagNameSet.contains(tagNameKey)) {
-            String msg = String.format("%s already in TagSystem: %s",
+        String qualifierKey = tag.asKey();
+        String holderKey = identifier.asKey();
+        
+        statementStore.putDescriptor(qualifierKey, holderKey);
+        
+        return Identifiers.combine(tag, identifier);
+    }
+    
+    public boolean contains(TagIdentifier tag) {
+        Objects.requireNonNull(tag, "Tag cannot be null");
+        
+        // A tagSystem contains all the TagIdentifiers with the 
+        // same tagSystemNameKey. 
+        return tagSystemNameKey.equals(tag.getTagSystemNameKey());
+    }
+    
+    public TagIdentifier createAndAdd(String tagNameKey) {
+        TagIdentifiers.requireValidTagName(tagNameKey);
+        
+        if (!tagNameSet.contains(tagNameKey)) {
+            tagNameSet.add(tagNameKey);
+            statementStore.putDescriptor(tagSystemNameKey, tagNameKey);
+        }
+        
+        return new SimpleTagIdentifier(tagSystemNameKey, tagNameKey);
+    }
+    
+    public boolean dissociate(TagIdentifier tag, Identifier identifier) {
+        Objects.requireNonNull(tag, "Tag cannot be null");
+        Objects.requireNonNull(identifier, "Identifier cannot be null");
+        
+        if (!tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
+            String msg = String.format("%s is not from the TagSystem: %s",
                     tag.asKey(), tagSystemNameKey);
             throw new IllegalArgumentException(msg);
         }
         
-        tagNameSet.add(tagNameKey);
-        statementStore.putDescriptor(tagSystemNameKey, tagNameKey);
-    }
-    
-    public boolean contains(Tag tag) {
-        Objects.requireNonNull(tag, "Tag cannot be null");
+        String qualifierKey = tag.asKey();
+        String holderKey = identifier.asKey();
         
-        String tagNameKey = tag.getNameKey();
-        return tagNameSet.contains(tagNameKey);
+        if (statementStore.containsDescriptor(qualifierKey, holderKey)) {
+            // Remove the association
+            statementStore.remove(qualifierKey, holderKey);
+            
+            // Remove the creation-time and other properties of the 
+            // association.
+            String eventKey = Keys.combine(qualifierKey, holderKey);
+            statementStore.removeQualities(eventKey);
+            
+            return true;
+        }
+        
+        return false;
     }
     
     public String getTagSystemNameKey() {
@@ -66,7 +104,7 @@ public final class TagSystem {
                 continue;
             }
             
-            if (!Tags.isValidName(onDiskTag)) {
+            if (!TagIdentifiers.isValidTagName(onDiskTag)) {
                 String msg = String.format("%s.%s is not a valid tag",
                         tagSystemNameKey, onDiskTag);
                 System.out.println(msg);
@@ -76,31 +114,82 @@ public final class TagSystem {
         }
     }
     
-    public boolean remove(Tag tag) {
+    public boolean remove(TagIdentifier tag) {
         Objects.requireNonNull(tag, "Tag cannot be null");
         
-        if (!tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
-            String msg = String.format("%s is not from the TagSystem: %s",
-                    tag.asKey(), tagSystemNameKey);
-            throw new IllegalArgumentException(msg);
-        }
-        
-        String tagNameKey = tag.getNameKey();
-        if (!tagNameSet.remove(tagNameKey)) {
-            return false;
-        } else {
+        if (tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
+            String tagNameKey = tag.getNameKey();
+            
+            // Remove from the cache
+            tagNameSet.remove(tagNameKey);
+            
+            // Remove the tag itself
             statementStore.remove(tagSystemNameKey, tagNameKey);
+            
+            String tagKey = tag.asKey();
+            
+            // Remove all associations with this tag
+            statementStore.removeQualifications(tagKey);
+            
+            // Remove all properties of this tag
+            statementStore.removeQualities(tagKey);
+            
             return true;
         }
+        
+        return false;
     }
     
     public Set<String> tagNameSet() {
         return Collections.unmodifiableSet(tagNameSet);
     }
     
-    public Set<Tag> tagSet() {
-        return tagNameSet.stream()
-                         .map(tagName -> Tags.from(tagSystemNameKey, tagName))
-                         .collect(Collectors.toUnmodifiableSet());
+    public Set<TagIdentifier> tagSet() {
+        return tagNameSet
+                .stream()
+                .map(tagName -> new SimpleTagIdentifier(tagSystemNameKey, tagName))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+    
+    private static class SimpleTagIdentifier implements TagIdentifier {
+        private final String tagNameKey;
+        private final String tagSystemKey;
+        
+        SimpleTagIdentifier(String tagNameKey, String tagSystemKey) {
+            this.tagNameKey = tagNameKey;
+            this.tagSystemKey = tagSystemKey;
+        }
+        
+        public String asKey() {
+            return Keys.combine(tagSystemKey, tagNameKey);
+        }
+        
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof SimpleTagIdentifier)) {
+                return false;
+            }
+            SimpleTagIdentifier o = (SimpleTagIdentifier) other;
+            return tagNameKey.equals(o.tagNameKey) &&
+                    tagSystemKey.equals(o.tagSystemKey);
+        }
+        
+        public String getNameKey() {
+            return tagNameKey;
+        }
+        
+        public String getTagSystemNameKey() {
+            return tagSystemKey;
+        }
+        
+        public int hashCode() {
+            return Objects.hash(tagNameKey, tagSystemKey);
+        }
+        
+        public String toString() {
+            return String.format("SimpleTag: %s.%s", tagSystemKey, tagNameKey);
+        }
     }
 }

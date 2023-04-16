@@ -1,6 +1,6 @@
 package entity;
 
-public interface Tag extends Identifier {
+public interface TagIdentifier extends Identifier {
     String getNameKey();
     String getTagSystemNameKey();
 }
