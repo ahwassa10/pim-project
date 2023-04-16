@@ -80,7 +80,7 @@ public final class TagSystem {
             Map<String, Map<String, String>> removed = entitySystem.remove(association);
             
             // Remove the association itself.
-            String value = statementStore.remove(qualifierKey, holderKey);
+            String value = statementStore.removeWithDescriptor(qualifierKey, holderKey);
             removed.computeIfAbsent(qualifierKey, k -> new HashMap<>())
                    .put(holderKey, value);
             
@@ -90,12 +90,20 @@ public final class TagSystem {
         return null;
     }
     
+    public TagIdentifier get(String tagName) {
+        if (tagNameSet.contains(tagName)) {
+            return new SimpleTagIdentifier(tagSystemNameKey, tagName);
+        } else {
+            return null;
+        }
+    }
+    
     public String getTagSystemNameKey() {
         return tagSystemNameKey;
     }
     
     private void initTagNameSet() {
-        Map<String, String> onDiskTags = statementStore.getQualities(tagSystemNameKey);
+        Map<String, String> onDiskTags = statementStore.getWithHolder(tagSystemNameKey);
         
         for (Map.Entry<String, String> entry : onDiskTags.entrySet()) {
             String onDiskTag = entry.getKey();
@@ -124,11 +132,18 @@ public final class TagSystem {
         if (tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
             String tagNameKey = tag.getNameKey();
             
-            // Remove from the cache
+            // Remove the tag from the cache.
             tagNameSet.remove(tagNameKey);
             
-            // Remove all associations with the tag.
-            return entitySystem.remove(tag);
+            // Remove any association with the tag.
+            Map<String, Map<String, String>> removed = entitySystem.remove(tag);
+            
+            // Remove the tag itself.
+            String value = statementStore.removeWithDescriptor(tagSystemNameKey, tagNameKey);
+            removed.computeIfAbsent(tagSystemNameKey, k -> new HashMap<>())
+                   .put(tagNameKey, value);
+            
+            return removed;
         }
         
         return null;
@@ -146,16 +161,16 @@ public final class TagSystem {
     }
     
     private static class SimpleTagIdentifier implements TagIdentifier {
+        private final String tagSystemNameKey;
         private final String tagNameKey;
-        private final String tagSystemKey;
         
-        SimpleTagIdentifier(String tagNameKey, String tagSystemKey) {
+        SimpleTagIdentifier(String tagSystemNameKey, String tagNameKey) {
+            this.tagSystemNameKey = tagSystemNameKey;
             this.tagNameKey = tagNameKey;
-            this.tagSystemKey = tagSystemKey;
         }
         
         public String asKey() {
-            return Keys.combine(tagSystemKey, tagNameKey);
+            return Keys.combine(tagSystemNameKey, tagNameKey);
         }
         
         public boolean equals(Object other) {
@@ -167,7 +182,7 @@ public final class TagSystem {
             }
             SimpleTagIdentifier o = (SimpleTagIdentifier) other;
             return tagNameKey.equals(o.tagNameKey) &&
-                    tagSystemKey.equals(o.tagSystemKey);
+                   tagSystemNameKey.equals(o.tagSystemNameKey);
         }
         
         public String getNameKey() {
@@ -175,15 +190,15 @@ public final class TagSystem {
         }
         
         public String getTagSystemNameKey() {
-            return tagSystemKey;
+            return tagSystemNameKey;
         }
         
         public int hashCode() {
-            return Objects.hash(tagNameKey, tagSystemKey);
+            return Objects.hash(tagSystemNameKey, tagNameKey);
         }
         
         public String toString() {
-            return String.format("SimpleTag: %s.%s", tagSystemKey, tagNameKey);
+            return String.format("SimpleTag: %s.%s", tagSystemNameKey, tagNameKey);
         }
     }
 }

@@ -46,38 +46,15 @@ public interface StatementStore {
     
     String get(String qualifierKey, String holderKey);
     
-    default Set<String> getHoldersWith(String qualifierKey, Predicate<String> vTester) {
-        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
-        
-        Set<String> set = new HashSet<>();
-        for (String holderKey : holderSetFor(qualifierKey)) {
-            String onDisk = get(qualifierKey, holderKey);
-            if (onDisk != null && vTester.test(onDisk)) {
-                set.add(holderKey);
-            }
-        }
-        return set;
-    }
-    
     default String getOrDefault(String qualifierKey,
                                 String holderKey,
                                 String defaultValue) {
         Objects.requireNonNull(defaultValue, "Default value cannot be null");
         String onDisk = get(qualifierKey, holderKey);
         return onDisk == null ? defaultValue : onDisk;
-}
-    
-    default Map<String, String> getQualifications(String qualifierKey) {
-        Map<String, String> map = new HashMap<>();
-        
-        for (String holderKey : holderSetFor(qualifierKey)) {
-            String value = get(qualifierKey, holderKey);
-            map.put(holderKey, value);
-        }
-        return map;
     }
     
-    default Map<String, String> getQualities(String holderKey) {
+    default Map<String, String> getWithHolder(String holderKey) {
         Map<String, String> map = new HashMap<>();
         
         for (String qualifierKey : qualifierSet()) {
@@ -89,32 +66,27 @@ public interface StatementStore {
         return map;
     }
     
-    default Map<String, Map<String, String>> getStatements(Predicate<String> qkeyTester,
-                                                           Predicate<String> hkeyTester,
-                                                           Predicate<String> vTester) {
-        Objects.requireNonNull(qkeyTester, "Qualifier key tester predicate cannot be null");
-        Objects.requireNonNull(hkeyTester, "Holder key tester predicate cannot be null");
-        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
-
-        Map<String, Map<String, String>> map = new HashMap<>();
-
-        for (String qualifierKey : qualifierSet()) {
-            if (!qkeyTester.test(qualifierKey)) {
-                continue;
-            }
-            for (String holderKey : holderSetFor(qualifierKey)) {
-                if (!hkeyTester.test(holderKey)) {
-                    continue;
-                }
-
-                String onDisk = get(qualifierKey, holderKey);
-                if (onDisk != null && vTester.test(onDisk)) {
-                    map.computeIfAbsent(qualifierKey, k -> new HashMap<>())
-                       .put(holderKey, onDisk);
-                }
-            }
+    default Map<String, String> getWithQualifier(String qualifierKey) {
+        Map<String, String> map = new HashMap<>();
+        
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String value = get(qualifierKey, holderKey);
+            map.put(holderKey, value);
         }
         return map;
+    }
+    
+    default Set<String> getWithQuality(String qualifierKey, Predicate<String> vTester) {
+        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
+        
+        Set<String> set = new HashSet<>();
+        for (String holderKey : holderSetFor(qualifierKey)) {
+            String onDisk = get(qualifierKey, holderKey);
+            if (onDisk != null && vTester.test(onDisk)) {
+                set.add(holderKey);
+            }
+        }
+        return set;
     }
     
     default boolean isEmpty() {
@@ -137,74 +109,48 @@ public interface StatementStore {
     
     Set<String> qualifierSet();
     
-    String remove(String qualifierKey, String holderKey, Predicate<String> valueTester);
+    void remove(String qualifierKey, String holderKey);
     
-    default String remove(String qualifierKey, String holderKey) {
-        return remove(qualifierKey, holderKey, onDisk -> true);
-    }
-    
-    default Map<String, String> removeQualifications(String qualifierKey) {
-        Map<String, String> map = new HashMap<>();
+    default String removeWithDescriptor(String qualifierKey, String holderKey) {
+        String removed = get(qualifierKey, holderKey);
         
-        for (String holderKey : holderSetFor(qualifierKey)) {
-            String onDisk = remove(qualifierKey, holderKey);
-            map.put(holderKey, onDisk);
+        if (removed != null) {
+            remove(qualifierKey, holderKey);
         }
-        return map;
-    }
-    
-    default Map<String, String> removeQualities(String holderKey) {
-        Map<String, String> map = new HashMap<>();
         
-        for (String qualifierKey : qualifierSet()) {
-            String onDisk = remove(qualifierKey, holderKey);
-            if (onDisk != null) {
-                map.put(qualifierKey, onDisk);
-            }
-        }
-        return map;
+        return removed;
     }
     
-    default Map<String, Map<String, String>> removeStatements(Predicate<String> qkeyTester,
-                                                              Predicate<String> hkeyTester,
-                                                              Predicate<String> vTester) {
-        Objects.requireNonNull(qkeyTester, "Qualifier key tester predicate cannot be null");
-        Objects.requireNonNull(hkeyTester, "Holder key tester predicate cannot be null");
+    default Map<String, String> removeWithHolder(String holderKey) {
+        Map<String, String> removed = getWithHolder(holderKey);
+        
+        for (String qualifierKey : removed.keySet()) {
+            remove(qualifierKey, holderKey);
+        }
+        
+        return removed;
+    }
+    
+    default Map<String, String> removeWithQualifier(String qualifierKey) {
+        Map<String, String> removed = getWithQualifier(qualifierKey);
+        
+        for (String holderKey : removed.keySet()) {
+            remove(qualifierKey, holderKey);
+        }
+        
+        return removed;
+    }
+    
+    
+    default Set<String> removeWithQuality(String qualifierKey, Predicate<String> vTester) {
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
         
-        Map<String, Map<String, String>> map = new HashMap<>();
-        
-        for (String qualifierKey : qualifierSet()) {
-            if (!qkeyTester.test(qualifierKey)) {
-                continue;
-            }
-            for (String holderKey : holderSetFor(qualifierKey)) {
-                if (!hkeyTester.test(holderKey)) {
-                    continue;
-                }
-                
-                String onDisk = remove(qualifierKey, holderKey, vTester);
-                if (onDisk != null) {
-                    map.computeIfAbsent(qualifierKey, k -> new HashMap<>())
-                       .put(holderKey, onDisk);
-                }
-            }
+        Set<String> removed = getWithQuality(qualifierKey, vTester);
+        for (String holderKey : removed) {
+            remove(qualifierKey, holderKey);
         }
         
-        return map;
-    }
-    
-    default Set<String> removeHoldersWith(String qualifierKey, Predicate<String> vTester) {
-        Objects.requireNonNull(vTester, "Value tester predicate cannot be null");
-        
-        Set<String> set = new HashSet<>();
-        for (String holderKey : holderSetFor(qualifierKey)) {
-            String onDisk = remove(qualifierKey, holderKey, vTester);
-            if (onDisk != null) {
-                set.add(holderKey);
-            }
-        }
-        return set;
+        return removed;
     }
     
     default String replace(String qualifierKey,

@@ -12,15 +12,14 @@ import substance.SubstanceStore;
 public final class EntitySystem {
     private final FileStatementStore statementStore;
     private final SubstanceStore substanceStore;
+    
+    private final TagSystem tagSystem;
 
     EntitySystem(FileStatementStore statementStore, SubstanceStore substanceStore) {
         this.statementStore = statementStore;
         this.substanceStore = substanceStore;
         
-        statementStore.putDescriptor("keyword", "identity");
-        statementStore.putDescriptor("metadata", "substance");
-        statementStore.putDescriptor("metadata", "creation-time");
-        statementStore.putDescriptor("metadata", "happened-on");
+        this.tagSystem = new TagSystem(this, "tag");
         
         System.out.println("Successfully created an entity system");
     }
@@ -53,31 +52,43 @@ public final class EntitySystem {
     public Map<String, Map<String, String>> remove(Identifier identifier) {
         Objects.requireNonNull(identifier, "Identifier cannot be null");
         
-        Map<String, Map<String, String>> map = new HashMap<>();
+        Map<String, Map<String, String>> removed = new HashMap<>();
         String identifierKey = identifier.asKey();
         
+        // Get all statements for which the identifier is part of the qualifier.
         for (String qualifierKey : statementStore.qualifierSet()) {
             if (qualifierKey.contains(identifierKey)) {
                 Map<String, String> removedQualifications =
-                        statementStore.removeQualifications(qualifierKey);
-                map.put(qualifierKey, removedQualifications);
+                        statementStore.getWithQualifier(qualifierKey);
+                removed.put(qualifierKey, removedQualifications);
                 continue;
             }
             
+            // Get all statements for which the identifier is part of the holder.
             for (String holderKey : statementStore.holderSetFor(qualifierKey)) {
                 if (holderKey.contains(identifierKey)) {
-                    String removedValue = statementStore.remove(qualifierKey, holderKey);
-                    map.computeIfAbsent(qualifierKey, k -> new HashMap<>())
-                       .put(holderKey, removedValue);
+                    String removedValue = statementStore.get(qualifierKey, holderKey);
+                    removed.computeIfAbsent(qualifierKey, k -> new HashMap<>())
+                           .put(holderKey, removedValue);
                 }
             }
         }
         
-        return map;
+        for (String qualifierKey : removed.keySet()) {
+            for (String holderKey : removed.get(qualifierKey).keySet()) {
+                statementStore.remove(qualifierKey, holderKey);
+            }
+        }
+        
+        return removed;
     }
     
     public FileStatementStore getStatementStore() {
         return statementStore;
+    }
+    
+    public TagSystem getTagSystem() {
+        return tagSystem;
     }
 
     public void setSubstance(Identifier entity, Path substanceFile) {
