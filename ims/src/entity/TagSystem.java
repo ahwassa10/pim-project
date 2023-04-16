@@ -97,11 +97,11 @@ public final class TagSystem {
     }
     
     private void initTagNameSet() {
-        Map<String, String> onDiskTags = statementStore.getWithHolder(tagSystemNameKey);
+        Map<String, String> onDiskTags = statementStore.getWithQualifier(tagSystemNameKey);
         
-        for (Map.Entry<String, String> entry : onDiskTags.entrySet()) {
-            String onDiskTag = entry.getKey();
-            String onDiskValue = entry.getValue();
+        for (Map.Entry<String, String> qualification : onDiskTags.entrySet()) {
+            String onDiskTag = qualification.getKey();
+            String onDiskValue = qualification.getValue();
             
             if (!onDiskValue.equals("")) {
                 String msg = String.format("%s.%s should not have a value",
@@ -114,6 +114,7 @@ public final class TagSystem {
                 String msg = String.format("%s.%s is not a valid tag",
                         tagSystemNameKey, onDiskTag);
                 System.out.println(msg);
+                continue;
             }
             
             tagNameSet.add(onDiskTag);
