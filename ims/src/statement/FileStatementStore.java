@@ -212,7 +212,7 @@ public final class FileStatementStore implements StatementStore {
     }
 
     public String toString() {
-        return String.format("Statement Store<Export Folder<%s>, Statement Folder<%s>>",
+        return String.format("File Statement Store<Export Folder<%s>, Statement Folder<%s>>",
                 export_folder, statement_folder);
     }
 }

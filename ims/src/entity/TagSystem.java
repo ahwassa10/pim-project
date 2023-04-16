@@ -25,10 +25,9 @@ public final class TagSystem {
     }
     
     public Identifier associate(TagIdentifier tag, Identifier identifier) {
-        Objects.requireNonNull(tag, "Tag cannot be null");
         Objects.requireNonNull(identifier, "Identifier cannot be null");
         
-        if (!tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
+        if (!owns(tag)) {
             String msg = String.format("%s is not from the TagSystem: %s",
                     tag.asKey(), tagSystemNameKey);
             throw new IllegalArgumentException(msg);
@@ -41,12 +40,8 @@ public final class TagSystem {
         return Identifiers.combine(tag, identifier);
     }
     
-    public boolean contains(TagIdentifier tag) {
-        Objects.requireNonNull(tag, "Tag cannot be null");
-        
-        // A tagSystem contains all the TagIdentifiers with the 
-        // same tagSystemNameKey. 
-        return tagSystemNameKey.equals(tag.getTagSystemNameKey());
+    public boolean contains(String tagNameKey) {
+        return tagNameSet.contains(tagNameKey);
     }
     
     public TagIdentifier createAndAdd(String tagNameKey) {
@@ -61,10 +56,9 @@ public final class TagSystem {
     }
     
     public Map<String, Map<String, String>> dissociate(TagIdentifier tag, Identifier identifier) {
-        Objects.requireNonNull(tag, "Tag cannot be null");
         Objects.requireNonNull(identifier, "Identifier cannot be null");
         
-        if (!tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
+        if (!owns(tag)) {
             String msg = String.format("%s is not from the TagSystem: %s",
                     tag.asKey(), tagSystemNameKey);
             throw new IllegalArgumentException(msg);
@@ -126,10 +120,16 @@ public final class TagSystem {
         }
     }
     
-    public Map<String, Map<String, String>> remove(TagIdentifier tag) {
+    public boolean owns(TagIdentifier tag) {
         Objects.requireNonNull(tag, "Tag cannot be null");
         
-        if (tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
+        // A tagSystem contains all the TagIdentifiers with the 
+        // same tagSystemNameKey. 
+        return tagSystemNameKey.equals(tag.getTagSystemNameKey());
+    }
+    
+    public Map<String, Map<String, String>> remove(TagIdentifier tag) {
+        if (owns(tag)) {
             String tagNameKey = tag.getNameKey();
             
             // Remove the tag from the cache.
