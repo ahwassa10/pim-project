@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -11,14 +12,16 @@ import statement.StatementStore;
 
 
 public final class TagSystem {
+    private final EntitySystem entitySystem;
     private final StatementStore statementStore;
     private final Set<String> tagNameSet = new HashSet<>();
     private final String tagSystemNameKey;
     
-    TagSystem(StatementStore statementStore, String tagSystemNameKey) {
-        this.statementStore = statementStore;
+    TagSystem(EntitySystem entitySystem, String tagSystemNameKey) {
+        this.entitySystem = entitySystem;
+        this.statementStore = entitySystem.getStatementStore();
         this.tagSystemNameKey = tagSystemNameKey;
-        initTagSet();
+        initTagNameSet();
     }
     
     public Identifier associate(TagIdentifier tag, Identifier identifier) {
@@ -33,7 +36,6 @@ public final class TagSystem {
         
         String qualifierKey = tag.asKey();
         String holderKey = identifier.asKey();
-        
         statementStore.putDescriptor(qualifierKey, holderKey);
         
         return Identifiers.combine(tag, identifier);
@@ -58,7 +60,7 @@ public final class TagSystem {
         return new SimpleTagIdentifier(tagSystemNameKey, tagNameKey);
     }
     
-    public boolean dissociate(TagIdentifier tag, Identifier identifier) {
+    public Map<String, Map<String, String>> dissociate(TagIdentifier tag, Identifier identifier) {
         Objects.requireNonNull(tag, "Tag cannot be null");
         Objects.requireNonNull(identifier, "Identifier cannot be null");
         
@@ -71,26 +73,28 @@ public final class TagSystem {
         String qualifierKey = tag.asKey();
         String holderKey = identifier.asKey();
         
-        if (statementStore.containsDescriptor(qualifierKey, holderKey)) {
-            // Remove the association
-            statementStore.remove(qualifierKey, holderKey);
-            
-            // Remove the creation-time and other properties of the 
+        if (statementStore.containsDescriptor(qualifierKey, holderKey)) { 
+            // Remove the creation-time and other associations of the 
             // association.
-            String eventKey = Keys.combine(qualifierKey, holderKey);
-            statementStore.removeQualities(eventKey);
+            Identifier association = Identifiers.combine(tag, identifier);
+            Map<String, Map<String, String>> removed = entitySystem.remove(association);
             
-            return true;
+            // Remove the association itself.
+            String value = statementStore.remove(qualifierKey, holderKey);
+            removed.computeIfAbsent(qualifierKey, k -> new HashMap<>())
+                   .put(holderKey, value);
+            
+            return removed;
         }
         
-        return false;
+        return null;
     }
     
     public String getTagSystemNameKey() {
         return tagSystemNameKey;
     }
     
-    private void initTagSet() {
+    private void initTagNameSet() {
         Map<String, String> onDiskTags = statementStore.getQualities(tagSystemNameKey);
         
         for (Map.Entry<String, String> entry : onDiskTags.entrySet()) {
@@ -114,7 +118,7 @@ public final class TagSystem {
         }
     }
     
-    public boolean remove(TagIdentifier tag) {
+    public Map<String, Map<String, String>> remove(TagIdentifier tag) {
         Objects.requireNonNull(tag, "Tag cannot be null");
         
         if (tagSystemNameKey.equals(tag.getTagSystemNameKey())) {
@@ -123,21 +127,11 @@ public final class TagSystem {
             // Remove from the cache
             tagNameSet.remove(tagNameKey);
             
-            // Remove the tag itself
-            statementStore.remove(tagSystemNameKey, tagNameKey);
-            
-            String tagKey = tag.asKey();
-            
-            // Remove all associations with this tag
-            statementStore.removeQualifications(tagKey);
-            
-            // Remove all properties of this tag
-            statementStore.removeQualities(tagKey);
-            
-            return true;
+            // Remove all associations with the tag.
+            return entitySystem.remove(tag);
         }
         
-        return false;
+        return null;
     }
     
     public Set<String> tagNameSet() {
