@@ -130,7 +130,7 @@ public final class TagSystem {
     
     public Map<String, Map<String, String>> remove(TagIdentifier tag) {
         if (owns(tag)) {
-            String tagNameKey = tag.getNameKey();
+            String tagNameKey = tag.getTagNameKey();
             
             // Remove the tag from the cache.
             tagNameSet.remove(tagNameKey);
@@ -185,7 +185,7 @@ public final class TagSystem {
                    tagSystemNameKey.equals(o.tagSystemNameKey);
         }
         
-        public String getNameKey() {
+        public String getTagNameKey() {
             return tagNameKey;
         }
         

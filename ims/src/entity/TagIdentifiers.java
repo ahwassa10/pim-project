@@ -15,12 +15,12 @@ public final class TagIdentifiers {
     }
     
     public static String requireValidTagName(String test_tag) {
-        Objects.requireNonNull(test_tag, "Tag cannot be null");
+        Objects.requireNonNull(test_tag, "Tag name cannot be null");
         
         if (TagIdentifiers.isValidTagName(test_tag)) {
             return test_tag;
         } else {
-            String msg = String.format("%s is not a valid tag", test_tag);
+            String msg = String.format("%s is not a valid tag name", test_tag);
             throw new IllegalArgumentException(msg);
         }
     }
