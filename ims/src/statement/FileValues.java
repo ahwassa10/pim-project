@@ -2,16 +2,16 @@ package statement;
 
 import java.util.Objects;
 
-public final class FileValues {
+final class FileValues {
     private static final int MAX_LENGTH = 256; //Exclusive
     
     private FileValues() {}
     
-    public static boolean isValid(String test_value) {
+    static boolean isValid(String test_value) {
         return test_value != null && test_value.length() < MAX_LENGTH;
     }
     
-    public static String requireValidValue(String test_value) {
+    static String requireValidValue(String test_value) {
         Objects.requireNonNull(test_value, "File-based value cannot be null");
         
         if (FileValues.isValid(test_value)) {

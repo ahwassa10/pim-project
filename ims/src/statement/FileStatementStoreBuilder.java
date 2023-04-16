@@ -11,7 +11,7 @@ public final class FileStatementStoreBuilder {
 
     public FileStatementStoreBuilder() {}
 
-    public static FileStatementStore test_triplestore() {
+    public static FileStatementStore test_statementstore() {
         return new FileStatementStoreBuilder()
                 .setExportFolder("C:\\Users\\Primary\\Desktop\\export")
                 .setStatementFolder("C:\\Users\\Primary\\Desktop\\statement")

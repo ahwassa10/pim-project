@@ -6,6 +6,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,11 +43,6 @@ public final class FileStatementStore implements StatementStore {
         }
     }
     
-    public Set<String> holderSetFor(String qualifierKey) {
-        FileKeys.requireValidKey(qualifierKey);
-        return Collections.unmodifiableSet(keyMap.get(qualifierKey));
-    }
-    
     public String get(String qualifierKey,
                       String holderKey) {
         
@@ -68,6 +64,19 @@ public final class FileStatementStore implements StatementStore {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public Set<String> holderSetFor(String qualifierKey) {
+        FileKeys.requireValidKey(qualifierKey);
+        return Collections.unmodifiableSet(keyMap.get(qualifierKey));
+    }
+    
+    public boolean isValidKey(String test_key) {
+        return FileKeys.isValid(test_key);
+    }
+    
+    public boolean isValidValue(String test_value) {
+        return FileValues.isValid(test_value);
     }
     
     private void load() throws IOException {
@@ -97,21 +106,20 @@ public final class FileStatementStore implements StatementStore {
         }
     }
     
-    public Set<String> qualifierSet() {
-        return Collections.unmodifiableSet(keyMap.keySet());
-    }
-    
     public void printKeyMap() {
         System.out.println(keyMap);
     }
     
     public String put(String qualifierKey,
                       String holderKey,
-                      String value) {
+                      String valueOrNull) {
 
         FileKeys.requireValidKey(qualifierKey);
         FileKeys.requireValidKey(holderKey);
-        FileValues.requireValidValue(value);
+        
+        if (valueOrNull != null) {
+            FileValues.requireValidValue(valueOrNull);
+        }
         
         String descriptor = FileDescriptors.from(qualifierKey, holderKey);
         Path descriptorPath = statement_folder.resolve(descriptor);
@@ -119,7 +127,9 @@ public final class FileStatementStore implements StatementStore {
         if (containsDescriptor(qualifierKey, holderKey)) {
             try {
                 String oldValue = Files.readString(descriptorPath);
-                Files.writeString(descriptorPath, value);
+                if (valueOrNull != null) {
+                    Files.writeString(descriptorPath, valueOrNull);
+                }
                 return oldValue;
             } catch (NoSuchFileException e) {
                 String msg = String.format("%s found in-memory but not on-disk", descriptor);
@@ -132,37 +142,9 @@ public final class FileStatementStore implements StatementStore {
             keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
                   .add(holderKey);
             try {
-                Files.writeString(descriptorPath, value);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-    
-    public String putDescriptor(String qualifierKey,
-                                String holderKey) {
-
-        FileKeys.requireValidKey(qualifierKey);
-        FileKeys.requireValidKey(holderKey);
-
-        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
-        Path descriptorPath = statement_folder.resolve(descriptor);
-
-        if (containsDescriptor(qualifierKey, holderKey)) {
-            try {
-                return Files.readString(descriptorPath);
-            } catch (NoSuchFileException e) {
-                String msg = String.format("%s found in-memory but not on-disk", descriptor);
-                System.out.println(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
-                  .add(holderKey);
-            try {
-                Files.createFile(descriptorPath);
+                Files.writeString(descriptorPath, valueOrNull,
+                        StandardOpenOption.CREATE_NEW,
+                        StandardOpenOption.WRITE);
             } catch (FileAlreadyExistsException e) {
                 String msg = String.format("%s found on-disk but not in-memory", descriptor);
                 System.out.println(msg);
@@ -171,6 +153,10 @@ public final class FileStatementStore implements StatementStore {
             }
         }
         return null;
+    }
+    
+    public Set<String> qualifierSet() {
+        return Collections.unmodifiableSet(keyMap.keySet());
     }
     
     public void remove(String qualifierKey,

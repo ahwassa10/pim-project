@@ -93,9 +93,15 @@ public interface StatementStore {
         return size() == 0;
     }
     
+    boolean isValidKey(String test_key);
+    
+    boolean isValidValue(String test_value);
+    
     String put(String qualifierKey, String holderKey, String value);
     
-    String putDescriptor(String qualifierKey, String holderKey);
+    default String putDescriptor(String qualifierKey, String holderKey) {
+        return put(qualifierKey, holderKey, null);
+    }
     
     default String putIfAbsent(String qualifierKey,
                                String holderKey,
@@ -140,7 +146,6 @@ public interface StatementStore {
         
         return removed;
     }
-    
     
     default Set<String> removeWithQuality(String qualifierKey, Predicate<String> vTester) {
         Objects.requireNonNull(vTester, "Value tester predicate cannot be null");

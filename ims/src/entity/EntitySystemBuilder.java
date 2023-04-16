@@ -16,7 +16,7 @@ public final class EntitySystemBuilder {
 
     public static EntitySystem test_entitysystem() {
         return new EntitySystemBuilder()
-                .setQualityStore(FileStatementStoreBuilder.test_triplestore())
+                .setQualityStore(FileStatementStoreBuilder.test_statementstore())
                 .setSubstanceStore(SubstanceStoreBuilder.test_substore())
                 .build();
     }
