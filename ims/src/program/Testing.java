@@ -28,15 +28,6 @@ public class Testing {
         ts.associate(future, entity1);
         es.printSS();
         
-        ts.dissociate(green, entity1);
-        ts.remove(green);
-        ts.remove(future);
-        ts.remove(green);
-        es.printSS();
-        
-        es.remove(entity1);
-        es.printSS();
-        
         //String entity2 = fs.importFile();
         
     }

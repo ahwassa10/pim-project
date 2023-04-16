@@ -99,9 +99,7 @@ public interface StatementStore {
     
     String put(String qualifierKey, String holderKey, String value);
     
-    default String putDescriptor(String qualifierKey, String holderKey) {
-        return put(qualifierKey, holderKey, null);
-    }
+    String putDescriptor(String qualifierKey, String holderKey);
     
     default String putIfAbsent(String qualifierKey,
                                String holderKey,

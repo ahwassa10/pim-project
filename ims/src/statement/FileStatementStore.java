@@ -112,46 +112,71 @@ public final class FileStatementStore implements StatementStore {
     
     public String put(String qualifierKey,
                       String holderKey,
-                      String valueOrNull) {
+                      String value) {
 
         FileKeys.requireValidKey(qualifierKey);
         FileKeys.requireValidKey(holderKey);
-        
-        if (valueOrNull != null) {
-            FileValues.requireValidValue(valueOrNull);
-        }
+        FileValues.requireValidValue(value);
         
         String descriptor = FileDescriptors.from(qualifierKey, holderKey);
         Path descriptorPath = statement_folder.resolve(descriptor);
         
-        if (containsDescriptor(qualifierKey, holderKey)) {
-            try {
-                String oldValue = Files.readString(descriptorPath);
-                if (valueOrNull != null) {
-                    Files.writeString(descriptorPath, valueOrNull);
-                }
-                return oldValue;
-            } catch (NoSuchFileException e) {
-                String msg = String.format("%s found in-memory but not on-disk", descriptor);
-                System.out.println(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            if (containsDescriptor(qualifierKey, holderKey)) {
+                String onDisk = Files.readString(descriptorPath);
+                Files.writeString(descriptorPath, value);
+                return onDisk;
+            } else {
+                keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
+                      .add(holderKey);
+                
+                Files.writeString(descriptorPath, value,
+                                  StandardOpenOption.CREATE_NEW,
+                                  StandardOpenOption.WRITE);
             }
-            
-        } else {
-            keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
-                  .add(holderKey);
-            try {
-                Files.writeString(descriptorPath, valueOrNull,
-                        StandardOpenOption.CREATE_NEW,
-                        StandardOpenOption.WRITE);
-            } catch (FileAlreadyExistsException e) {
-                String msg = String.format("%s found on-disk but not in-memory", descriptor);
-                System.out.println(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (NoSuchFileException e) {
+            String msg = String.format("%s found in-memory but not on-disk", descriptor);
+            System.out.println(msg);
+            e.printStackTrace();
+        } catch (FileAlreadyExistsException e) {
+            String msg = String.format("%s found on-disk but not in-memory", descriptor);
+            System.out.println(msg);
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
+        return null;
+    }
+    
+    public String putDescriptor(String qualifierKey, String holderKey) {
+        FileKeys.requireValidKey(qualifierKey);
+        FileKeys.requireValidKey(holderKey);
+        
+        String descriptor = FileDescriptors.from(qualifierKey, holderKey);
+        Path descriptorPath = statement_folder.resolve(descriptor);
+        
+        try {
+            if (containsDescriptor(qualifierKey, holderKey)) {
+                String onDisk = Files.readString(descriptorPath);
+                return onDisk;
+            } else {
+                keyMap.computeIfAbsent(qualifierKey, k -> new HashSet<>())
+                      .add(holderKey);
+                Files.createFile(descriptorPath);
+            }
+        } catch (NoSuchFileException e) {
+            String msg = String.format("%s found in-memory but not on-disk", descriptor);
+            System.out.println(msg);
+            e.printStackTrace();
+        } catch (FileAlreadyExistsException e) {
+            String msg = String.format("%s found on-disk but not in-memory", descriptor);
+            System.out.println(msg);
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         return null;
     }
     
