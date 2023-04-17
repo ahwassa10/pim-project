@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import entity.EntitySystem;
+import entity.Identifier;
 import entity.Keys;
 import statement.StatementStore;
 
@@ -23,6 +24,33 @@ public final class SelectionTagGarden {
         this.selectionTagGarden = selectionTagGarden;
         
         initSelectionTagMap();
+    }
+    
+    public boolean contains(String selectionTag) {
+        return selectionTagMap.containsKey(selectionTag);
+    }
+    
+    public SelectionTagID createAndAdd(String selectionTag, Set<String> selectionTagValues) {
+        SelectionTags.requireValidSelectionTag(selectionTag);
+        
+        if (selectionTagMap.containsKey(selectionTag)) {
+            String msg = String.format("%s already exists",
+                    Keys.combine(selectionTagGarden, selectionTag));
+            throw new IllegalArgumentException(msg);
+        } 
+        
+        for (String selectionTagValue : selectionTagValues) {
+            SelectionTags.requireValidSelectionTagValue(selectionTagValue);
+        }
+        
+        statementStore.putDescriptor(selectionTagGarden, selectionTag);
+        String selectionTagKey = Keys.combine(selectionTagGarden, selectionTag);
+        
+        for (String selectionTagValue : selectionTagValues) {
+            statementStore.putDescriptor(selectionTagKey, selectionTagValue);
+        }
+        
+        return new SimpleSelectionTagID(selectionTagGarden, selectionTag);
     }
     
     private void initSelectionTag(String selectionTag) {
@@ -86,6 +114,20 @@ public final class SelectionTagGarden {
         }
     }
     
+    public SelectionTagID get(String selectionTag) {
+        if (selectionTagMap.containsKey(selectionTag)) {
+            return new SimpleSelectionTagID(selectionTagGarden, selectionTag);
+        } else {
+            return null;
+        }
+    }
+    
+    public boolean owns(SelectionTagID selectionTagID) {
+        Objects.requireNonNull(selectionTagID, "Selection-tag ID cannot be null");
+        
+        return selectionTagGarden.equals(selectionTagID.getSelectionTagGarden());
+    }
+    
     public Set<String> selectionTagSet() {
         return Collections.unmodifiableSet(selectionTagMap.keySet());
     }
@@ -98,4 +140,91 @@ public final class SelectionTagGarden {
         return Collections.unmodifiableSet(selectionTagValues);
     }
     
+    private static class SimpleSelectionTagID
+    implements SelectionTagID {
+        private final String selectionTagGarden;
+        private final String selectionTag;
+        
+        SimpleSelectionTagID(String selectionTagGarden, String selectionTag) {
+            this.selectionTagGarden = selectionTagGarden;
+            this.selectionTag = selectionTag;
+        }
+        
+        public String asKey() {
+            return Keys.combine(selectionTag, selectionTagGarden);
+        }
+        
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof SimpleSelectionTagID)) {
+                return false;
+            }
+            
+            SimpleSelectionTagID o = (SimpleSelectionTagID) other;
+            return selectionTagGarden.equals(o.selectionTagGarden) &&
+                   selectionTag.equals(o.selectionTag);
+        }
+        
+        public String getSelectionTag() {
+            return selectionTag;
+        }
+        
+        public String getSelectionTagGarden() {
+            return selectionTagGarden;
+        }
+        
+        public int hashCode() {
+            return Objects.hash(selectionTagGarden, selectionTag);
+        }
+        
+        public String toString() {
+            return String.format("SimpleSelectionTag: %s", asKey());
+        }
+    }
+    
+    private static class SimpleSelectionTagValueID
+    implements SelectionTagValueID {
+        private final SelectionTagID selectionTagID;
+        private final String selectionTagValue;
+        
+        SimpleSelectionTagValueID(SelectionTagID selectionTagID,
+                                          String selectionTagValue) {
+            this.selectionTagID = selectionTagID;
+            this.selectionTagValue = selectionTagValue;
+        }
+        
+        public String asKey() {
+            return Keys.combine(selectionTagID.asKey(), selectionTagValue);
+        }
+        
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof SimpleSelectionTagValueID)) {
+                return false;
+            }
+            SimpleSelectionTagValueID o = (SimpleSelectionTagValueID) other;
+            return selectionTagID.equals(o.selectionTagID) &&
+                   selectionTagValue.equals(o.selectionTagValue);
+        }
+        
+        public SelectionTagID getSelectionTagID() {
+            return selectionTagID;
+        }
+        
+        public String getSelectionTagValue() {
+            return selectionTagValue;
+        }
+        
+        public int hashCode() {
+            return Objects.hash(selectionTagID, selectionTagValue);
+        }
+        
+        public String toString() {
+            return String.format("SimpleSelectionTagValue: %s", asKey());
+        }
+    }
 }

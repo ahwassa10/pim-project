@@ -199,7 +199,7 @@ public final class TagSystem {
         }
         
         public String toString() {
-            return String.format("SimpleTag: %s.%s", tagSystemNameKey, tagNameKey);
+            return String.format("SimpleTag: %s", asKey());
         }
     }
 }
