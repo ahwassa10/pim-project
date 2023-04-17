@@ -29,6 +29,10 @@ public class Testing {
             System.out.println(tag + ": " + stg.selectionTagValueSet(tag));
         }
         
+        System.out.println(stg.remove(stg.get("rating")));
+        System.out.println(stg.remove(stg.get("content-type")));
+        
+        
         
         /*
         Identifier entity1 = fs.importFile();

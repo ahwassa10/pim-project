@@ -3,6 +3,6 @@ package qualitygardens.selectiontag;
 import entity.Identifier;
 
 public interface SelectionTagValueID extends Identifier {
-    Identifier getSelectionTagID();
+    SelectionTagID getSelectionTagID();
     String getSelectionTagValue();
 }
