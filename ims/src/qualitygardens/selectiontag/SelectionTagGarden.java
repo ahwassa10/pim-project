@@ -1,8 +1,10 @@
 package qualitygardens.selectiontag;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import entity.EntitySystem;
@@ -15,7 +17,7 @@ public final class SelectionTagGarden {
     private final Map<String, Set<String>> selectionTagMap = new HashMap<>();
     private final String selectionTagGarden;
     
-    SelectionTagGarden(EntitySystem entitySystem, String selectionTagGarden) {
+    public SelectionTagGarden(EntitySystem entitySystem, String selectionTagGarden) {
         this.entitySystem = entitySystem;
         this.statementStore = entitySystem.getStatementStore();
         this.selectionTagGarden = selectionTagGarden;
@@ -54,7 +56,7 @@ public final class SelectionTagGarden {
     
     private void initSelectionTagMap() {
         Map<String, String> selectionTags =
-                statementStore.getWithHolder(selectionTagGarden);
+                statementStore.getWithQualifier(selectionTagGarden);
         
         for (Map.Entry<String, String> onDisk : selectionTags.entrySet()) {
             String selectionTag = onDisk.getKey();
@@ -75,7 +77,25 @@ public final class SelectionTagGarden {
             }
             
             initSelectionTag(selectionTag);
+            
+            if (!selectionTagMap.containsKey(selectionTag)) {
+                String msg = String.format("%s has no valid values",
+                        Keys.combine(selectionTagGarden, selectionTag));
+                System.out.println(msg);
+            }
         }
+    }
+    
+    public Set<String> selectionTagSet() {
+        return Collections.unmodifiableSet(selectionTagMap.keySet());
+    }
+    
+    public Set<String> selectionTagValueSet(String selectionTag) {
+        Objects.requireNonNull(selectionTag, "Selection tag cannot be null");
+        Set<String> selectionTagValues =
+                selectionTagMap.getOrDefault(selectionTag, 
+                                             Collections.emptySet());
+        return Collections.unmodifiableSet(selectionTagValues);
     }
     
 }

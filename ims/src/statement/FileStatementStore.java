@@ -68,7 +68,9 @@ public final class FileStatementStore implements StatementStore {
     
     public Set<String> holderSetFor(String qualifierKey) {
         FileKeys.requireValidKey(qualifierKey);
-        return Collections.unmodifiableSet(keyMap.get(qualifierKey));
+        
+        Set<String> holders = keyMap.getOrDefault(qualifierKey, Collections.emptySet());
+        return Collections.unmodifiableSet(holders);
     }
     
     public boolean isValidKey(String test_key) {

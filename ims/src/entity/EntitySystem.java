@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import qualitygardens.selectiontag.SelectionTagGarden;
 import statement.FileStatementStore;
 import substance.SubstanceStore;
 
@@ -13,6 +14,7 @@ public final class EntitySystem {
     private final FileStatementStore statementStore;
     private final SubstanceStore substanceStore;
     
+    private final SelectionTagGarden selectionTagGarden;
     private final TagSystem tagSystem;
 
     EntitySystem(FileStatementStore statementStore, SubstanceStore substanceStore) {
@@ -20,6 +22,7 @@ public final class EntitySystem {
         this.substanceStore = substanceStore;
         
         this.tagSystem = new TagSystem(this, "tag");
+        this.selectionTagGarden = new SelectionTagGarden(this, "selection-tag");
         
         System.out.println("Successfully created an entity system");
     }
@@ -81,6 +84,10 @@ public final class EntitySystem {
         }
         
         return removed;
+    }
+    
+    public SelectionTagGarden getSelectionTagGarden() {
+        return selectionTagGarden;
     }
     
     public FileStatementStore getStatementStore() {
