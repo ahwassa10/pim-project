@@ -21,7 +21,6 @@ public final class TagSystem {
         this.entitySystem = entitySystem;
         this.statementStore = entitySystem.getStatementStore();
         this.tagSystemNameKey = tagSystemNameKey;
-        initTagNameSet();
     }
     
     public Identifier associate(TagIdentifier tag, Identifier identifier) {
@@ -94,31 +93,6 @@ public final class TagSystem {
     
     public String getTagSystemNameKey() {
         return tagSystemNameKey;
-    }
-    
-    private void initTagNameSet() {
-        Map<String, String> onDiskTags = statementStore.getWithQualifier(tagSystemNameKey);
-        
-        for (Map.Entry<String, String> qualification : onDiskTags.entrySet()) {
-            String onDiskTag = qualification.getKey();
-            String onDiskValue = qualification.getValue();
-            
-            if (!onDiskValue.equals("")) {
-                String msg = String.format("%s.%s should not have a value",
-                        tagSystemNameKey, onDiskTag);
-                System.out.println(msg);
-                continue;
-            }
-            
-            if (!TagIdentifiers.isValidTagName(onDiskTag)) {
-                String msg = String.format("%s.%s is not a valid tag",
-                        tagSystemNameKey, onDiskTag);
-                System.out.println(msg);
-                continue;
-            }
-            
-            tagNameSet.add(onDiskTag);
-        }
     }
     
     public boolean owns(TagIdentifier tag) {

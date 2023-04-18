@@ -27,40 +27,24 @@ public final class EntitySystem {
         System.out.println("Successfully created an entity system");
     }
 
-    public Identifier attribute(String type, Identifier entity, String data) {
-        Objects.requireNonNull(entity, "Entity identifier cannot be null");
-        
-        String holder = entity.asKey();
-        statementStore.put(type, holder, data);
-        
-        Identifier event = Identifiers.combine(type, entity);
-        String holder2 = event.asKey();
-        String happenedOn = Instant.now().toString();
-        statementStore.put("happened-on", holder2, happenedOn);
-        
-        return event;
-    }
-
-    public Identifier createEntity() {
-        Identifier entity = Identifiers.newIdentifier();
-        String holder = entity.asKey();
-        statementStore.putDescriptor("identity", holder);
+    public Key createEntity() {
+        Key entity = Keys.createKey();
+        statementStore.putDescriptor("identity", entity.asString());
         
         String creationTime = Instant.now().toString();
-        statementStore.put("creation-time", holder, creationTime);
+        statementStore.put("creation-time", entity.asString(), creationTime);
         
         return entity;
     }
     
-    public Map<String, Map<String, String>> remove(Identifier identifier) {
-        Objects.requireNonNull(identifier, "Identifier cannot be null");
+    public Map<String, Map<String, String>> remove(Key key) {
+        Objects.requireNonNull(key, "Key cannot be null");
         
         Map<String, Map<String, String>> removed = new HashMap<>();
-        String identifierKey = identifier.asKey();
         
         // Get all statements for which the identifier is part of the qualifier.
         for (String qualifierKey : statementStore.qualifierSet()) {
-            if (qualifierKey.contains(identifierKey)) {
+            if (qualifierKey.contains(key.asString())) {
                 Map<String, String> removedQualifications =
                         statementStore.getWithQualifier(qualifierKey);
                 removed.put(qualifierKey, removedQualifications);
@@ -69,7 +53,7 @@ public final class EntitySystem {
             
             // Get all statements for which the identifier is part of the holder.
             for (String holderKey : statementStore.holderSetFor(qualifierKey)) {
-                if (holderKey.contains(identifierKey)) {
+                if (holderKey.contains(key.asString())) {
                     String removedValue = statementStore.get(qualifierKey, holderKey);
                     removed.computeIfAbsent(qualifierKey, k -> new HashMap<>())
                            .put(holderKey, removedValue);
@@ -98,13 +82,11 @@ public final class EntitySystem {
         return tagSystem;
     }
 
-    public void setSubstance(Identifier entity, Path substanceFile) {
-        Objects.requireNonNull(entity, "Entity identifier cannot be null");
-        
-        String holder = entity.asKey();
+    public void setSubstance(Key key, Path substanceFile) {
+        Objects.requireNonNull(key, "Key cannot be null");
         
         String hash = substanceStore.capture(substanceFile);
-        statementStore.put("substance", holder, hash);
+        statementStore.put("substance", key.asString(), hash);
     }
 
     public String toString() {
