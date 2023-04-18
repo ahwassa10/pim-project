@@ -1,4 +1,4 @@
-package qualitygardens.selectiontag;
+package qualitygardens.taggarden;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

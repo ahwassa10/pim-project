@@ -9,38 +9,17 @@ import entity.Identifier;
 import entity.TagIdentifier;
 import entity.TagSystem;
 import qualitygardens.selectiontag.SelectionTagGarden;
+import qualitygardens.taggarden.TagGarden;
+import qualitygardens.taggarden.TagGardenBuilder;
 import source.FileSource;
 import source.FileSourceBuilder;
+import statement.StatementStore;
 
 public class Testing {
     public static void main(String[] args) throws IOException {
         EntitySystem es = EntitySystemBuilder.test_entitysystem();
-        FileSource fs = FileSourceBuilder.test_rms(es);
-        TagSystem ts = es.getTagSystem();
-        SelectionTagGarden stg = es.getSelectionTagGarden();
+        StatementStore ss = es.getStatementStore();
         
-        System.out.println(ts.tagNameSet());
-        
-        TagIdentifier green = ts.createAndAdd("green");
-        TagIdentifier future = ts.createAndAdd("future");
-        System.out.println(ts.tagNameSet());
-        
-        for (String tag : stg.selectionTagSet()) {
-            System.out.println(tag + ": " + stg.selectionTagValueSet(tag));
-        }
-        
-        System.out.println(stg.remove(stg.get("rating")));
-        System.out.println(stg.remove(stg.get("content-type")));
-        
-        
-        
-        /*
-        Identifier entity1 = fs.importFile();
-        ts.associate(green, entity1);
-        ts.associate(future, entity1);
-        es.printSS();
-        */
-        //String entity2 = fs.importFile();
-        
+        TagGarden tg = new TagGardenBuilder(ss, "general").build();
     }
 }

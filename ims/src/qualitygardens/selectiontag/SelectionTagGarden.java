@@ -11,6 +11,7 @@ import entity.EntitySystem;
 import entity.Identifier;
 import entity.Identifiers;
 import entity.Keys;
+import qualitygardens.taggarden.SelectionTags;
 import statement.StatementStore;
 
 public final class SelectionTagGarden {
