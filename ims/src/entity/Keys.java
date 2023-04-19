@@ -1,156 +1,79 @@
 package entity;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 public final class Keys {
-    private static final String KEY_SEPARATOR = ".";
+    private static final Pattern KEY_PATTERN =
+            Pattern.compile("^[a-z0-9_\\-]+(\\.[a-z0-9_\\-]+)*$");
+    private static final char KEY_SEPARATOR = '.';
     private static final int MAX_KEY_LENGTH = 127; //Inclusive
-    private static final Pattern TIP_PATTERN =
-            Pattern.compile("^[a-z0-9_\\-]{1,127}$");
+    private static final int MIN_KEY_LENGTH = 1; //Inclusive
     
     private Keys() {}
     
-    public static boolean isValidTip(String test_tip) {
-        return test_tip != null &&
-               TIP_PATTERN.matcher(test_tip).matches();
-    }
-    
-    public static Key createKey() {
+    public static String createKey() {
         String uuidString = UUID.randomUUID().toString();
-        return new TipKey(uuidString);
+        return uuidString;
     }
     
-    public static Key newKey(String tip) {
-        requireValidTip(tip);
-        return new TipKey(tip);
-    }
-    
-    public static Key combine(Key stem, Key tip) {
-        Objects.requireNonNull(stem, "Stem key cannot be null");
-        Objects.requireNonNull(tip, "Tip key cannot be null");
-        
-        if (stem.length() + tip.length() + 1 > MAX_KEY_LENGTH) {
-            String msg = String.format("Combining %s and %s would exceed max key length",
-                    stem, tip);
-            throw new IllegalArgumentException(msg);
-        }
-        
-        return new CombinedKey(stem, tip);
-    }
-    
-    public static Key combine(Key stem, String tip) {
-        Objects.requireNonNull(stem, "Stem key cannot be null");
-        requireValidTip(tip);
-        
-        if (stem.length() + tip.length() + 1 > MAX_KEY_LENGTH) {
-            String msg = String.format("Combining %s and %s would exceed max key length",
-                    stem, tip);
-            throw new IllegalArgumentException(msg);
-        }
-        
-        return new CombinedKey(stem, new TipKey(tip));
-    }
-    
-    public static String requireValidTip(String test_tip) {
-        Objects.requireNonNull(test_tip, "Key tip cannot be null");
-        
-        if (TagIdentifiers.isValidTagName(test_tip)) {
-            return test_tip;
-        } else {
-            String msg = String.format("%s is not a valid key tip", test_tip);
-            throw new IllegalArgumentException(msg);
-        }
-    }
-    
-    private static class CombinedKey implements Key {
-        private final Key stem;
-        private final Key tip;
-        
-        CombinedKey(Key stem, Key tip) {
-            this.stem = stem;
-            this.tip = tip;
-        }
-        
-        public String asString() {
-            return stem.asString() + KEY_SEPARATOR + tip.asString();
-        }
-        
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof CombinedKey)) {
-                return false;
-            }
-            CombinedKey other = (CombinedKey) o;
-            return stem.equals(other.stem) &&
-                   tip.equals(other.tip);
-        }
-        
-        public Key getStem() {
-            return stem;
-        }
-        
-        public Key getTip() {
-            return tip;
-        }
-        
-        public int length() {
-            return stem.length() + 1 + tip.length();
-        }
-        
-        public int hashCode() {
-            return Objects.hash(stem, tip);
-        }
-        
-        public String toString() {
-            return String.format("CombinedKey<Stem: %s, Tip: %s>",
-                    stem, tip);
-        }
-    }
-    
-    private static class TipKey implements Key {
-        private final String tip;
-        
-        TipKey(String tip) {
-            this.tip = tip;
-        }
-        
-        public String asString() {
-            return tip;
-        }
-        
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof TipKey)) {
-                return false;
-            }
-            TipKey other = (TipKey) o;
-            return tip.equals(other.tip);
-        }
-        
-        public Key getStem() {
+    public static String combine(String key1, String key2) {
+        if (key1 == null && key2 == null) {
             return null;
+        } else if (key1 == null) {
+            return key2;
+        } else if (key2 == null) {
+            return key1;
         }
         
-        public Key getTip() {
-            return this;
+        requiresValidKey(key1);
+        requiresValidKey(key2);
+        
+        if (key1.length() + key2.length() + 1 > MAX_KEY_LENGTH) {
+            String msg = String.format("Combining %s and %s would exceed max key length",
+                    key1, key2);
+            throw new IllegalArgumentException(msg);
+        }
+        return key1 + KEY_SEPARATOR + key2;
+    }
+    
+    public static String getStem(String key) {
+        requiresValidKey(key);
+        
+        int endIndex = key.length() - 1;
+        while (endIndex > 0 && key.charAt(endIndex) != KEY_SEPARATOR) {
+            endIndex--;
         }
         
-        public int length() {
-            return tip.length();
-        }
+        String stem = key.substring(0, endIndex);
+        return stem.length() > 0 ? stem : null;
+    }
+    
+    public static String getTip(String key) {
+        requiresValidKey(key);
         
-        public int hashCode() {
-            return tip.hashCode();
+        int beginIndex = key.length() - 1;
+        while (beginIndex >= 0 && key.charAt(beginIndex) != KEY_SEPARATOR) {
+            beginIndex--;
         }
+        beginIndex += 1;
         
-        public String toString() {
-            return String.format("TipKey<%s>", tip);
+        return key.substring(beginIndex);
+    }
+    
+    public static boolean isValid(String key) {
+        return (key != null) &&
+               (key.length() >= MIN_KEY_LENGTH) &&
+               (key.length() <= MAX_KEY_LENGTH) &&
+               (KEY_PATTERN.matcher(key).matches());   
+    }
+    
+    public static String requiresValidKey(String key) {
+        if (isValid(key)) {
+            return key;
+        } else {
+            String msg = String.format("%s is not a valid key", key);
+            throw new IllegalArgumentException(msg);
         }
-    } 
+    }
 }
