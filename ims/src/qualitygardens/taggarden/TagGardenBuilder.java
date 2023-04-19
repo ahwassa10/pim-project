@@ -3,18 +3,21 @@ package qualitygardens.taggarden;
 import java.util.Map;
 import java.util.Objects;
 
+import entity.EntitySystem;
 import entity.Keys;
 import statement.StatementStore;
 
 public final class TagGardenBuilder {
+    private final EntitySystem entitySystem;
     private final StatementStore statementStore;
     private final String tagGardenKey;
     
-    public TagGardenBuilder(StatementStore statementStore, String tagGardenKey) {
-        Objects.requireNonNull(statementStore, "StatementStore cannot be null");
-        Objects.requireNonNull(tagGardenKey, "TagGarden key cannot be null");
+    public TagGardenBuilder(EntitySystem entitySystem, String tagGardenKey) {
+        Objects.requireNonNull(entitySystem, "EntitySystem cannot be null");
+        Keys.requiresValidKey(tagGardenKey);
         
-        this.statementStore = statementStore;
+        this.entitySystem = entitySystem;
+        this.statementStore = entitySystem.getStatementStore();
         this.tagGardenKey = tagGardenKey;
     }
     
@@ -22,22 +25,22 @@ public final class TagGardenBuilder {
         verifyRegularTags();
         verifySelectionTags();
         
-        return new TagGarden(tagGardenKey);
+        return new TagGarden(entitySystem, statementStore, tagGardenKey);
     }
     
     private void verifyRegularTags() {
-        String qualifier = Keys.combine(tagGardenKey, "tag");
-        Map<String, String> qualifications = statementStore.getWithQualifier(qualifier);
+        String tagTypeKey = Keys.combine(tagGardenKey, "tag");
+        Map<String, String> qualifications = statementStore.getWithQualifier(tagTypeKey);
         
         for (Map.Entry<String, String> qualification : qualifications.entrySet()) {
             String tag = qualification.getKey();
             
             if (!Tags.isValidTag(tag)) {
-                String invalidTag = Keys.combine(qualifier, tag);
+                String invalidTag = Keys.combine(tagTypeKey, tag);
                 String msg1 = String.format("%s has an invalid tag name", invalidTag);
                 System.out.println(msg1);
                 
-                statementStore.remove(qualifier, tag);
+                statementStore.remove(tagTypeKey, tag);
                 String msg2 = String.format("Successfully removed %s", invalidTag);
                 System.out.println(msg2);
                 
@@ -47,19 +50,19 @@ public final class TagGardenBuilder {
     }
     
     private void verifySelectionTags() {
-        String qualifier = Keys.combine(tagGardenKey, "selection-tag");
-        Map<String, String> qualifications = statementStore.getWithQualifier(qualifier);
+        String tagTypeKey = Keys.combine(tagGardenKey, "selection-tag");
+        Map<String, String> qualifications = statementStore.getWithQualifier(tagTypeKey);
         
         for (Map.Entry<String, String> qualification : qualifications.entrySet()) {
             String selectionTag = qualification.getKey();
             
             if (!SelectionTags.isValidSelectionTag(selectionTag)) {
-                String invalidSelectionTag = Keys.combine(qualifier, selectionTag);
+                String invalidSelectionTag = Keys.combine(tagTypeKey, selectionTag);
                 String msg1 = String.format("%s has an invalid selection-tag name",
                         invalidSelectionTag);
                 System.out.println(msg1);
                 
-                statementStore.remove(qualifier, selectionTag);
+                statementStore.remove(tagTypeKey, selectionTag);
                 String msg2 = String.format("Successfully removed %s",
                         invalidSelectionTag);
                 System.out.println(msg2);
@@ -67,7 +70,7 @@ public final class TagGardenBuilder {
                 continue;
             }
             
-            String selectionTagKey = Keys.combine(qualifier, selectionTag);
+            String selectionTagKey = Keys.combine(tagTypeKey, selectionTag);
             int valueCount = verifySelectionTagValues(selectionTagKey);
             
             if (valueCount < 1) {
@@ -75,7 +78,7 @@ public final class TagGardenBuilder {
                         selectionTagKey);
                 System.out.println(msg1);
                 
-                statementStore.remove(qualifier, selectionTag);
+                statementStore.remove(tagTypeKey, selectionTag);
                 String msg2 = String.format("Sucessfully removed %s",
                         selectionTagKey);
                 System.out.println(msg2);
