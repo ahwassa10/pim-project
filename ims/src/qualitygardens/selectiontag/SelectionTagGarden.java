@@ -27,49 +27,8 @@ public final class SelectionTagGarden {
         
     }
     
-    Identifier associate(SelectionTagValueID selectionTagValueID,
-                         Identifier identifier) {
-        
-        Objects.requireNonNull(identifier, "Identifier cannot be null");
-        
-        if (!owns(selectionTagValueID)) {
-            String msg = String.format("%s is not from the SelectionTagGarden: %s",
-                    selectionTagValueID.asKey(), selectionTagGarden);
-            throw new IllegalArgumentException(msg);
-        }
-        
-        String qualifierKey = selectionTagValueID.asKey();
-        String holderKey = identifier.asKey();
-        statementStore.putDescriptor(qualifierKey, holderKey);
-        
-        return Identifiers.combine(selectionTagValueID, identifier);
-    }
-    
     public boolean contains(String selectionTag) {
         return selectionTagMap.containsKey(selectionTag);
-    }
-    
-    public SelectionTagID createAndAdd(String selectionTag, Set<String> selectionTagValues) {
-        SelectionTags.requireValidSelectionTag(selectionTag);
-        
-        if (selectionTagMap.containsKey(selectionTag)) {
-            String msg = String.format("%s already exists",
-                    Keys.combine(selectionTagGarden, selectionTag));
-            throw new IllegalArgumentException(msg);
-        } 
-        
-        for (String selectionTagValue : selectionTagValues) {
-            SelectionTags.requireValidSelectionTagValue(selectionTagValue);
-        }
-        
-        statementStore.putDescriptor(selectionTagGarden, selectionTag);
-        String selectionTagKey = Keys.combine(selectionTagGarden, selectionTag);
-        
-        for (String selectionTagValue : selectionTagValues) {
-            statementStore.putDescriptor(selectionTagKey, selectionTagValue);
-        }
-        
-        return new SimpleSelectionTagID(selectionTagGarden, selectionTag);
     }
     
     public Map<String, Map<String, String>> dissociate(SelectionTagValueID selectionTagValueID,
