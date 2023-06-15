@@ -1,17 +1,20 @@
 package program;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 public class Controller {
     @FXML
-    private Label label;
+    private Text output;
     
-    public void initialize() {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
+    @FXML
+    private void processNumpad(ActionEvent event) {
         
-        label.setText(String.format("JavaFX: %s, Java: %s", javaVersion, javafxVersion));
     }
     
+    @FXML
+    private void processOperator(ActionEvent event) {
+        
+    }
 }
