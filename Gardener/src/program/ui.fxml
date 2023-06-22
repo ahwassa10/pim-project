@@ -5,6 +5,12 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
+<ScrollPane prefHeight="400" prefWidth="650" fitToWidth="true" fx:controller="program.Controller" xmlns:fx="http://javafx.com/fxml">
+	<TilePane fx:id="pane">
+	</TilePane>
+</ScrollPane>
+
+<!--
 <VBox spacing="10" alignment="CENTER" prefWidth="300" prefHeight="300" fx:controller="program.Controller" xmlns:fx="http://javafx.com/fxml">
 	<fx:define>
 		<Font fx:id="FONT" size="18"/>
@@ -43,3 +49,4 @@
 	</HBox>
 	
 </VBox>
+ -->

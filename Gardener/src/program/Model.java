@@ -1,20 +1,24 @@
 package program;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
 public class Model {
-    public long calculate(long operand1,
-                          long operand2,
-                          String operator) {
-        switch (operator) {
-        case "+":
-            return operand1 + operand2;
-        case "-":
-            return operand1 - operand2;
-        case "*":
-            return operand1 * operand2;
-        case "/":
-            return operand1 / operand2;
+    private Path directoryPath;
+    
+    public Path getDirectoryPath() {
+        return directoryPath;
+    }
+    
+    public void SetDirectoryPath(Path directoryPath) {
+        Objects.requireNonNull(directoryPath, "Directory path cannot be null");
+        
+        if (!Files.isDirectory(directoryPath)) {
+            String msg = String.format("%s is not a valid directory", directoryPath);
+            throw new IllegalArgumentException(msg);
         }
         
-        throw new IllegalArgumentException("Unknown operator");
+        this.directoryPath = directoryPath;
     }
 }

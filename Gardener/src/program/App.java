@@ -1,5 +1,7 @@
 package program;
 
+import java.nio.file.Path;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,9 +12,16 @@ public class App extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("ui.fxml"));
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ui.fxml"));
+        
+        Parent root = loader.load();
+        
+        Controller c = (Controller) loader.getController();
+        c.fillWithImages(Path.of("C:\\Users\\Primary\\Desktop\\images"));
         
         primaryStage.setScene(new Scene(root));
+        
         primaryStage.show();
     }
     

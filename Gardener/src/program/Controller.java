@@ -1,56 +1,34 @@
 package program;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 
 public class Controller {
-    private boolean start = true;
     
     @FXML
-    private Text output;
+    private TilePane pane;
     
-    private long operand1; 
-    
-    private String operator = "";
-    
-    private Model model = new Model();
-    
-    @FXML
-    private void processNumpad(ActionEvent event) {
-        if (start) {
-            output.setText("");
-            start = false;
-        }
-        
-        String value = ((Button) event.getSource()).getText();
-        
-        output.setText(output.getText() + value);
-    }
-    
-    @FXML
-    private void processOperator(ActionEvent event) {
-        String value = ((Button) event.getSource()).getText();
-        
-        if (!value.equals("=")) {
-            if (!operator.isEmpty()) {
-                return;
+    public void fillWithImages(Path imageDir) {
+        try (DirectoryStream<Path> images = Files.newDirectoryStream(imageDir)) {
+            for (Path imageFile : images) {
+                Image image = new Image(Files.newInputStream(imageFile), 100, 100, true, true);
+                ImageView view = new ImageView(image);
+                
+                pane.getChildren().add(view);
             }
-            operator = value;
-            operand1 = Long.parseLong(output.getText());
-            output.setText("");
-            
-        } else {
-            if (operator.isEmpty()) {
-                return;
-            }
-            
-            long result = model.calculate(operand1, Long.parseLong(output.getText()), operator);
-            output.setText(String.valueOf(result));
-            
-            operator = "";
-            start = true;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
