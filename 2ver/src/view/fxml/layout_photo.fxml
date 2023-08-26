@@ -51,26 +51,26 @@
             <Insets top="5" right="5" bottom="5" left="5"/>
         </padding>
         <Button fx:id="copyToGroupButton"
-            text="Copy to Ablum"
+            text="Copy to Group"
             onAction="#handleEvent"
             GridPane.rowIndex="1"
             GridPane.columnIndex="0"
             GridPane.halignment="LEFT"
-            prefWidth="100"/>
+            prefWidth="120"/>
         <Button fx:id="moveToGroupButton"
             text="Move to Group"
             onAction="#handleEvent"
             GridPane.rowIndex="1"
             GridPane.columnIndex="1"
             GridPane.halignment="CENTER"
-            prefWidth="100"/>
+            prefWidth="120"/>
         <Button fx:id="deleteFromGroupButton"
             text="Delete from Group"
             onAction="#handleEvent"
             GridPane.rowIndex="1"
             GridPane.columnIndex="2"
             GridPane.halignment="RIGHT"
-            prefWidth="100"/>
+            prefWidth="120"/>
     </HBox>
     <VBox GridPane.rowIndex="0"
           GridPane.columnIndex="1"
