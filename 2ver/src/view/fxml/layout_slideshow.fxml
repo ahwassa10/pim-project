@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:controller="view.ControllerSlideshow"
+      xmlns:fx="http://javafx.com/javafx"
+      alignment="BOTTOM_CENTER">
+    <ScrollPane fx:id="photoImagePane"
+                prefHeight="700"
+                prefWidth="1000"
+                fitToHeight="true"
+                fitToWidth="true"
+                VBox.vgrow="ALWAYS"
+                style="-fx-background-color:transparent;">
+        <StackPane>
+            <ImageView fx:id="showingImageView"
+                       preserveRatio="true">
+            </ImageView>
+        </StackPane>
+    </ScrollPane>
+    <HBox alignment="CENTER"
+          VBox.vgrow="NEVER">
+        <padding>
+            <Insets top="5" right="5" bottom="5" left="5"/>
+        </padding>
+        <Button fx:id="previousPhotoButton"
+                text="Previous Photo"
+                onAction="#handleEvent"
+                prefWidth="150">
+            <font>
+                <Font size="14.0" />
+            </font>     
+        </Button>
+        <Button fx:id="exitSlideshowButton"
+                text="Exit Gallery"
+                onAction="#handleEvent"
+                prefWidth="150">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <Button fx:id="nextPhotoButton"
+                text="Next Photo"
+                onAction="#handleEvent"
+                prefWidth="150">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+    </HBox>
+    
+</VBox>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:controller="view.ControllerGroupTile"
+          xmlns="http://javafx.com/javafx/17"
+          xmlns:fx="http://javafx.com/fxml/1"
+          style="-fx-border-color:black;"
+          minHeight="120"
+          maxHeight="120"
+          minWidth="145"
+          maxWidth="145"
+          alignment="CENTER">
+    <padding>
+        <Insets top="5" right="5" bottom="5" left="5"/>
+    </padding>
+    
+    <Label fx:id="groupNameLabel"
+           wrapText="true"
+           GridPane.rowIndex="0"
+           GridPane.columnIndex="0"
+           GridPane.halignment="CENTER"
+           textAlignment="CENTER">
+        <font>
+            <Font size="18"/>
+        </font>
+    </Label>
+
+    <Label fx:id="numPhotosLabel"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0"
+           GridPane.halignment="CENTER"/>
+</GridPane>

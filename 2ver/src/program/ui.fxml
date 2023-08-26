@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+
+
+<HBox fx:controller="program.Controller" xmlns:fx="http://javafx.com/fxml">
+	<ListView fx:id="list">
+	
+	</ListView>
+	<ScrollPane HBox.hgrow="ALWAYS" fitToWidth="true">
+		<TilePane prefHeight="400" prefWidth="650" fx:id="pane">
+		</TilePane>
+	</ScrollPane>
+</HBox>

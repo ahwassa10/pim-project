@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<GridPane fx:controller="view.ControllerPhoto"
+          xmlns:fx="http://javafx.com/javafx"
+          gridLinesVisible="true">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <ColumnConstraints hgrow="NEVER"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="ALWAYS"/>
+        <RowConstraints vgrow="NEVER"/>
+    </rowConstraints>
+    <ScrollPane fx:id="photoImagePane"
+                GridPane.rowIndex="0"
+                GridPane.columnIndex="0"
+                GridPane.halignment="CENTER"
+                GridPane.valignment="CENTER"
+                prefHeight="400"
+                prefWidth="400"
+                fitToHeight="true"
+                fitToWidth="true">
+        <StackPane>
+            <ImageView fx:id="photoImageView"
+                       preserveRatio="true"/>
+        </StackPane>
+    </ScrollPane>
+    <HBox GridPane.rowIndex="1"
+          GridPane.columnIndex="0"
+          GridPane.halignment="CENTER"
+          alignment="CENTER">
+        <padding>
+            <Insets top="5" right="5" bottom="5" left="5"/>
+        </padding>
+        <Button fx:id="copyToGroupButton"
+            text="Copy to Ablum"
+            onAction="#handleEvent"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="0"
+            GridPane.halignment="LEFT"
+            prefWidth="100"/>
+        <Button fx:id="moveToGroupButton"
+            text="Move to Group"
+            onAction="#handleEvent"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="1"
+            GridPane.halignment="CENTER"
+            prefWidth="100"/>
+        <Button fx:id="deleteFromGroupButton"
+            text="Delete from Group"
+            onAction="#handleEvent"
+            GridPane.rowIndex="1"
+            GridPane.columnIndex="2"
+            GridPane.halignment="RIGHT"
+            prefWidth="100"/>
+    </HBox>
+    <VBox GridPane.rowIndex="0"
+          GridPane.columnIndex="1"
+          GridPane.rowSpan="2"
+          prefWidth="250">
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints percentWidth="66"/>
+                <ColumnConstraints percentWidth="34"/>
+            </columnConstraints>
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
+            <TextField fx:id="captionNameTextField"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="0"/>
+            <Button fx:id="editCaptionButton"
+                    text="Edit Caption"
+                    onAction="#handleEvent"
+                    GridPane.rowIndex="0"
+                    GridPane.columnIndex="1"
+                    maxWidth="Infinity"/>
+            <Label fx:id="photoDateLabel"
+                   text="Date"
+                   GridPane.rowIndex="1"
+                   GridPane.columnIndex="0"
+                   GridPane.columnSpan="2"
+                   GridPane.halignment="CENTER">
+                <font>
+                    <Font size="14.0" />
+                </font>       
+            </Label>
+            <ListView fx:id="tagListView" 
+                      onMouseClicked="#handleEvent"
+                      GridPane.rowIndex="2"
+                      GridPane.columnIndex="0"
+                      GridPane.columnSpan="2"
+                      prefHeight="200"/>
+        </GridPane>
+        <GridPane fx:id="createTagFunctionality"
+                  style="-fx-background-color: #d3d3d3;"
+                  hgap="5"
+                  vgap="5">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <padding>
+                <Insets top="10" right="5" bottom="10" left="5"/>
+            </padding>
+            <ComboBox fx:id="tagSelectComboBox"
+                      promptText="Tag Name"
+                      editable="true"
+                      GridPane.rowIndex="0"
+                      GridPane.columnIndex="0"/>
+            <TextField fx:id="newTagValueTextField"
+                       promptText="Tag Value"
+                       GridPane.rowIndex="0"
+                       GridPane.columnIndex="1" />
+            <Button fx:id="addTagButton"
+                    text="Add Tag"
+                    onAction="#handleEvent"
+                    GridPane.rowIndex="1"
+                    GridPane.columnIndex="1"
+                    maxWidth="Infinity"/>
+        </GridPane>
+        <GridPane fx:id="deleteTagFunctionality"
+                  style="-fx-background-color: #d3d3d3;"
+                  hgap="5"
+                  vgap="5">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <padding>
+                <Insets top="10" right="5" bottom="10" left="5"/>
+            </padding>
+            <Label fx:id="selectedTagTextField"
+                   wrapText="true"
+                   GridPane.rowIndex="0"
+                   GridPane.columnIndex="0"
+                   GridPane.columnSpan="2">
+                <font>
+                  <Font size="12" />
+              </font>
+            </Label>
+            <Button fx:id="cancelDeleteButton"
+                    text="Cancel Deletion"
+                    onAction="#handleEvent"
+                    GridPane.rowIndex="1"
+                    GridPane.columnIndex="0"
+                    maxWidth="Infinity"/>
+            <Button fx:id="deleteTagButton"
+                    text="Delete this Tag"
+                    onAction="#handleEvent"
+                    GridPane.rowIndex="1"
+                    GridPane.columnIndex="1"
+                    maxWidth="Infinity"/>
+        </GridPane>
+    </VBox>
+</GridPane>

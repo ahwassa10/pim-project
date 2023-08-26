@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Font?>
+
+<GridPane fx:controller="view.ControllerPhotoTile"
+          xmlns="http://javafx.com/javafx/17"
+          xmlns:fx="http://javafx.com/fxml/1"
+          style="-fx-border-color:black;"
+          minHeight="150"
+          maxHeight="150"
+          minWidth="150"
+          maxWidth="150"
+          alignment="BOTTOM_CENTER">
+    <ImageView fx:id="tileImageview"
+               GridPane.rowIndex="0"
+               GridPane.columnIndex="0"
+               GridPane.halignment="CENTER"/>
+
+    <Label fx:id="tileLabel"
+           wrapText="true"
+           GridPane.rowIndex="1"
+           GridPane.columnIndex="0"
+           GridPane.halignment="CENTER"
+           textAlignment="CENTER">
+        <font>
+            <Font size="14"/>
+        </font>
+    </Label>
+
+</GridPane>
+
