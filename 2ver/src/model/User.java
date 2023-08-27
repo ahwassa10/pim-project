@@ -1,11 +1,5 @@
 package model;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,22 +15,12 @@ import java.util.TreeSet;
  * later. Many other operations, such as moving or copying a photo to a different
  * group go through the user class.
  */
-public class User implements Serializable{
-    /**
-     * A field used to implement serialization.
-     */
-	private static final long serialVersionUID = 1L;
-
+public class User {
     /**
      * An implementation of comparator used to sort the tag names inside the user.
      * Tags are sorted alphabetically by their lowercase names.
      */
-    private class TagComparator implements Comparator<String>, Serializable{
-        /**
-         * A field used to implement serialization.
-         */
-		private static final long serialVersionUID = 1L;
-
+    private class TagComparator implements Comparator<String> {
         /**
          * Compares two tag alphabetically by their lowercase names.
          *
@@ -317,34 +301,4 @@ public class User implements Serializable{
     public String toString() {
         return username;
     }
-
-    /**
-     * Used to implement serialization of a user object; writes the user object to disk.
-     *
-     * @param path The pathname
-     * @throws IOException An error occurred in writing to disk.
-     */
-	public void writeUser(String path) throws IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
-		oos.writeObject(this);
-		oos.close();
-	}
-
-    /**
-     * Used to read a user from disk, deserializing it into an object.
-     *
-     * @param path The pathname where the user is store.
-     * @return The user object.
-     * @throws IOException An error occurred reading from the disk.
-     * @throws ClassNotFoundException An error that can occur in the deserialization process.
-     */
-    public static User readUser(String path)
-			throws IOException, ClassNotFoundException {
-			ObjectInputStream ois = new ObjectInputStream(
-			new FileInputStream(path));
-			User user = (User)ois.readObject();
-			ois.close();
-			return user;
-	}
-
 }

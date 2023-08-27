@@ -1,6 +1,5 @@
 package model;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,12 +8,7 @@ import java.util.*;
  *
  * @see Photo
  */
-public class Group implements Iterable<Photo>, Serializable {
-    /**
-     * A field used to serialize the group object
-     */
-	private static final long serialVersionUID = 1L;
-
+public class Group implements Iterable<Photo> {
     /**
      * The name of the group.
      */

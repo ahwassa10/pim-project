@@ -1,29 +1,18 @@
 package model;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
  * Represents a logical collection of tags applied to a photo.
  */
-public class TagStore implements Iterable<Tag>, Serializable{
-    /**
-     * A field used to implement serialization.
-     */
-	private static final long serialVersionUID = 1L;
-
+public class TagStore implements Iterable<Tag> {
     /**
      * An implementation of comparator used to sort the tags in the tag store.
      * Tags are sorted alphabetically by lowercase name first, and if names
      * match, tags are sorted alphabetically by lowercase value.
      *
      */
-    private class TagComparator implements Comparator<Tag>, Serializable{
-        /**
-         * A field used to implement serialization.
-         */
-		private static final long serialVersionUID = 1L;
-
+    private class TagComparator implements Comparator<Tag> {
         /**
          * The implementation of compare method inside the Comparator interface.
          * Tags are sorted alphabetically by lowercase name first, and if names

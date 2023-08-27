@@ -41,10 +41,7 @@ public class Photos extends Application {
 	 * This method ensures that the user state is saved to the disk before the
 	 * program exits.
 	 */
-	public void stop()
-	{
-		progContext.getUserStore().saveUserStates();
-	}
+	public void stop() {}
 
 	/**
 	 * The main method of the program; calls launch() to start the javafx framework.

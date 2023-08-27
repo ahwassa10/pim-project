@@ -1,7 +1,6 @@
 package model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -13,21 +12,6 @@ import java.util.*;
  */
 public class UserStore {
     /**
-     * (Serialization) Stores the top level directory where the user data is serialized.
-     */
-	private static final String storeDir = "UserData";
-
-    /**
-     * (Serialization) The string that is prefixed to every user state file.
-     */
-    private static final String storeFile = "user";
-
-    /**
-     * (Serialization) The extension of the user state file.
-     */
-    private static final String storeExtension = ".dat";
-
-    /**
      * The internal data structure used to store users is a tree set. Users are
      * sorted alphabetically by username.
      */
@@ -37,62 +21,6 @@ public class UserStore {
      * This constructor does not do anything.
      */
     public UserStore() { }
-
-    /**
-     * Used to implement the serialization of user objects. Every user object is serialized
-     * and stored on disk in a "user_[username].dat" file.
-     */
-    public void saveUserStates()
-    {
-    	//check if directory exists and create directory if not
-    	File directory = new File(storeDir);
-    	if(!directory.exists())
-    	{
-    		directory.mkdir();
-    	}
-    	
-    	//serialize all users in store to memory
-    	for(User user : users)
-    	{
-    		try
-    		{
-        		user.writeUser(storeDir + File.separator + storeFile + "_" + user.getUsername() + storeExtension);
-    		}
-    		catch(IOException e)
-    		{
-    			e.printStackTrace();
-    		}
-    	}
-    }
-
-    /**
-     * Deserializes all the User objects stored in the UserData directory.
-     * Each User object is deserialized and then added to the user store.
-     */
-    public void readUserStates()
-    {
-    	File directory = new File(storeDir);
-    	File[] files;
-    	if((files = directory.listFiles()) != null)
-    	{
-    		for(File file : files)
-    		{
-    			if(file.getName().contains(storeFile) && file.getName().endsWith(storeExtension))
-    			{
-    				try
-    				{
-    					User user;
-    					if((user = User.readUser(file.getPath()))!= null)
-    					{
-    						users.add(user);
-    					}
-    				}
-    				catch(IOException e){ e.printStackTrace(); }
-    				catch(ClassNotFoundException e) { e.printStackTrace(); }
-    			}
-    		}
-    	}
-    }
 
     /**
      * A predicate used to test if a username is already used by a user in
@@ -164,11 +92,6 @@ public class UserStore {
      */
     public void remove(User user) {
         users.remove(user);
-        File userDataFile = new File(storeDir + File.separator + storeFile + "_" + user.getUsername() + storeExtension);
-        if(userDataFile.exists())
-        {
-        	userDataFile.delete();
-        }
     }
 
     /**

@@ -137,7 +137,6 @@ public class ProgContext {
         userState          = new ProgStateUser();
 
         userStore    = new UserStore();
-        userStore.readUserStates();
         if (!userStore.usernameInUse("stock")) {
             userStore.add(Stock.createStockUser());
         }

@@ -1,7 +1,6 @@
 package model;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,12 +12,7 @@ import java.time.*;
  * system. A photo object also stores the modify-time of the file, a caption,
  * and a collection of tags in the tag store.s
  */
-public class Photo implements Serializable{
-    /**
-     * A field used to implement serialization.
-     */
-	private static final long serialVersionUID = 1L;
-
+public class Photo {
     /**
      * The path to the photo file on the system.
      */

@@ -1,19 +1,12 @@
 package model;
 
-import java.io.Serializable;
-
 /**
  * The logical representation of a tag.
  * Tags are aggregated and managed using a tag store.
  * Note that tagging a photo is implemented in the User class. This is because
  * the User needs to know the names of previously applied tags.
  */
-public class Tag implements Serializable{
-    /**
-     * A field used to implement serialization.
-     */
-	private static final long serialVersionUID = 1L;
-
+public class Tag {
     /**
      * The name of the tag. Corresponds to name in (name+value) pair.
      */
