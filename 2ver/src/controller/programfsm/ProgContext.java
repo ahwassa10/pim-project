@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.UserStore;
+import model.User;
 import view.*;
 
 /**
@@ -78,12 +78,8 @@ public class ProgContext {
      * The state that the program is currently in.
      */
     private ProgState currentState;
-
-    /**
-     * The user store hierarchically holds all the information in the program.
-     * @see UserStore
-     */
-    private final UserStore userStore;
+    
+    private final User user;
 
     /**
      * Creates a new ProgContext object, and initializes the program.
@@ -135,13 +131,10 @@ public class ProgContext {
         groupSelectedState = new ProgStateGroupSelected();
         searchState        = new ProgStateSearch();
         userState          = new ProgStateUser();
-
-        userStore    = new UserStore();
-        if (!userStore.usernameInUse("stock")) {
-            userStore.add(Stock.createStockUser());
-        }
         
-        ProgState.user = userStore.getByUsername("stock");
+        user = Stock.createStockUser();
+        
+        ProgState.user = user;
     }
 
     /**
@@ -189,7 +182,7 @@ public class ProgContext {
      *
      * @return The user store of the program.
      */
-    public UserStore getUserStore() {
-        return userStore;
+    public User getUserStore() {
+        return user;
     }
 }
