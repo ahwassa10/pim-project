@@ -9,15 +9,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * The logical representation of a user.
- * A user is a collection of groups and tag names. Whenever a tag is added to any of
- * a user's photos, that tag name is stored in the user so that it can be reused
- * later. Many other operations, such as moving or copying a photo to a different
- * group go through the user class.
+ * Entities live in the Garden.
+ * 
  */
 public class Garden {
     /**
-     * An implementation of comparator used to sort the tag names inside the user.
+     * An implementation of comparator used to sort the tag names.
      * Tags are sorted alphabetically by their lowercase names.
      */
     private class TagComparator implements Comparator<String> {
@@ -32,11 +29,8 @@ public class Garden {
 			return o1.toLowerCase().compareTo(o2.toLowerCase());
 		}
 	}
-
-    /**
-     * The username of the user. This field is used to identify a user.
-     */
-    private String           username = "";
+    
+    private String name = "";
 
     /**
      * A collection of groups owned by the user.
@@ -53,11 +47,11 @@ public class Garden {
      *
      * @param username The string to use as the username.
      */
-    public Garden(String username) {
-        if (!isValidUsername(username)) {
-            throw new IllegalArgumentException("Invalid username");
+    public Garden(String name) {
+        if (!isValidName(name)) {
+            throw new IllegalArgumentException("Invalid Garden Name");
         }
-        this.username = username;
+        this.name = name;
         userTags.add("Person");
         userTags.add("Location");
         userTags.add("Event");
@@ -69,34 +63,34 @@ public class Garden {
      * @param name The string to test.
      * @return true if the username is valid, false otherwise.
      */
-    public static boolean isValidUsername(String name) {
+    public static boolean isValidName(String name) {
         return name != null && !name.equals("");
     }
 
     /**
-     * Returns the username of the user.
+     * Returns the name of the garden.
      *
-     * @return the username.
+     * @return the garden's name.
      */
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     /**
-     * A predicate to test if the user owns the passed in group object.
+     * A predicate to test if the garden owns the passed in group object.
      *
      * @param group The group to test
-     * @return true is the user owns the group, false otherwise.
+     * @return true is the garden owns the group, false otherwise.
      */
     public boolean contains(Group group) {
         return groups.contains(group);
     }
 
     /**
-     * A predicate to test if the user already owns an group with this name.
+     * A predicate to test if the garden already owns an group with this name.
      *
      * @param name the name to test.
-     * @return true if the user owns an group with this name, false otherwise.
+     * @return true if the garden owns an group with this name, false otherwise.
      */
     public boolean groupNameInUse(String name) {
         for (Group group: groups) {
@@ -127,7 +121,7 @@ public class Garden {
     }
 
     /**
-     * Adds an Group object to the User, checking that the group is not a duplicate.
+     * Adds an Group object to the garden, checking that the group is not a duplicate.
      * Internally, this method calls groupNameInUse() on the name of the new group
      * since groups are identified by their names. Duplicate group names are not
      * allowed.
@@ -163,7 +157,7 @@ public class Garden {
     public void changeGroupName(Group group, String newName) {
         if (group == null ||
             newName == null ||
-            !groups.contains(group) || // User must own the group.
+            !groups.contains(group) || // Garden must own the group.
             this.groupNameInUse(newName)) { // Can't contain duplicate names.
 
             throw new IllegalArgumentException("Invalid arguments to change group name");
@@ -173,7 +167,7 @@ public class Garden {
     }
 
     /**
-     * Creates an iterator of the User's groups.
+     * Creates an iterator of the garden's groups.
      * Note that this iterator is read only. There is no way to add/remove an group
      * using the iterator.
      *
@@ -280,7 +274,7 @@ public class Garden {
     }
 
     /**
-     * Two users are equal if they have the same username.k
+     * Two users are equal if they have the same username.
      *
      * @param o The other object to test.
      * @return true if both users have the same username, false otherwise.
@@ -290,7 +284,7 @@ public class Garden {
             return false;
         }
         Garden other = (Garden) o;
-        return this.username.equals(other.username);
+        return this.name.equals(other.name);
     }
 
     /**
@@ -299,6 +293,6 @@ public class Garden {
      * @return The username.
      */
     public String toString() {
-        return username;
+        return name;
     }
 }
