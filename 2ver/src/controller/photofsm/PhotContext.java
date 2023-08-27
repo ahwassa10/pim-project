@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import model.Group;
 import model.Photo;
 import model.Tag;
-import model.User;
+import model.Garden;
 import view.ControllerPhoto;
 
 import java.io.File;
@@ -71,9 +71,9 @@ public class PhotContext {
     private PhotState currentState;
 
     /**
-     * A reference to the current user using the photo-viewer.
+     * A reference to the garden.
      */
-    private User user;
+    private Garden garden;
 
     /**
      * The state that the program is currently in.
@@ -93,7 +93,7 @@ public class PhotContext {
      * @param group The group of the currently viewed photo
      * @param photo The photo currently being viewed 
      */
-    public PhotContext(User user, Group group, Photo photo) {
+    public PhotContext(Garden user, Group group, Photo photo) {
         if (user == null ||
             group == null ||
             photo == null ||
@@ -103,7 +103,7 @@ public class PhotContext {
             throw new IllegalArgumentException("Cannot create photo context");
         }
 
-        this.user = user;
+        this.garden = user;
         this.group = group;
         this.photo = photo;
 
@@ -189,13 +189,9 @@ public class PhotContext {
     public void start() {
         transitionTo(photoState);
     }
-
-    /**
-     * Returns the user currently using the viewer.
-     * @return The current user of the photo-viewer.
-     */
-    User getUser() {
-        return user;
+    
+    Garden getGarden() {
+        return garden;
     }
     
     /**

@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import model.User;
+import model.Garden;
 import view.*;
 
 /**
@@ -79,7 +79,7 @@ public class ProgContext {
      */
     private ProgState currentState;
     
-    private final User user;
+    private final Garden user;
 
     /**
      * Creates a new ProgContext object, and initializes the program.
@@ -132,7 +132,7 @@ public class ProgContext {
         searchState        = new ProgStateSearch();
         userState          = new ProgStateUser();
         
-        user = Stock.createStockUser();
+        user = Stock.createStockGarden();
         
         ProgState.user = user;
     }
@@ -173,16 +173,5 @@ public class ProgContext {
         lastEvent = e;
         ProgState newState = currentState.processEvent();
         transitionTo(newState);
-    }
-
-    /**
-     * Returns the user store of the program.
-     * The user store is a fundamental component of the program. It is encapsulated
-     * to prevent states from changing the user store.
-     *
-     * @return The user store of the program.
-     */
-    public User getUserStore() {
-        return user;
     }
 }

@@ -30,7 +30,7 @@ public class PhotStateTagSelected extends PhotStatePhoto {
         photContext.photoController.captionNameTextField.setText(photo.getCaption());
         photContext.photoController.tagListView.getItems().setAll(photo.getTagStore().view());
         photContext.photoController.tagListView.getSelectionModel().select(tagSelected);
-        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getUser().viewUserTags());
+        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getGarden().viewUserTags());
         photContext.photoController.tagSelectComboBox.valueProperty().set(null);
         photContext.photoController.deleteTagFunctionality.setVisible(true);
         photContext.photoController.createTagFunctionality.setVisible(false);

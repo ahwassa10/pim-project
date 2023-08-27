@@ -2,7 +2,7 @@ package controller.programfsm;
 
 import model.Group;
 import model.PhotoFilter;
-import model.User;
+import model.Garden;
 
 /**
  * The abstract representation of a state in the program.
@@ -18,9 +18,9 @@ public abstract class ProgState {
     static ProgContext progContext;
         
     /**
-     * The currently logged-in user.
+     * That garden that is opened.
      */
-    static User user;
+    static Garden user;
 
     /**
      * The group selected by the user.

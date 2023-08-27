@@ -27,7 +27,7 @@ public class PhotStatePhoto extends PhotState{
         Photo photo = photContext.getPhoto();
         photContext.photoController.captionNameTextField.setText(photo.getCaption());
         photContext.photoController.tagListView.getItems().setAll(photo.getTagStore().view());
-        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getUser().viewUserTags());
+        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getGarden().viewUserTags());
         photContext.photoController.tagSelectComboBox.valueProperty().set(null);
         photContext.photoController.createTagFunctionality.setVisible(true);
         photContext.photoController.deleteTagFunctionality.setVisible(false);
@@ -95,7 +95,7 @@ public class PhotStatePhoto extends PhotState{
 
         Optional<Group> response =
             MyAlerts.selectGroup(photContext.stage,
-                                 photContext.getUser(),
+                                 photContext.getGarden(),
                                  photContext.getGroup(),
                                  dialog);
 
@@ -104,7 +104,7 @@ public class PhotStatePhoto extends PhotState{
         }
 
         Group destinationGroup = response.get();
-        if (!photContext.getUser().contains(destinationGroup)) {
+        if (!photContext.getGarden().contains(destinationGroup)) {
             // Should theoretically never happen.
             MyAlerts.basicError(photContext.stage, Messages.moveCopyError);
             return null;
@@ -129,7 +129,7 @@ public class PhotStatePhoto extends PhotState{
     PhotState copyToGroup() {
         Group destinationGroup = getDestinationGroup(Messages.copyMessage);
         if (destinationGroup != null) {
-            photContext.getUser().copyPhoto(photContext.getGroup(),
+            photContext.getGarden().copyPhoto(photContext.getGroup(),
                                             destinationGroup,
                                             photContext.getPhoto());
         }
@@ -144,7 +144,7 @@ public class PhotStatePhoto extends PhotState{
     PhotState moveToGroup() {
         Group destinationGroup = getDestinationGroup(Messages.moveMessage);
         if (destinationGroup != null) {
-            photContext.getUser().movePhoto(photContext.getGroup(),
+            photContext.getGarden().movePhoto(photContext.getGroup(),
                                             destinationGroup,
                                             photContext.getPhoto());
             return photContext.exitState;
@@ -177,7 +177,7 @@ public class PhotStatePhoto extends PhotState{
             return this;
         }
 
-        photContext.getUser().tagPhoto(photContext.getGroup(),
+        photContext.getGarden().tagPhoto(photContext.getGroup(),
                                        photContext.getPhoto(),
                                        tag);
         return this;

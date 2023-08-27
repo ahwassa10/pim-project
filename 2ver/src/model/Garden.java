@@ -15,7 +15,7 @@ import java.util.TreeSet;
  * later. Many other operations, such as moving or copying a photo to a different
  * group go through the user class.
  */
-public class User {
+public class Garden {
     /**
      * An implementation of comparator used to sort the tag names inside the user.
      * Tags are sorted alphabetically by their lowercase names.
@@ -53,7 +53,7 @@ public class User {
      *
      * @param username The string to use as the username.
      */
-    public User(String username) {
+    public Garden(String username) {
         if (!isValidUsername(username)) {
             throw new IllegalArgumentException("Invalid username");
         }
@@ -286,10 +286,10 @@ public class User {
      * @return true if both users have the same username, false otherwise.
      */
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof User)) {
+        if (o == null || !(o instanceof Garden)) {
             return false;
         }
-        User other = (User) o;
+        Garden other = (Garden) o;
         return this.username.equals(other.username);
     }
 

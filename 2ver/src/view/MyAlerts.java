@@ -5,7 +5,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Stage;
 import model.Group;
-import model.User;
+import model.Garden;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -88,7 +88,7 @@ public class MyAlerts {
      * @return The Group object that was selected.
      */
     public static Optional<Group> selectGroup(Stage mainStage,
-                                              User user,
+                                              Garden user,
                                               Group sourceGroup,
                                               String message) {
 

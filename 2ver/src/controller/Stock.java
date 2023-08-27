@@ -15,17 +15,17 @@ public class Stock {
     private Stock() {}
 
     /**
-     * Creates the stock user and returns a user object.
+     * Creates the stock user and returns a garden object.
      * The stock user contains an group named "stock", which contains some sample
      * photos and tags applied to these photos.
      *
      * @return A stock user object.
      */
-    public static User createStockUser() {
+    public static Garden createStockGarden() {
         try {
-            User stockUser = new User("stock");
+            Garden stockGarden = new Garden("stock");
             Group stockGroup = new Group("stock");
-            stockUser.add(stockGroup);
+            stockGarden.add(stockGroup);
 
             Photo photo1 = new Photo(new File("data/icon.png"));
             photo1.setCaption("Original icon");
@@ -43,17 +43,17 @@ public class Stock {
             Tag tag3 = new Tag("Person", "Hatsune");
             Tag tag4 = new Tag("Weather", "Clear");
             Tag tag5 = new Tag("air_quality", "Good");
-            stockUser.tagPhoto(stockGroup, photo3, tag1);
-            stockUser.tagPhoto(stockGroup, photo3, tag2);
-            stockUser.tagPhoto(stockGroup, photo3, tag3);
-            stockUser.tagPhoto(stockGroup, photo3, tag4);
-            stockUser.tagPhoto(stockGroup, photo3, tag5);
+            stockGarden.tagPhoto(stockGroup, photo3, tag1);
+            stockGarden.tagPhoto(stockGroup, photo3, tag2);
+            stockGarden.tagPhoto(stockGroup, photo3, tag3);
+            stockGarden.tagPhoto(stockGroup, photo3, tag4);
+            stockGarden.tagPhoto(stockGroup, photo3, tag5);
 
 
             Photo photo4 = new Photo(new File("data/earth.png"));
             photo4.setCaption("Earth");
             stockGroup.add(photo4);
-            stockUser.tagPhoto(stockGroup, photo4, new Tag("Abstract", "Circle"));
+            stockGarden.tagPhoto(stockGroup, photo4, new Tag("Abstract", "Circle"));
 
             Photo photo5 = new Photo(new File("data/abstract.png"));
             photo5.setCaption("Modern Art");
@@ -61,9 +61,9 @@ public class Stock {
             Tag tag6 = new Tag("Person", "Hatsune");
             Tag tag7 = new Tag("Abstract", "Triangle");
             Tag tag8 = new Tag("Abstract", "Square");
-            stockUser.tagPhoto(stockGroup, photo5, tag6);
-            stockUser.tagPhoto(stockGroup, photo5, tag7);
-            stockUser.tagPhoto(stockGroup, photo5, tag8);
+            stockGarden.tagPhoto(stockGroup, photo5, tag6);
+            stockGarden.tagPhoto(stockGroup, photo5, tag7);
+            stockGarden.tagPhoto(stockGroup, photo5, tag8);
 
             Photo photo6 = new Photo(new File("data/mountain.png"));
             photo6.setCaption("Mountain");
@@ -71,19 +71,19 @@ public class Stock {
             Tag tag9 = new Tag("Person", "Hatsune");
             Tag tag10 = new Tag("Person", "Ralf");
             Tag tag11 = new Tag("Location", "FingerLakes");
-            stockUser.tagPhoto(stockGroup, photo6, tag9);
-            stockUser.tagPhoto(stockGroup, photo6, tag10);
-            stockUser.tagPhoto(stockGroup, photo6, tag11);
+            stockGarden.tagPhoto(stockGroup, photo6, tag9);
+            stockGarden.tagPhoto(stockGroup, photo6, tag10);
+            stockGarden.tagPhoto(stockGroup, photo6, tag11);
 
             Photo photo7 = new Photo(new File("data/void.png"));
             photo7.setCaption("Void");
             stockGroup.add(photo7);
             Tag tag12 = new Tag("Abstract", "Circle");
             Tag tag13 = new Tag("Gradient", "True");
-            stockUser.tagPhoto(stockGroup, photo7, tag12);
-            stockUser.tagPhoto(stockGroup, photo7, tag13);
+            stockGarden.tagPhoto(stockGroup, photo7, tag12);
+            stockGarden.tagPhoto(stockGroup, photo7, tag13);
 
-            return stockUser;
+            return stockGarden;
 
         } catch (Exception e) {
             e.printStackTrace();
