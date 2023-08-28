@@ -134,7 +134,7 @@ public class ProgContext {
         
         user = Stock.createStockGarden();
         
-        ProgState.user = user;
+        ProgState.garden = user;
     }
 
     /**

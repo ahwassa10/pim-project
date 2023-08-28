@@ -43,7 +43,7 @@ public class ProgStateUser extends ProgState {
 	 */
 	void loadGroupTiles() {
 		progContext.userController.groupFlowPane.getChildren().clear();
-		Iterator<Group> groups = user.iterator();
+		Iterator<Group> groups = garden.getGroups().iterator();
 
 		while (groups.hasNext()) {
 			Group group = groups.next();
@@ -93,13 +93,13 @@ public class ProgStateUser extends ProgState {
 			return this;
 		}
 
-		if (user.groupNameInUse(newGroupName)) {
+		if (garden.groupNameInUse(newGroupName)) {
 			MyAlerts.basicErrorMessage(progContext.primaryStage,
 					                   Messages.groupNameInUseHeader,
 					                   String.format(Messages.groupNameInUseContent, newGroupName));
 		} else {
 			Group newGroup = new Group(newGroupName);
-			user.add(newGroup);
+			garden.createGroup(newGroup);
 		}
 
 		progContext.userController.newGroupTextField.setText("");
@@ -121,11 +121,16 @@ public class ProgStateUser extends ProgState {
 		} else if (source instanceof GridPane) {
 			GridPane gp = (GridPane) source;
 			String groupNameSelected = gp.getId();
-			if (!user.groupNameInUse(groupNameSelected)) {
+			if (!garden.groupNameInUse(groupNameSelected)) {
 				MyAlerts.basicError(progContext.primaryStage,
 						            Messages.unexpectedError);
 			} else {
-				groupSelected = user.getByGroupName(gp.getId());
+			    for (Group group : garden.getGroups()) {
+			        if (group.getName().equals(gp.getId())) {
+			            groupSelected = group;
+			            break;
+			        }
+			    }
 				return progContext.groupSelectedState;
 			}
 		}

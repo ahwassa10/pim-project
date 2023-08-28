@@ -25,7 +25,7 @@ public class Stock {
         try {
             Garden stockGarden = new Garden("stock");
             Group stockGroup = new Group("stock");
-            stockGarden.add(stockGroup);
+            stockGarden.createGroup(stockGroup);
 
             Photo photo1 = new Photo(new File("data/icon.png"));
             photo1.setCaption("Original icon");

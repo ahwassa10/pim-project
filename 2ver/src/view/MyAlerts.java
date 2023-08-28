@@ -82,17 +82,17 @@ public class MyAlerts {
      * another. The user has the option to not select anything as well.
      *
      * @param mainStage The stage that owns the alert
-     * @param user The user that will be selecting an group.
+     * @param garden The user that will be selecting an group.
      * @param sourceGroup The source group (we don't want to display the source as an option).
      * @param message The message to display along with the choices.
      * @return The Group object that was selected.
      */
     public static Optional<Group> selectGroup(Stage mainStage,
-                                              Garden user,
+                                              Garden garden,
                                               Group sourceGroup,
                                               String message) {
 
-        Iterator<Group> itr = user.iterator();
+        Iterator<Group> itr = garden.getGroups().iterator();
         ArrayList<Group> choices = new ArrayList<>();
         while (itr.hasNext()){
             Group atGroup = itr.next();

@@ -20,7 +20,7 @@ public abstract class ProgState {
     /**
      * That garden that is opened.
      */
-    static Garden user;
+    static Garden garden;
 
     /**
      * The group selected by the user.

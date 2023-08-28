@@ -97,7 +97,6 @@ public class PhotContext {
         if (user == null ||
             group == null ||
             photo == null ||
-            !user.contains(group) ||
             !group.contains(photo)
         ) {
             throw new IllegalArgumentException("Cannot create photo context");

@@ -59,14 +59,14 @@ public class ProgStateSearch extends ProgStateGroupOpened {
             return this;
         }
 
-        if (user.groupNameInUse(groupName)) {
+        if (garden.groupNameInUse(groupName)) {
             MyAlerts.basicErrorMessage(progContext.primaryStage,
                                        Messages.groupNameInUseHeader,
                                        String.format(Messages.groupNameInUseContent, groupName));
             return this;
         }
         Group newGroup = new Group(groupName, groupSelected.searchPhotos(searchResults));
-        user.add(newGroup);
+        garden.createGroup(newGroup);
         return progContext.groupOpenedState;
     }
 
@@ -94,7 +94,7 @@ public class ProgStateSearch extends ProgStateGroupOpened {
                         Messages.unexpectedError);
             } else {
                 Photo selectedPhoto = groupSelected.getPhotoByFilePath(photoId);
-                PhotContext newWindow = new PhotContext(user, groupSelected, selectedPhoto);
+                PhotContext newWindow = new PhotContext(garden, groupSelected, selectedPhoto);
                 newWindow.start();
                 return this;
             }

@@ -104,7 +104,7 @@ public class PhotStatePhoto extends PhotState{
         }
 
         Group destinationGroup = response.get();
-        if (!photContext.getGarden().contains(destinationGroup)) {
+        if (!photContext.getGarden().getGroups().contains(destinationGroup)) {
             // Should theoretically never happen.
             MyAlerts.basicError(photContext.stage, Messages.moveCopyError);
             return null;
@@ -129,9 +129,9 @@ public class PhotStatePhoto extends PhotState{
     PhotState copyToGroup() {
         Group destinationGroup = getDestinationGroup(Messages.copyMessage);
         if (destinationGroup != null) {
-            photContext.getGarden().copyPhoto(photContext.getGroup(),
-                                            destinationGroup,
-                                            photContext.getPhoto());
+            photContext.getGarden().copy(photContext.getGroup(),
+                                         destinationGroup,
+                                         photContext.getPhoto());
         }
         return this;
     }
@@ -144,9 +144,9 @@ public class PhotStatePhoto extends PhotState{
     PhotState moveToGroup() {
         Group destinationGroup = getDestinationGroup(Messages.moveMessage);
         if (destinationGroup != null) {
-            photContext.getGarden().movePhoto(photContext.getGroup(),
-                                            destinationGroup,
-                                            photContext.getPhoto());
+            photContext.getGarden().move(photContext.getGroup(),
+                                         destinationGroup,
+                                         photContext.getPhoto());
             return photContext.exitState;
         }
         return this;

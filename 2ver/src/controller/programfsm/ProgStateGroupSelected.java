@@ -53,13 +53,13 @@ public class ProgStateGroupSelected extends ProgStateUser {
             MyAlerts.basicError(progContext.primaryStage,
                                 Messages.enterNewGroupName);
 
-        } else if (user.groupNameInUse(newGroupName)) {
+        } else if (garden.groupNameInUse(newGroupName)) {
             MyAlerts.basicErrorMessage(progContext.primaryStage,
                                        Messages.groupNameInUseHeader,
                                        Messages.groupNameInUseContent);
 
         } else {
-            user.changeGroupName(groupSelected, newGroupName);
+            garden.changeGroupName(groupSelected, newGroupName);
         }
 
         return this;
@@ -74,7 +74,7 @@ public class ProgStateGroupSelected extends ProgStateUser {
      * @return the next state to transition to.
      */
     ProgState deleteGroup() {
-        if (groupSelected == null || !user.contains(groupSelected)) {
+        if (groupSelected == null || !garden.getGroups().contains(groupSelected)) {
             MyAlerts.basicError(progContext.primaryStage, Messages.unexpectedError);
             return this;
         }
@@ -85,7 +85,7 @@ public class ProgStateGroupSelected extends ProgStateUser {
                                    String.format(Messages.deleteGroupContent, groupSelected));
 
         if (response.isPresent() && response.get() == ButtonType.OK) {
-            user.remove(groupSelected);
+            garden.deleteGroup(groupSelected);
             return progContext.userState;
         }
 
@@ -120,11 +120,16 @@ public class ProgStateGroupSelected extends ProgStateUser {
         } else if (source instanceof GridPane) {
             GridPane gp = (GridPane) source;
             String groupNameSelected = gp.getId();
-            if (!user.groupNameInUse(groupNameSelected)) {
+            if (!garden.groupNameInUse(groupNameSelected)) {
                 MyAlerts.basicError(progContext.primaryStage,
                         Messages.unexpectedError);
             } else {
-                groupSelected = user.getByGroupName(gp.getId());
+                for (Group group : garden.getGroups()) {
+                    if (group.getName().equals(gp.getId())) {
+                        groupSelected = group;
+                        break;
+                    }
+                }
                 return progContext.groupSelectedState;
             }
         }

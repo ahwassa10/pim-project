@@ -48,6 +48,10 @@ public class Garden {
         groups.put(all, new HashSet<>());
     }
     
+    public void changeGroupName(Group group, String newName) {
+        group.setName(newName);
+    }
+    
     public void copy(Group src, Group dest, Photo photo) {
         Objects.requireNonNull(src, "Source group cannot be null");
         Objects.requireNonNull(dest, "Destination group cannot be null");
@@ -72,6 +76,11 @@ public class Garden {
     public void createPhoto(Photo photo) {
         Objects.requireNonNull(photo, "Photo object cannot be null");
         groups.get(all).add(photo);
+    }
+    
+    public void deleteGroup(Group group) {
+        Objects.requireNonNull(group, "Group object cannot be null");
+        groups.remove(group);
     }
     
     public void deletePhoto(Group group, Photo photo) {
@@ -111,6 +120,15 @@ public class Garden {
     
     public Collection<String> getTags() {
         return Collections.unmodifiableCollection(tags);
+    }
+    
+    public boolean groupNameInUse(String groupName) {
+        for (Group group : groups.keySet()) {
+            if (group.getName().equals(groupName)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public static boolean isValidName(String name) {

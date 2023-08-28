@@ -224,7 +224,7 @@ public class ProgStateGroupOpened extends ProgState {
                                     Messages.unexpectedError);
             } else {
                 Photo selectedPhoto = groupSelected.getPhotoByFilePath(photoId);
-                PhotContext newWindow = new PhotContext(user, groupSelected, selectedPhoto);
+                PhotContext newWindow = new PhotContext(garden, groupSelected, selectedPhoto);
                 newWindow.start();
                 return this;
             }
