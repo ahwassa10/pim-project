@@ -27,7 +27,7 @@ public class PhotStatePhoto extends PhotState{
         Photo photo = photContext.getPhoto();
         photContext.photoController.captionNameTextField.setText(photo.getCaption());
         photContext.photoController.tagListView.getItems().setAll(photo.getTagStore().view());
-        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getGarden().viewUserTags());
+        photContext.photoController.tagSelectComboBox.getItems().setAll(photContext.getGarden().getTags());
         photContext.photoController.tagSelectComboBox.valueProperty().set(null);
         photContext.photoController.createTagFunctionality.setVisible(true);
         photContext.photoController.deleteTagFunctionality.setVisible(false);
