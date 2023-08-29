@@ -79,7 +79,7 @@ public class PhotStatePhoto extends PhotState{
                                        Messages.deletePhotoContent);
 
         if (response.isPresent() && response.get() == ButtonType.OK) {
-            photContext.getGroup().remove(photo);
+            photContext.getGarden().deletePhoto(photContext.getGroup(), photo);
             return photContext.exitState;
         }
         return this;
@@ -109,13 +109,13 @@ public class PhotStatePhoto extends PhotState{
             MyAlerts.basicError(photContext.stage, Messages.moveCopyError);
             return null;
         }
-
+        
         // Case where group is duplicate.
-        if (destinationGroup.contains(photo)) {
+        if (photContext.getGarden().getPhotos(destinationGroup).contains(photo)) {
             MyAlerts.basicErrorMessage(photContext.stage,
-                                       Messages.moveCopyDuplicateHeader,
-                                       String.format(Messages.moveCopyDuplicateContent,
-                                                     destinationGroup));
+                    Messages.moveCopyDuplicateHeader,
+                    String.format(Messages.moveCopyDuplicateContent,
+                                  destinationGroup));
             return null;
         }
         return destinationGroup;

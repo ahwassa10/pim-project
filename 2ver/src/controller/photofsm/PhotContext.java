@@ -89,20 +89,19 @@ public class PhotContext {
      * Creates a new PhotContext object, and initializes the viewer.
      * The photo-viewing scene, controller, and states are created.
      *
-     * @param user The user currently using the photo-viewer
+     * @param garden The user currently using the photo-viewer
      * @param group The group of the currently viewed photo
      * @param photo The photo currently being viewed 
      */
-    public PhotContext(Garden user, Group group, Photo photo) {
-        if (user == null ||
+    public PhotContext(Garden garden, Group group, Photo photo) {
+        if (garden == null ||
             group == null ||
-            photo == null ||
-            !group.contains(photo)
+            photo == null
         ) {
             throw new IllegalArgumentException("Cannot create photo context");
         }
 
-        this.garden = user;
+        this.garden = garden;
         this.group = group;
         this.photo = photo;
 

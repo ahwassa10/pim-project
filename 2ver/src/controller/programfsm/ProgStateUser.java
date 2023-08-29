@@ -55,10 +55,13 @@ public class ProgStateUser extends ProgState {
 				ControllerGroupTile controller = loader.getController();
 				root.setId(group.getName());
 				controller.groupNameLabel.setText(group.getName());
-				if (group.size() == 1) {
+				
+				int photoCount = garden.getPhotoCount(group);
+				
+				if (photoCount == 1) {
 					controller.numPhotosLabel.setText("1 Photo");
 				} else {
-					controller.numPhotosLabel.setText(group.size() + " Photos");
+					controller.numPhotosLabel.setText(photoCount + " Photos");
 				}
 
 				root.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -98,8 +101,7 @@ public class ProgStateUser extends ProgState {
 					                   Messages.groupNameInUseHeader,
 					                   String.format(Messages.groupNameInUseContent, newGroupName));
 		} else {
-			Group newGroup = new Group(newGroupName);
-			garden.createGroup(newGroup);
+		    garden.createGroup(newGroupName);
 		}
 
 		progContext.userController.newGroupTextField.setText("");

@@ -44,7 +44,7 @@ public class ProgStateGroupOpened extends ProgState {
         progContext.groupController.fromDate.setValue(null);
         progContext.groupController.toDate.setValue(null);
         progContext.groupController.tagQueryTextField.setText("");
-        loadTiles(groupSelected.iterator());
+        loadTiles(garden.getPhotos(groupSelected).iterator());
         progContext.primaryStage.show();
     }
 
@@ -124,14 +124,11 @@ public class ProgStateGroupOpened extends ProgState {
 
             return this;
         }
-
-        if (groupSelected.photoIsPresent(photoFile.toString())) {
-            MyAlerts.basicErrorMessage(progContext.primaryStage,
-                                       Messages.duplicatePhotoHeader,
-                                       String.format(Messages.duplicatePhotoContent, photoFile.toString()));
-        } else {
-            groupSelected.add(new Photo(photoFile));
-        }
+        
+        Photo photo = new Photo(photoFile);
+        garden.createPhoto(photo);
+        garden.copy(garden.all, groupSelected, photo);
+        
         return this;
     }
 
@@ -208,26 +205,27 @@ public class ProgStateGroupOpened extends ProgState {
             return search();
 
         } else if (source == progContext.groupController.openSlideshowButton) {
-            if (groupSelected.size() == 0) {
+            if (garden.getPhotoCount(groupSelected) == 0) {
                 MyAlerts.basicError(progContext.primaryStage,
                                     Messages.emptyGroupSlideshow);
                 return this;
             }
-            SlideshowContext slideshow = new SlideshowContext(groupSelected);
+            SlideshowContext slideshow = new SlideshowContext(garden, groupSelected);
             slideshow.start();
 
         } else if (source instanceof GridPane) {
             GridPane tile = (GridPane) source;
             String photoId = tile.getId();
-            if (!groupSelected.photoIsPresent(photoId)) {
-                MyAlerts.basicError(progContext.primaryStage,
-                                    Messages.unexpectedError);
-            } else {
-                Photo selectedPhoto = groupSelected.getPhotoByFilePath(photoId);
-                PhotContext newWindow = new PhotContext(garden, groupSelected, selectedPhoto);
-                newWindow.start();
-                return this;
+            
+            Photo selectedPhoto = null;
+            for (Photo photo : garden.getPhotos(groupSelected)) {
+                if (photo.getBacking().toString().equals(photoId)) {
+                    selectedPhoto = photo;
+                }
             }
+            PhotContext newWindow = new PhotContext(garden, groupSelected, selectedPhoto);
+            newWindow.start();
+            return this;
         }
 
         return this;

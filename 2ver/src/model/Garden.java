@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class Garden {
     
     private String name = "";
     
-    private Group all = new Group("All");
+    public Group all = new Group("All");
     
     private Map<Group, Set<Photo>> groups = new HashMap<>();
 
@@ -46,10 +47,6 @@ public class Garden {
         }
         this.name = name;
         groups.put(all, new HashSet<>());
-    }
-    
-    public void changeGroupName(Group group, String newName) {
-        group.setName(newName);
     }
     
     public void copy(Group src, Group dest, Photo photo) {
@@ -68,9 +65,11 @@ public class Garden {
         }
     }
     
-    public void createGroup(Group group) {
-        Objects.requireNonNull(group, "Group object cannot be null");
+    public Group createGroup(String name) {
+        Group group = new Group(name);
         groups.putIfAbsent(group, new HashSet<>());
+        
+        return group;
     }
     
     public void createPhoto(Photo photo) {
@@ -100,12 +99,59 @@ public class Garden {
         }
     }
     
+    public CircularIterator<Photo> getCircularIterator(Group group) {
+        Objects.requireNonNull(group, "Group cannot be null");
+        
+        if (!groups.containsKey(group)) {
+            throw new IllegalArgumentException("This group does not exist");
+        }
+        
+        ArrayList<Photo> photos = new ArrayList<>(groups.get(group));
+        
+        return new CircularIterator<Photo> () {
+            private int cursor = -1;
+            
+            public boolean hasNext() {
+                return photos.size() != 0;
+            }
+            
+            public boolean hasPrevious() {
+                return photos.size() != 0;
+            }
+            
+            public Photo next() {
+                cursor++;
+                if (cursor == photos.size()) {
+                    cursor = 0;
+                }
+                return photos.get(cursor);
+            }
+            
+            public Photo previous() {
+                cursor--;
+                if (cursor < 0) {
+                    cursor = photos.size() - 1;
+                }
+                return photos.get(cursor);
+            }
+        };
+    }
+    
     public Set<Group> getGroups() {
         return Collections.unmodifiableSet(groups.keySet());
     }
     
     public String getName() {
         return name;
+    }
+    
+    public int getPhotoCount(Group group) {
+        Objects.requireNonNull(group, "Group cannot be null");
+        if (!groups.containsKey(group)) {
+            throw new IllegalArgumentException("This group does not exist");
+        } else {
+            return groups.get(group).size();
+        }
     }
     
     public Set<Photo> getPhotos(Group group) {
@@ -154,7 +200,7 @@ public class Garden {
         if (srcGroup == null ||
             photo == null ||
             tag == null ||
-            !srcGroup.contains(photo) ||
+            !groups.get(srcGroup).contains(photo) ||
             photo.getTagStore().contains(tag)) {
 
             throw new IllegalArgumentException("Cannot tag this photo");

@@ -59,7 +59,7 @@ public class ProgStateGroupSelected extends ProgStateUser {
                                        Messages.groupNameInUseContent);
 
         } else {
-            garden.changeGroupName(groupSelected, newGroupName);
+            groupSelected.setName(newGroupName);
         }
 
         return this;

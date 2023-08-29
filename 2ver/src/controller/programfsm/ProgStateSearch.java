@@ -34,7 +34,7 @@ public class ProgStateSearch extends ProgStateGroupOpened {
         progContext.groupController.searchResultsFunctionality.setVisible(true);
         progContext.groupController.searchQueryLabel.setText(searchQuery);
         progContext.groupController.newGroupTextField.setText("");
-        loadTiles(groupSelected.searchPhotos(searchResults));
+        //loadTiles(groupSelected.searchPhotos(searchResults));
     }
 
     /**
@@ -65,8 +65,8 @@ public class ProgStateSearch extends ProgStateGroupOpened {
                                        String.format(Messages.groupNameInUseContent, groupName));
             return this;
         }
-        Group newGroup = new Group(groupName, groupSelected.searchPhotos(searchResults));
-        garden.createGroup(newGroup);
+        //Group newGroup = new Group(groupName, groupSelected.searchPhotos(searchResults));
+        //garden.createGroup(newGroup);
         return progContext.groupOpenedState;
     }
 
@@ -89,6 +89,7 @@ public class ProgStateSearch extends ProgStateGroupOpened {
         } else if (source instanceof GridPane) {
             GridPane tile = (GridPane) source;
             String photoId = tile.getId();
+            /*
             if (!groupSelected.photoIsPresent(photoId)) {
                 MyAlerts.basicError(progContext.primaryStage,
                         Messages.unexpectedError);
@@ -97,7 +98,7 @@ public class ProgStateSearch extends ProgStateGroupOpened {
                 PhotContext newWindow = new PhotContext(garden, groupSelected, selectedPhoto);
                 newWindow.start();
                 return this;
-            }
+            }*/
         }
         return this;
     }

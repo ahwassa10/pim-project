@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Group;
 import model.CircularIterator;
+import model.Garden;
 import model.Photo;
 import view.ControllerSlideshow;
 
@@ -92,8 +93,8 @@ public class SlideshowContext {
      *
      * @param group The group to create a slideshow from.
      */
-    public SlideshowContext(Group group) {
-        this.groupItr = group.circularIterator();
+    public SlideshowContext(Garden garden, Group group) {
+        this.groupItr = garden.getCircularIterator(group);
 
         if (!groupItr.hasNext()) {
             throw new IllegalArgumentException("Group is empty");
