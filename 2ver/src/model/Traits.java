@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Traits {
-    private final Map<Trait, Set<NaturalTrait>> traitTree = new HashMap<>();
+    private final Map<Trait, Set<Trait>> traitTree = new HashMap<>();
     
     public final Trait EXISTENCE = new Trait() {
         private final String description = "The root of the trait tree: existence";
@@ -28,7 +28,10 @@ public final class Traits {
         }
     };
     
-    Traits() {}
+    Traits() {
+        traitTree.put(EXISTENCE, new HashSet<>());
+        traitTree.get(EXISTENCE).add(EXISTENCE);
+    }
     
     public void cut(NaturalTrait trait) {
         this.requireOwnership(trait);
@@ -54,7 +57,7 @@ public final class Traits {
         }
     }
     
-    public Map<Trait, Set<NaturalTrait>> getTraitTree() {
+    public Map<Trait, Set<Trait>> getTraitTree() {
         return traitTree;
     }
     
@@ -67,7 +70,10 @@ public final class Traits {
     
     public boolean owns(Trait trait) {
         Objects.requireNonNull(trait, "Trait cannot be null");
-        return trait.getAnchorTrait() == this.EXISTENCE;
+        
+        Trait superTrait = trait.getSuperTrait();
+        
+        return traitTree.containsKey(superTrait) && traitTree.get(superTrait).contains(trait);
     }
     
     public Trait requireOwnership(Trait trait) {
