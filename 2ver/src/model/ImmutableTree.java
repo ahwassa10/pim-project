@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
@@ -128,6 +129,19 @@ public final class ImmutableTree<T> {
             throw new IllegalArgumentException(msg);
         }
         return object;
+    }
+    
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (Entry<T, Set<T>> entry : children.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append("<-->");
+            sb.append(entry.getValue());
+            sb.append("\n");
+        }
+        
+        return sb.toString();
     }
     
     public T trim(T leafNode) {

@@ -50,6 +50,10 @@ public final class Traits {
         }
     }
     
+    public void printTree() {
+        System.out.println(traitTree);
+    }
+    
     public static void main(String[] args) {
         Traits traits = new Traits();
         System.out.println(traits.EXISTENCE);
@@ -60,7 +64,10 @@ public final class Traits {
         
         Trait funny = traits.create("funny", "", meme);
         Trait moai = traits.create("moai", "", meme);
+        Trait gpu = traits.create("gpu", "", tech);
         
         System.out.println(moai.getSuperTraits());
+        traits.printTree();
+        
     }
 }
