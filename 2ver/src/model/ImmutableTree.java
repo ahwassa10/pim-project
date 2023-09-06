@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,11 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class ImmutableTree<T> {
-    private Map<T, Set<T>> children = new HashMap<>();
-    private Map<T, T> parents = new HashMap<>();
+public final class ImmutableTree<T> {
+    private final Map<T, Set<T>> children = new HashMap<>();
+    private final Map<T, T> parents = new HashMap<>();
     
-    T root;
+    private final T root;
     
     public ImmutableTree(T root) {
         Objects.requireNonNull(root, "Root node object cannot be null");
@@ -54,7 +55,7 @@ public class ImmutableTree<T> {
     
     public Set<T> getChildren(T parentNode) {
         this.requireOwnership(parentNode);
-        return children.get(parentNode);
+        return Collections.unmodifiableSet(children.get(parentNode));
     }
     
     public T getParent(T childNode) {
@@ -132,13 +133,5 @@ public class ImmutableTree<T> {
         } else {
             return this.removeLeafNode(leafNode);
         }
-    }
-    
-    public Map<T, Set<T>> getChildTree() {
-        return children;
-    }
-    
-    public Map<T, T> getParentTree() {
-        return parents;
     }
 }
