@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Traits {
-    private final Map<Trait, Set<Trait>> traitTree = new HashMap<>();
+    private final ImmutableTree<Trait> traitTree;
     
     public final Trait EXISTENCE = new Trait() {
         private final String description = "The root of the trait tree: existence";
@@ -29,73 +29,24 @@ public final class Traits {
     };
     
     Traits() {
-        traitTree.put(EXISTENCE, new HashSet<>());
-        traitTree.get(EXISTENCE).add(EXISTENCE);
+        traitTree = new ImmutableTree<>(this.EXISTENCE);
     }
     
-    public void cut(NaturalTrait trait) {
-        this.requireOwnership(trait);
+    public Trait create(String name, String description, Trait superTrait) {
+        traitTree.requirePresence(superTrait);
         
-        List<Trait> stack = new ArrayList<>();
-        stack.add(trait);
-        
-        while (stack.size() != 0) {
-            Trait aTrait = stack.get(stack.size()-1);
-            
-            if (traitTree.containsKey(aTrait)) {
-                for (Trait subTrait : traitTree.get(aTrait)) {
-                    stack.add(subTrait);
-                }
-            } else {
-                Trait superTrait = aTrait.getSuperTrait();
-                traitTree.get(superTrait).remove(aTrait);
-                stack.remove(stack.size() - 1);
-                if (traitTree.get(superTrait).size() == 0) {
-                    traitTree.remove(superTrait);
-                }
-            }
-        }
-    }
-    
-    public Map<Trait, Set<Trait>> getTraitTree() {
-        return traitTree;
-    }
-    
-    public NaturalTrait grow(String name, String description, Trait superTrait) {
-        this.requireOwnership(superTrait);
         NaturalTrait nt = new NaturalTrait(name, description, superTrait);
-        traitTree.computeIfAbsent(superTrait, key -> new HashSet<>()).add(nt);
-        return nt;
+        
+        return traitTree.grow(nt, superTrait);
     }
     
-    public boolean owns(Trait trait) {
-        Objects.requireNonNull(trait, "Trait cannot be null");
+    public void delete(Trait trait) {
+        traitTree.requirePresence(trait);
         
-        Trait superTrait = trait.getSuperTrait();
-        
-        return traitTree.containsKey(superTrait) && traitTree.get(superTrait).contains(trait);
-    }
-    
-    public Trait requireOwnership(Trait trait) {
-        if (!this.owns(trait)) {
-            String msg = String.format("%s does not belong to this trait tree", trait);
-            throw new IllegalArgumentException(msg);
-        }
-        return trait;
-    }
-    
-    public void trim(NaturalTrait trait) {
-        this.requireOwnership(trait);
-        
-        if (traitTree.containsKey(trait)) {
-            String msg = String.format("%s cannot have subtraits in the trait tree", trait);
-            throw new IllegalArgumentException(msg);
+        if (traitTree.containsLeaf(trait)) {
+            traitTree.trim(trait);
         } else {
-            Trait superTrait = trait.getSuperTrait();
-            traitTree.get(superTrait).remove(trait);
-            if (traitTree.get(superTrait).size() == 0) {
-                traitTree.remove(superTrait);
-            }
+            traitTree.cut(trait);
         }
     }
     
@@ -103,17 +54,13 @@ public final class Traits {
         Traits traits = new Traits();
         System.out.println(traits.EXISTENCE);
         
-        NaturalTrait trait = traits.grow("test", "", traits.EXISTENCE);
-        NaturalTrait trait2 = traits.grow("test2", "", trait);
-        NaturalTrait trait3 = traits.grow("specific trait", "", trait2);
-        NaturalTrait trait4 = traits.grow("meme", "", traits.EXISTENCE);
+        Trait meme = traits.create("meme", "", traits.EXISTENCE);
+        Trait tech = traits.create("tech", "", traits.EXISTENCE);
+        Trait work = traits.create("work", "", traits.EXISTENCE);
         
-        System.out.println(traits.getTraitTree());
+        Trait funny = traits.create("funny", "", meme);
+        Trait moai = traits.create("moai", "", meme);
         
-        traits.cut(trait);
-        traits.cut(trait4);
-        
-        System.out.println(traits.getTraitTree());
-        
+        System.out.println(moai.getSuperTraits());
     }
 }

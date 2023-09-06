@@ -30,7 +30,7 @@ public final class ImmutableTree<T> {
     
     public Set<T> cut(T node) {
         this.requireNonRootNode(node);
-        this.requireOwnership(node);
+        this.requirePresence(node);
         
         Set<T> removed = new HashSet<>();
         
@@ -54,12 +54,12 @@ public final class ImmutableTree<T> {
     }
     
     public Set<T> getChildren(T parentNode) {
-        this.requireOwnership(parentNode);
+        this.requirePresence(parentNode);
         return Collections.unmodifiableSet(children.get(parentNode));
     }
     
     public T getParent(T childNode) {
-        this.requireOwnership(childNode);
+        this.requirePresence(childNode);
         return parents.get(childNode);
     }
     
@@ -68,8 +68,8 @@ public final class ImmutableTree<T> {
     }
     
     public T grow(T node, T parentNode) {
-        this.requireOwnership(parentNode);
-        this.requireNoOwnership(node);
+        this.requirePresence(parentNode);
+        this.requireNoPresence(node);
         
         children.computeIfAbsent(parentNode, p -> new HashSet<>()).add(node);
         parents.put(node, parentNode);
@@ -77,11 +77,17 @@ public final class ImmutableTree<T> {
         return node;
     }
     
-    public boolean owns(T object) {
+    public boolean contains(T object) {
         Objects.requireNonNull(object, "Node cannot be null");
         
         // If the object has a parent, then it must belong in the tree
         return parents.containsKey(object);
+    }
+    
+    public boolean containsLeaf(T object) {
+        Objects.requireNonNull(object, "Node cannot be null");
+        
+        return parents.containsKey(object) && !children.containsKey(object);
     }
     
     private T removeLeafNode(T leafNode) {
@@ -108,24 +114,24 @@ public final class ImmutableTree<T> {
         return object;
     }
     
-    public T requireNoOwnership(T object) {
-        if (this.owns(object)) {
-            String msg = String.format("Node<%s> already belongs to this tree", object);
+    public T requireNoPresence(T object) {
+        if (this.contains(object)) {
+            String msg = String.format("This tree already contains Node<%s>", object);
             throw new IllegalArgumentException(msg);
         }
         return object;
     }
     
-    public T requireOwnership(T object) {
-        if (!this.owns(object)) {
-            String msg = String.format("Node<%s> does not belong to this tree", object);
+    public T requirePresence(T object) {
+        if (!this.contains(object)) {
+            String msg = String.format("This tree does not contain Node<%s>", object);
             throw new IllegalArgumentException(msg);
         }
         return object;
     }
     
     public T trim(T leafNode) {
-        this.requireOwnership(leafNode);
+        this.requirePresence(leafNode);
         
         if (children.containsKey(leafNode)) {
             String msg = String.format("Node<%s> has child nodes in the tree", leafNode);
