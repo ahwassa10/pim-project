@@ -10,13 +10,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-public final class ImmutableTree<T> {
+public final class IncorrigibleTree<T> {
     private final Map<T, Set<T>> children = new HashMap<>();
     private final Map<T, T> parents = new HashMap<>();
     
     private final T root;
     
-    public ImmutableTree(T root) {
+    public IncorrigibleTree(T root) {
         Objects.requireNonNull(root, "Root node object cannot be null");
         
         // Root is a child of root

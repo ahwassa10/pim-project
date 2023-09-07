@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Traits {
-    private final ImmutableTree<Trait> traitTree;
+    private final IncorrigibleTree<Trait> traitTree;
     
     public final Trait EXISTENCE = new Trait() {
         private final String description = "The root of the trait tree: existence";
@@ -29,7 +29,7 @@ public final class Traits {
     };
     
     Traits() {
-        traitTree = new ImmutableTree<>(this.EXISTENCE);
+        traitTree = new IncorrigibleTree<>(this.EXISTENCE);
     }
     
     public Trait create(String name, String description, Trait superTrait) {
