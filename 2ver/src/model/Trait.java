@@ -32,29 +32,26 @@ public interface Trait {
         return name;
     }
     
+    default List<Trait> getAncestors() {
+        List<Trait> ancestors = new ArrayList<>();
+        
+        Trait parent = this.getParent();
+        Trait anchor = this.getAnchor();
+        
+        while (parent != anchor) {
+            ancestors.add(parent);
+            parent = parent.getParent();
+        }
+        ancestors.add(anchor);
+        
+        return ancestors;
+    }
+    
+    Trait getAnchor();
+    
     String getDescription();
+    
     String getName();
     
-    default Trait getAnchorTrait() {
-        Trait trait = this;
-        while (trait != trait.getSuperTrait()) {
-            trait = trait.getSuperTrait();
-        }
-        return trait;
-    }
-    
-    Trait getSuperTrait();
-    
-    default List<Trait> getSuperTraits() {
-        List<Trait> superTraits = new ArrayList<>();
-        
-        Trait trait = this;
-        while (trait != trait.getSuperTrait()) {
-            trait = trait.getSuperTrait();
-            superTraits.add(trait);
-        }
-        
-        Collections.reverse(superTraits);
-        return superTraits;
-    }
+    Trait getParent();
 }

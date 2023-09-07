@@ -9,15 +9,17 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Traits {
-    private final class NaturalTrait extends AbstractTrait {
+    private final class TraitStructure extends AbstractTrait {
         private final String description;
         private final String name;
-        private final Trait superTrait;
         
-        private NaturalTrait(String description, String name, Trait superTrait) {
+        private TraitStructure(String description, String name) {
             this.description = description;
             this.name = name;
-            this.superTrait = superTrait;
+        }
+        
+        public Trait getAnchor() {
+            return Traits.this.EXISTENCE;
         }
         
         public String getDescription() {
@@ -28,8 +30,8 @@ public final class Traits {
             return name;
         }
         
-        public Trait getSuperTrait() {
-            return superTrait;
+        public Trait getParent() {
+            return Traits.this.traitTree.getParent(this);
         }
     }
     
@@ -38,11 +40,15 @@ public final class Traits {
             return "The root of the trait tree: Existence";
         }
         
+        public Trait getAnchor() {
+            return this;
+        }
+        
         public String getName() {
             return "Existence";
         }
         
-        public Trait getSuperTrait() {
+        public Trait getParent() {
             return this;
         }
     };
@@ -51,13 +57,13 @@ public final class Traits {
     
     Traits() {}
     
-    public Trait create(String name, String description, Trait superTrait) {
+    public Trait create(String name, String description, Trait parent) {
         Trait.requireValidName(name);
         Trait.requireValidDescription(description);
-        traitTree.requirePresence(superTrait);
+        traitTree.requirePresence(parent);
         
-        NaturalTrait nt = new NaturalTrait(name, description, superTrait);
-        return traitTree.grow(nt, superTrait);
+        TraitStructure ts = new TraitStructure(description, name);
+        return traitTree.grow(ts, parent);
     }
     
     public void delete(Trait trait) {
@@ -70,6 +76,11 @@ public final class Traits {
         }
     }
     
+    public Set<Trait> getDescendants(Trait trait) {
+        // getChildren() already returns an unmodifiableSet instance
+        return traitTree.getChildren(trait);
+    }
+    
     public void printTree() {
         System.out.println(traitTree);
     }
@@ -77,18 +88,22 @@ public final class Traits {
     public static void main(String[] args) {
         Traits traits = new Traits();
         System.out.println(traits.EXISTENCE);
-        System.out.println(traits.EXISTENCE.getSuperTrait());
+        System.out.println(traits.EXISTENCE.getParent());
         
         Trait meme = traits.create("meme", "", traits.EXISTENCE);
         Trait tech = traits.create("tech", "", traits.EXISTENCE);
         Trait work = traits.create("work", "", traits.EXISTENCE);
         
+        System.out.println(meme);
+        
         Trait funny = traits.create("funny", "", meme);
         Trait moai = traits.create("moai", "", meme);
         Trait gpu = traits.create("gpu", "", tech);
         
-        System.out.println(moai.getSuperTraits());
-        traits.printTree();
+        Trait specificMoai = traits.create("specific moai", "", moai);
+        
+        System.out.println(specificMoai.getAncestors());
+        //traits.printTree();
         
     }
 }
