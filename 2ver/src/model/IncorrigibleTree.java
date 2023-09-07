@@ -70,7 +70,7 @@ public final class IncorrigibleTree<T> {
     
     public T grow(T node, T parentNode) {
         this.requirePresence(parentNode);
-        this.requireNoPresence(node);
+        this.requireAbsence(node);
         
         children.computeIfAbsent(parentNode, p -> new HashSet<>()).add(node);
         parents.put(node, parentNode);
@@ -107,17 +107,17 @@ public final class IncorrigibleTree<T> {
         return leafNode;
     }
     
-    public T requireNonRootNode(T object) {
-        if (this.root.equals(object)) {
-            String msg = String.format("Cannot cut the RootNode<%s> of this tree", object);
+    public T requireAbsence(T object) {
+        if (this.contains(object)) {
+            String msg = String.format("This tree already contains Node<%s>", object);
             throw new IllegalArgumentException(msg);
         }
         return object;
     }
     
-    public T requireNoPresence(T object) {
-        if (this.contains(object)) {
-            String msg = String.format("This tree already contains Node<%s>", object);
+    public T requireNonRootNode(T object) {
+        if (this.root.equals(object)) {
+            String msg = String.format("Cannot cut the RootNode<%s> of this tree", object);
             throw new IllegalArgumentException(msg);
         }
         return object;
