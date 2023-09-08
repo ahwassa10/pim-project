@@ -103,6 +103,7 @@ public final class Traits {
         Trait specificMoai = traits.create("specific moai", "", moai);
         
         System.out.println(specificMoai.getAncestors());
+        System.out.println(traits.getDescendants(traits.EXISTENCE));
         //traits.printTree();
         
     }
