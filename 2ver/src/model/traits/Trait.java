@@ -1,8 +1,5 @@
-package model;
+package model.traits;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public interface Trait {
@@ -32,26 +29,9 @@ public interface Trait {
         return name;
     }
     
-    default List<Trait> getAncestors() {
-        List<Trait> ancestors = new ArrayList<>();
-        
-        Trait parent = this.getParent();
-        Trait anchor = this.getAnchor();
-        
-        while (parent != anchor) {
-            ancestors.add(parent);
-            parent = parent.getParent();
-        }
-        ancestors.add(anchor);
-        
-        return ancestors;
-    }
-    
     Trait getAnchor();
     
     String getDescription();
     
     String getName();
-    
-    Trait getParent();
 }
