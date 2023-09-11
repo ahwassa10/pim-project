@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import model.trees.HashTree;
+import model.trees.IncorrigibleTree;
+
 public final class Traits {
     private final class TraitStructure extends AbstractTrait {
         private final String description;
@@ -53,7 +56,7 @@ public final class Traits {
         }
     };
     
-    private final IncorrigibleTree<Trait> traitTree = new IncorrigibleTree<>(this.EXISTENCE);
+    private final IncorrigibleTree<Trait> traitTree = new HashTree<>(this.EXISTENCE);
     
     Traits() {}
     
