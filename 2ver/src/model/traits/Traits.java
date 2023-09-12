@@ -37,7 +37,7 @@ public final class Traits {
     }
     
     public void delete(Trait trait) {
-        traitTree.cut(trait);
+        traitTree.trim(trait);
     }
     
     public Set<Trait> getDescendants(Trait trait) {

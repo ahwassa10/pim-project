@@ -65,6 +65,17 @@ public class HashTree<T> implements IncorrigibleTree<T> {
         return node;
     }
     
+    public T graft(T leafNode, T parent) {
+        this.requirePresence(leafNode);
+        this.requireNonRoot(leafNode);
+        this.requirePresence(parent);
+        
+        this.removeLeafNode(leafNode);
+        children.computeIfAbsent(parent, p -> new HashSet<>()).add(leafNode);
+        parents.put(leafNode, parent);
+        return leafNode;
+    }
+    
     private T removeLeafNode(T leafObject) {
         T parentNode = parents.get(leafObject);
         Set<T> childNodes = children.get(parentNode);
@@ -84,20 +95,7 @@ public class HashTree<T> implements IncorrigibleTree<T> {
         return leafObject;
     }
     
-    public T trim(T leafNode) {
-        this.requirePresence(leafNode);
-        this.requireNonRoot(leafNode);
-        
-        if (children.containsKey(leafNode)) {
-            String msg = String.format("%s has child nodes in the tree", leafNode);
-            throw new IllegalArgumentException(msg);
-        
-        } else {
-            return this.removeLeafNode(leafNode);
-        }
-    }
-    
-    public Set<T> cut(T node) {
+    public Set<T> trim(T node) {
         this.requirePresence(node);
         this.requireNonRoot(node);
         
