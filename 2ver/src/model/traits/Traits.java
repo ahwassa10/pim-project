@@ -33,7 +33,8 @@ public final class Traits {
             }
         };
         
-        return traitTree.grow(newTrait, parent);
+        traitTree.grow(newTrait, parent);
+        return newTrait;
     }
     
     public void delete(Trait trait) {

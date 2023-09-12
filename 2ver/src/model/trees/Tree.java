@@ -3,15 +3,23 @@ package model.trees;
 import java.util.Set;
 
 public interface Tree<T> {
+    boolean contains(T node);
+    
+    boolean isRootNode(T node);
+    
+    boolean isInteriorNode(T node);
+    
+    boolean isLeafNode(T node);
+    
+    boolean isParentNode(T node);
+    
+    boolean isExteriorNode(T node);
+    
+    boolean isChildNode(T node);
+    
     T getRoot();
     
-    boolean contains(T object);
+    T getParent(T node);
     
-    boolean hasParent(T object);
-    
-    T getParent(T object);
-    
-    boolean hasChildren(T object);
-    
-    Set<T> getChildren(T object);
+    Set<T> getChildren(T node);
 }
