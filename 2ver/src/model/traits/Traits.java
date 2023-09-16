@@ -3,7 +3,7 @@ package model.traits;
 import java.util.Set;
 
 import model.trees.HashTree;
-import model.trees.IncorrigibleTree;
+import model.trees.MutableTree;
 
 public final class Traits {
     private static final String EXIS_NAME = "Existence";
@@ -11,7 +11,7 @@ public final class Traits {
     
     public final Trait EXISTENCE;
     
-    private final IncorrigibleTree<Trait> traitTree;
+    private final MutableTree<Trait> traitTree;
     
     Traits() {
         EXISTENCE = new AbstractTrait(Traits.EXIS_NAME, Traits.EXIS_DESCRIPTION) {

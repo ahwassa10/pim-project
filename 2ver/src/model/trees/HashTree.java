@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class HashTree<T> extends AbstractHashTree<T> implements IncorrigibleTree<T> {
+public class HashTree<T> extends AbstractHashTree<T> implements MutableTree<T> {
     private final T root;
     
     public HashTree(T root) {
