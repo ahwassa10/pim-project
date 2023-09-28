@@ -8,22 +8,6 @@ import java.util.Set;
 public interface Tree<T> {
     boolean contains(T node);
     
-    default T requireAbsence(T node) {
-        if (contains(node)) {
-            String msg = String.format("%s is present in this tree", node);
-            throw new IllegalArgumentException(msg);
-        }
-        return node;
-    }
-    
-    default T requirePresence(T node) {
-        if (!contains(node)) {
-            String msg = String.format("%s is not present in this tree", node);
-            throw new IllegalArgumentException(msg);
-        }
-        return node;
-    }
-    
     boolean isRootNode(T node);
     
     boolean isInteriorNode(T node);

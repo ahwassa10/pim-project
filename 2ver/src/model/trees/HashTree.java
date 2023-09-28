@@ -42,15 +42,15 @@ public class HashTree<T> extends AbstractHashTree<T> implements MutableTree<T> {
     }
     
     public void grow(T node, T parent) {
-        this.requireAbsence(node);
-        this.requirePresence(parent);
+        Trees.requireAbsence(this, node);
+        Trees.requirePresence(this, parent);
         
         addNode(node, parent);
     }
     
     public T graft(T node, T newParent) {
-        this.requireChildNode(node);
-        this.requirePresence(newParent);
+        Trees.requireChildNode(this, node);
+        Trees.requirePresence(this, newParent);
         
         T parentNode = removeNode(node);
         addNode(node, newParent);
@@ -58,7 +58,7 @@ public class HashTree<T> extends AbstractHashTree<T> implements MutableTree<T> {
     }
     
     public Set<T> trim(T node) {
-        this.requireChildNode(node);
+        Trees.requireChildNode(this, node);
         
         Set<T> removed = new HashSet<>();
         
