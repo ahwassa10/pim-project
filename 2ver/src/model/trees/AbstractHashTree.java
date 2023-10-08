@@ -40,12 +40,12 @@ public abstract class AbstractHashTree<T> implements Tree<T> {
     }
     
     public T getParent(T node) {
-        requireChildNode(node);
+        Trees.requireChildNode(this, node);
         return parents.get(node);
     }
     
     public Set<T> getChildren(T node) {
-        requireParentNode(node);
+        Trees.requireParentNode(this, node);
         return Collections.unmodifiableSet(children.get(node));
     }
 }
