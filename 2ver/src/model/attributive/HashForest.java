@@ -1,13 +1,14 @@
 package model.attributive;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class HashForest<T> implements Forest<T> {
     private Map<T, T> parents = new HashMap<>();
@@ -49,16 +50,16 @@ public final class HashForest<T> implements Forest<T> {
         children.computeIfAbsent(parent, p -> new HashSet<>()).add(single);
     }
     
-    public boolean hasParent(T node) {
-        return parents.containsKey(node);
-    }
-    
-    public boolean hasChildren(T node) {
+    public boolean isParentNode(T node) {
         return children.containsKey(node);
     }
     
+    public boolean isChildNode(T node) {
+        return parents.containsKey(node);
+    }
+    
     public T detach(T node) {
-        Forests.requireParent(this, node);
+        Forests.requireChildNode(this, node);
         
         // Remove the child -> parent mapping
         T parentNode = parents.remove(node);
@@ -75,70 +76,46 @@ public final class HashForest<T> implements Forest<T> {
         return parentNode;
     }
     
-    public T getParent(T node) {
-        Forests.requireParent(this, node);
-        return parents.get(node);
-    }
-    
-    public Set<T> getChildren(T node) {
-        Forests.requireChildren(this, node);
-        return Collections.unmodifiableSet(children.get(node));
-    }
-    
-    public Set<T> getDescendants(T node) {
-        Set<T> descendants = new HashSet<>();
+    private class Node implements TreeNode<T> {
+        private T object;
         
-        List<T> stack = new ArrayList<>();
-        
-        // Initialize the stack
-        if (hasChildren(node)) {
-            children.get(node).forEach(child -> stack.add(child));
+        private Node(T object) {
+            this.object = object;
         }
         
-        while (stack.size() != 0) {
-            T atNode = stack.remove(stack.size() - 1);
-            
-            descendants.add(atNode);
-            
-            if (hasChildren(atNode)) {
-                // Add all children into the stack.
-                children.get(node).forEach(child -> stack.add(child));
-            }
+        public T getObject() {
+            return object;
         }
         
-        return descendants;
+        public boolean hasParent() {
+            return parents.containsKey(object);
+        }
+        
+        public TreeNode<T> getParent() {
+            Forests.requireChildNode(HashForest.this, object);
+            
+            return new Node(parents.get(object));
+        }
+        
+        public boolean hasChildren() {
+            return children.containsKey(object);
+        }
+        
+        public Set<TreeNode<T>> getChildren() {
+            Forests.requireParentNode(HashForest.this, object);
+            
+            return children.get(object).stream()
+                    .map(child -> new Node(child))
+                    .collect(Collectors.toSet());
+        }
+        
+        public String toString() {
+            return Objects.toString(object);
+        }
     }
     
-    public Tree<T> treeAt(T node) {
-        return new Tree<T>() {
-            private T root = node;
-            
-            private Set<T> descendants = getDescendants(node);
-            
-            public T getRoot() {
-                return root;
-            }
-            
-            public boolean hasParent(T node) {
-                return descendants.contains(node);
-            }
-            
-            public boolean hasChildren(T node) {
-                return HashForest.this.hasChildren(node);
-            }
-            
-            public T getParent(T node) {
-                if (!hasParent(node)) {
-                    String msg = String.format("%s does not have a parent node", node);
-                    throw new IllegalArgumentException(msg);
-                } else {
-                    return parents.get(node);
-                }
-            }
-            
-            public Set<T> getChildren(T node) {
-                return HashForest.this.getChildren(node);
-            }
-        };
+    public TreeNode<T> atNode(T node) {
+        return new Node(node);
     }
+    
 }

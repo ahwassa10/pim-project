@@ -1,7 +1,5 @@
 package model.attributive;
 
-import java.util.Set;
-
 public interface Forest<T> {
     boolean isNode(T node);
     
@@ -15,15 +13,11 @@ public interface Forest<T> {
     
     void attachSingle(T single, T parent);
     
-    boolean hasParent(T node);
+    boolean isParentNode(T node);
     
-    boolean hasChildren(T node);
-    
-    T getParent(T node);
-    
-    Set<T> getChildren(T node);
+    boolean isChildNode(T node);
     
     T detach(T child);
     
-    Tree<T> treeAt(T node);
+    TreeNode<T> atNode(T node);
 }

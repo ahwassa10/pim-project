@@ -31,17 +31,17 @@ public final class Forests {
         return node;
     }
     
-    public static <T> T requireParent(Forest<T> forest, T node) {
-        if (!forest.hasParent(node)) {
-            String msg = String.format("%s does not have a parent node", node);
+    public static <T> T requireParentNode(Forest<T> forest, T node) {
+        if (!forest.isParentNode(node)) {
+            String msg = String.format("%s is not a parent node", node);
             throw new IllegalArgumentException(msg);
         }
         return node;
     }
     
-    public static <T> T requireChildren(Forest<T> forest, T node) {
-        if (!forest.hasChildren(node)) {
-            String msg = String.format("%s does not have a child nodes", node);
+    public static <T> T requireChildNode(Forest<T> forest, T node) {
+        if (!forest.isChildNode(node)) {
+            String msg = String.format("%s is not a child node", node);
             throw new IllegalArgumentException(msg);
         }
         return node;
