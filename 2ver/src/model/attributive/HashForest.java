@@ -1,14 +1,11 @@
 package model.attributive;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class HashForest<T> implements Forest<T> {
     private Map<T, T> parents = new HashMap<>();
@@ -18,10 +15,6 @@ public final class HashForest<T> implements Forest<T> {
     // The children of the key are in the elements of the value set.
     
     public HashForest() {}
-   
-    public boolean isNode(T node) {
-        return true;
-    }
     
     public boolean isRootNode(T node) {
         return !parents.containsKey(node);
@@ -29,6 +22,10 @@ public final class HashForest<T> implements Forest<T> {
     
     public boolean isLeafNode(T node) {
         return !children.containsKey(node);
+    }
+    
+    public boolean isParticipatingNode(T node) {
+        return parents.containsKey(node) || children.containsKey(node);
     }
     
     public boolean isSingleNode(T node) {
@@ -50,16 +47,28 @@ public final class HashForest<T> implements Forest<T> {
         children.computeIfAbsent(parent, p -> new HashSet<>()).add(single);
     }
     
-    public boolean isParentNode(T node) {
-        return children.containsKey(node);
-    }
-    
-    public boolean isChildNode(T node) {
+    public boolean hasParent(T node) {
         return parents.containsKey(node);
     }
     
+    public boolean hasChildren(T node) {
+        return children.containsKey(node);
+    }
+    
+    public T getParent(T node) {
+        Forests.requireParent(this, node);
+        
+        return parents.get(node);
+    }
+    
+    public Set<T> getChildren(T node) {
+        Forests.requireChildren(this, node);
+        
+        return Collections.unmodifiableSet(children.get(node));
+    }
+    
     public T detach(T node) {
-        Forests.requireChildNode(this, node);
+        Forests.requireParent(this, node);
         
         // Remove the child -> parent mapping
         T parentNode = parents.remove(node);
@@ -76,46 +85,7 @@ public final class HashForest<T> implements Forest<T> {
         return parentNode;
     }
     
-    private class Node implements TreeNode<T> {
-        private T object;
-        
-        private Node(T object) {
-            this.object = object;
-        }
-        
-        public T getObject() {
-            return object;
-        }
-        
-        public boolean hasParent() {
-            return parents.containsKey(object);
-        }
-        
-        public TreeNode<T> getParent() {
-            Forests.requireChildNode(HashForest.this, object);
-            
-            return new Node(parents.get(object));
-        }
-        
-        public boolean hasChildren() {
-            return children.containsKey(object);
-        }
-        
-        public Set<TreeNode<T>> getChildren() {
-            Forests.requireParentNode(HashForest.this, object);
-            
-            return children.get(object).stream()
-                    .map(child -> new Node(child))
-                    .collect(Collectors.toSet());
-        }
-        
-        public String toString() {
-            return Objects.toString(object);
-        }
+    public TreeNode<T> asNode(T node) {
+        return new BasicTreeNode<T>(this, node);
     }
-    
-    public TreeNode<T> atNode(T node) {
-        return new Node(node);
-    }
-    
 }
