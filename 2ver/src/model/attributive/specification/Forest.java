@@ -1,4 +1,4 @@
-package model.attributive;
+package model.attributive.specification;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -11,41 +11,27 @@ public interface Forest<T> {
         return true;
     }
     
-    boolean isRootNode(T node);
+    default boolean isRootNode(T node) {
+        return !hasParent(node);
+    }
     
-    boolean isLeafNode(T node);
+    default boolean isLeafNode(T node) {
+        return !hasChildren(node);
+    }
     
-    boolean isParticipatingNode(T node);
+    default boolean isParticipatingNode(T node) {
+        return hasParent(node) || hasChildren(node);
+    }
     
-    boolean isSingleNode(T node);
+    default boolean isSingleNode(T node) {
+        return !hasParent(node) && !hasChildren(node);
+    }
     
     boolean hasParent(T node);
     
-    boolean hasChildren(T node);
-    
     T getParent(T node);
     
-    Set<T> getChildren(T node);
-    
-    default T getRoot(T node) {
-        T root = node;
-        
-        while (hasParent(root)) {
-            root = getParent(root);
-        }
-        
-        return root;
-    }
-    
-    void attachRoot(T root, T parent);
-    
-    void attachSingle(T single, T parent);
-    
-    T detach(T child);
-    
-    TreeNode<T> asNode(T node);
-    
-    default Iterator<T> parentIterator(T node) {
+    default Iterator<T> iterateParents(T node) {
         return new Iterator<T>() {
             private T atNode = node;
             
@@ -64,7 +50,13 @@ public interface Forest<T> {
         };
     }
     
-    default Iterator<T> BFSIterator(T node) {
+    TreeNode<T> atNode(T node);
+    
+    boolean hasChildren(T node);
+    
+    Set<T> getChildren(T node);
+    
+    default Iterator<T> iterateBFS(T node) {
         Deque<T> queue = new ArrayDeque<>();
         queue.addLast(node);
         
@@ -85,7 +77,7 @@ public interface Forest<T> {
         };
     }
     
-    default Iterator<T> DFSIterator(T node) {
+    default Iterator<T> iterateDFS(T node) {
         Deque<T> stack = new ArrayDeque<>();
         stack.addLast(node);
         
@@ -105,4 +97,12 @@ public interface Forest<T> {
             }
         };
     }
+    
+    Tree<T> atTree(T node);
+    
+    void attachRoot(T root, T parent);
+    
+    void attachSingle(T single, T parent);
+    
+    T detach(T child);
 }

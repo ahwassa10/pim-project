@@ -1,4 +1,6 @@
-package model.attributive;
+package model.attributive.implementation;
+
+import model.attributive.specification.Forest;
 
 public final class Forests {
     private Forests() {}

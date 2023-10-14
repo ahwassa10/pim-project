@@ -1,11 +1,14 @@
-package model.attributive;
+package model.attributive.implementation;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import model.attributive.specification.Forest;
+import model.attributive.specification.Tree;
+import model.attributive.specification.TreeNode;
 
 public final class HashForest<T> implements Forest<T> {
     private Map<T, T> parents = new HashMap<>();
@@ -16,20 +19,32 @@ public final class HashForest<T> implements Forest<T> {
     
     public HashForest() {}
     
-    public boolean isRootNode(T node) {
-        return !parents.containsKey(node);
+    public boolean hasParent(T node) {
+        return parents.containsKey(node);
     }
     
-    public boolean isLeafNode(T node) {
-        return !children.containsKey(node);
+    public T getParent(T node) {
+        Forests.requireParent(this, node);
+        
+        return parents.get(node);
     }
     
-    public boolean isParticipatingNode(T node) {
-        return parents.containsKey(node) || children.containsKey(node);
+    public TreeNode<T> atNode(T node) {
+        return new BasicTreeNode<T>(this, node);
     }
     
-    public boolean isSingleNode(T node) {
-        return !parents.containsKey(node) && !children.containsKey(node);
+    public boolean hasChildren(T node) {
+        return children.containsKey(node);
+    }
+    
+    public Set<T> getChildren(T node) {
+        Forests.requireChildren(this, node);
+        
+        return Collections.unmodifiableSet(children.get(node));
+    }
+    
+    public Tree<T> atTree(T node) {
+        return new BasicTree<T>(this, node);
     }
     
     public void attachRoot(T root, T parent) {
@@ -45,26 +60,6 @@ public final class HashForest<T> implements Forest<T> {
         
         parents.put(single, parent);
         children.computeIfAbsent(parent, p -> new HashSet<>()).add(single);
-    }
-    
-    public boolean hasParent(T node) {
-        return parents.containsKey(node);
-    }
-    
-    public boolean hasChildren(T node) {
-        return children.containsKey(node);
-    }
-    
-    public T getParent(T node) {
-        Forests.requireParent(this, node);
-        
-        return parents.get(node);
-    }
-    
-    public Set<T> getChildren(T node) {
-        Forests.requireChildren(this, node);
-        
-        return Collections.unmodifiableSet(children.get(node));
     }
     
     public T detach(T node) {
@@ -83,9 +78,5 @@ public final class HashForest<T> implements Forest<T> {
         }
         
         return parentNode;
-    }
-    
-    public TreeNode<T> asNode(T node) {
-        return new BasicTreeNode<T>(this, node);
     }
 }

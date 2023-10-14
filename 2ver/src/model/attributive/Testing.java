@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import model.attributive.implementation.HashForest;
+import model.attributive.specification.Forest;
+
 public class Testing {
     public static void main(String[] args) {
         Forest<String> forest = new HashForest<>();
@@ -13,7 +16,7 @@ public class Testing {
         forest.attachSingle("two", "one");
         forest.attachSingle("three", "one");
         
-        Iterator<String> i = forest.BFSIterator("root");
+        Iterator<String> i = forest.iterateBFS("root");
         
         
         
