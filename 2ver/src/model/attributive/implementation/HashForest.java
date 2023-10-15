@@ -3,6 +3,7 @@ package model.attributive.implementation;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,24 @@ public final class HashForest<T> implements Forest<T> {
     
     public HashForest() {}
     
+    public HashForest(Tree<T> tree) {
+        Iterator<Tree<T>> i = tree.iterateDFS();
+        
+        // Iterate though the root node.
+        i.next();
+        
+        // Iterate though all the other nodes in the tree.
+        while (i.hasNext()) {
+            TreeNode<T> atNode = i.next().asNode();
+            
+            T object = atNode.getObject();
+            T parent = atNode.getParent().getObject();
+            
+            parents.put(object, parent);
+            children.computeIfAbsent(parent, p -> new HashSet<>()).add(object);
+        }
+    }
+    
     public boolean hasParent(T node) {
         return parents.containsKey(node);
     }
@@ -30,7 +49,7 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public TreeNode<T> atNode(T node) {
-        return new BasicTreeNode<T>(this, node);
+        return new NodeTree<T>(this, node);
     }
     
     public boolean hasChildren(T node) {
@@ -44,7 +63,7 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public Tree<T> atTree(T node) {
-        return new BasicTree<T>(this, node);
+        return new NodeTree<T>(this, node);
     }
     
     public void attachRoot(T root, T parent) {

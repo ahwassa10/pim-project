@@ -69,7 +69,7 @@ public interface Forest<T> {
                 // Automatically throws a NoSuchElementException.
                 T node = queue.removeFirst();
                 if (hasChildren(node)) {
-                    getChildren(node).forEach(child -> queue.addLast(node));
+                    getChildren(node).forEach(child -> queue.addLast(child));
                 }
                 
                 return node;

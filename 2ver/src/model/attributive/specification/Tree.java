@@ -4,21 +4,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 public interface Tree<T> {
-    default boolean isNode() {
-        return true;
-    }
-    
-    default boolean isLeafNode() {
-        return hasChildren();
-    }
-    
     boolean hasChildren();
     
-    Set<? extends Tree<T>> getChildren();
+    Set<Tree<T>> getChildren();
     
-    Iterator<? extends Tree<T>> iterateBFS();
+    Iterator<Tree<T>> iterateBFS();
     
-    Iterator<? extends Tree<T>> iterateDFS();
+    Iterator<Tree<T>> iterateDFS();
     
     TreeNode<T> asNode();
 }
