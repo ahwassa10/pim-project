@@ -1,5 +1,6 @@
 package model.attributive.implementation;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,7 +9,7 @@ import java.util.Set;
 
 import model.attributive.specification.DenseMap;
 
-public class HashDenseMap<T, U> implements DenseMap<T, U> {
+public final class HashDenseMap<T, U> implements DenseMap<T, U> {
     private final Map<T, Set<U>> attributions = new HashMap<>();
     
     private final Map<U, Set<T>> properties = new HashMap<>();
@@ -23,7 +24,11 @@ public class HashDenseMap<T, U> implements DenseMap<T, U> {
     }
     
     public Iterator<U> iterateAttributions(T attributer) {
-        return getAttributions(attributer).iterator();
+        if (attributions.containsKey(attributer)) {
+            return attributions.get(attributer).iterator();
+        } else {
+            return Collections.emptyIterator();
+        }
     }
     
     public boolean hasProperties(U holder) {
@@ -36,10 +41,14 @@ public class HashDenseMap<T, U> implements DenseMap<T, U> {
     }
     
     public Iterator<T> iterateProperties(U holder) {
-        return getProperties(holder).iterator();
+        if (properties.containsKey(holder)) {
+            return properties.get(holder).iterator();
+        } else {
+            return Collections.emptyIterator();
+        }
     }
     
-    public void attribute(T attributer, U holder) {
+    public void apply(T attributer, U holder) {
         attributions.computeIfAbsent(attributer, a -> new HashSet<>()).add(holder);
         properties.computeIfAbsent(holder, h -> new HashSet<>()).add(attributer);
     }

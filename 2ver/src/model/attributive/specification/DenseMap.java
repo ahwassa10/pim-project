@@ -16,7 +16,7 @@ public interface DenseMap<T, U> {
     
     Iterator<T> iterateProperties(U holder);
     
-    void attribute(T attributer, U holder);
+    void apply(T attributer, U holder);
     
     void remove(T attributer, U holder);
     
