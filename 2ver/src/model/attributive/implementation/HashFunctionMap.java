@@ -7,10 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import model.attributive.specification.DenseMap;
+import model.attributive.specification.FunctionMap;
 
-public final class HashDenseMap<T, U> implements DenseMap<T, U> {
-    private final Map<T, Set<U>> properties = new HashMap<>();
+public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
+    private final Map<T, U> properties = new HashMap<>();
     
     private final Map<U, Set<T>> attributes = new HashMap<>();
     
@@ -18,17 +18,8 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
         return properties.containsKey(attributer);
     }
     
-    public Set<U> getProperties(T attributer) {
-        DenseMaps.requireProperties(this, attributer);
-        return Collections.unmodifiableSet(properties.get(attributer));
-    }
-    
-    public Iterator<U> iterateProperties(T attributer) {
-        if (properties.containsKey(attributer)) {
-            return properties.get(attributer).iterator();
-        } else {
-            return Collections.emptyIterator();
-        }
+    public U getProperty(T attributer) {
+        return properties.get(attributer);
     }
     
     public boolean hasAttributes(U holder) {
@@ -49,16 +40,8 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
     }
     
     public void apply(T attributer, U holder) {
-        properties.computeIfAbsent(attributer, a -> new HashSet<>()).add(holder);
+        properties.put(attributer, holder);
         attributes.computeIfAbsent(holder, h -> new HashSet<>()).add(attributer);
-    }
-    
-    private void removeAttribution(T attributer, U holder) {
-        Set<U> attributerProperties = properties.get(attributer);
-        attributerProperties.remove(holder);
-        if (attributerProperties.size() == 0) {
-            properties.remove(attributer);
-        }
     }
     
     private void forgetPropertization(T attributer, U holder) {
@@ -73,19 +56,16 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
         DenseMaps.requireProperties(this, attributer);
         DenseMaps.requireAttributes(this, holder);
         
-        removeAttribution(attributer, holder);
+        properties.remove(attributer, holder);
         forgetPropertization(attributer, holder);
     }
     
     public void remove(T attributer) {
         DenseMaps.requireProperties(this, attributer);
         
-        Set<U> holders = properties.get(attributer);
-        for (U holder : holders) {
-            forgetPropertization(attributer, holder);
-        }
-        
-        properties.remove(attributer);
+        U holder = properties.get(attributer);
+        forgetPropertization(attributer, holder);
+        properties.remove(attributer, holder);
     }
     
     public void forget(U holder) {
@@ -93,10 +73,9 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
         
         Set<T> attributers = attributes.get(holder);
         for (T attributer : attributers) {
-            removeAttribution(attributer, holder);
+            properties.remove(attributer, holder);
         }
         
         attributes.remove(holder);
     }
-    
 }
