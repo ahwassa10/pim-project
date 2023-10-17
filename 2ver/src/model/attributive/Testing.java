@@ -12,6 +12,6 @@ public class Testing {
         map.apply("hi", "bye");
         map.apply("other", "bye");
         
-        map.iterateProperties("bye").forEachRemaining(p -> System.out.println(p));
+        map.iterateAttributes("bye").forEachRemaining(p -> System.out.println(p));
     }
 }

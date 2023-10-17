@@ -14,16 +14,16 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
     
     private final Map<U, Set<T>> properties = new HashMap<>();
     
-    public boolean hasAttributions(T attributer) {
+    public boolean hasProperties(T attributer) {
         return attributions.containsKey(attributer);
     }
     
-    public Set<U> getAttributions(T attributer) {
+    public Set<U> getProperties(T attributer) {
         DenseMaps.requireAttributions(this, attributer);
-        return attributions.get(attributer);
+        return Collections.unmodifiableSet(attributions.get(attributer));
     }
     
-    public Iterator<U> iterateAttributions(T attributer) {
+    public Iterator<U> iterateProperties(T attributer) {
         if (attributions.containsKey(attributer)) {
             return attributions.get(attributer).iterator();
         } else {
@@ -31,16 +31,16 @@ public final class HashDenseMap<T, U> implements DenseMap<T, U> {
         }
     }
     
-    public boolean hasProperties(U holder) {
+    public boolean hasAttributes(U holder) {
         return properties.containsKey(holder);
     }
     
-    public Set<T> getProperties(U holder) {
+    public Set<T> getAttributes(U holder) {
         DenseMaps.requireProperties(this, holder);
-        return properties.get(holder);
+        return Collections.unmodifiableSet(properties.get(holder));
     }
     
-    public Iterator<T> iterateProperties(U holder) {
+    public Iterator<T> iterateAttributes(U holder) {
         if (properties.containsKey(holder)) {
             return properties.get(holder).iterator();
         } else {

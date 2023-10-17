@@ -4,17 +4,17 @@ import java.util.Iterator;
 import java.util.Set;
 
 public interface DenseMap<T, U> {
-    boolean hasAttributions(T attributer);
+    boolean hasProperties(T attributer);
     
-    Set<U> getAttributions(T attributer);
+    Set<U> getProperties(T attributer);
     
-    Iterator<U> iterateAttributions(T attributer);
+    Iterator<U> iterateProperties(T attributer);
     
-    boolean hasProperties(U holder);
+    boolean hasAttributes(U holder);
     
-    Set<T> getProperties(U holder);
+    Set<T> getAttributes(U holder);
     
-    Iterator<T> iterateProperties(U holder);
+    Iterator<T> iterateAttributes(U holder);
     
     void apply(T attributer, U holder);
     
