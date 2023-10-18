@@ -10,72 +10,74 @@ import java.util.Set;
 import model.attributive.specification.FunctionMap;
 
 public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
-    private final Map<T, U> properties = new HashMap<>();
+    private final Map<T, U> attributions = new HashMap<>();
     
     private final Map<U, Set<T>> attributes = new HashMap<>();
     
-    public boolean hasProperties(T attributer) {
-        return properties.containsKey(attributer);
+    public boolean hasAttributions(T attributer) {
+        return attributions.containsKey(attributer);
     }
     
-    public U getProperty(T attributer) {
-        return properties.get(attributer);
+    public U getAttribution(T attributer) {
+        return attributions.get(attributer);
     }
     
-    public boolean hasAttributes(U holder) {
-        return attributes.containsKey(holder);
+    public boolean hasAttributes(U object) {
+        return attributes.containsKey(object);
     }
     
-    public Set<T> getAttributes(U holder) {
-        DenseMaps.requireAttributes(this, holder);
-        return Collections.unmodifiableSet(attributes.get(holder));
+    public Set<T> getAttributes(U object) {
+        Maps.requireAttributes(this, object);
+        return Collections.unmodifiableSet(attributes.get(object));
     }
     
-    public Iterator<T> iterateAttributes(U holder) {
-        if (attributes.containsKey(holder)) {
-            return attributes.get(holder).iterator();
+    public Iterator<T> iterateAttributes(U object) {
+        if (attributes.containsKey(object)) {
+            return attributes.get(object).iterator();
         } else {
             return Collections.emptyIterator();
         }
     }
     
-    public void apply(T attributer, U holder) {
-        properties.put(attributer, holder);
-        attributes.computeIfAbsent(holder, h -> new HashSet<>()).add(attributer);
+    public void apply(T attributer, U object) {
+        Maps.requireNoAttributions(this, attributer);
+        
+        attributions.put(attributer, object);
+        attributes.computeIfAbsent(object, h -> new HashSet<>()).add(attributer);
     }
     
-    private void forgetPropertization(T attributer, U holder) {
-        Set<T> holderAttributes = attributes.get(holder);
-        holderAttributes.remove(attributer);
-        if (holderAttributes.size() == 0) {
-            attributes.remove(holder);
+    private void forgetAttribute(T attributer, U object) {
+        Set<T> attributers = attributes.get(object);
+        attributers.remove(attributer);
+        if (attributers.size() == 0) {
+            attributes.remove(object);
         }
     }
     
-    public void remove(T attributer, U holder) {
-        DenseMaps.requireProperties(this, attributer);
-        DenseMaps.requireAttributes(this, holder);
+    public void remove(T attributer, U object) {
+        Maps.requireAttributions(this, attributer);
+        Maps.requireAttributes(this, object);
         
-        properties.remove(attributer, holder);
-        forgetPropertization(attributer, holder);
+        attributions.remove(attributer, object);
+        forgetAttribute(attributer, object);
     }
     
     public void remove(T attributer) {
-        DenseMaps.requireProperties(this, attributer);
+        Maps.requireAttributions(this, attributer);
         
-        U holder = properties.get(attributer);
-        forgetPropertization(attributer, holder);
-        properties.remove(attributer, holder);
+        U object = attributions.get(attributer);
+        forgetAttribute(attributer, object);
+        attributions.remove(attributer, object);
     }
     
-    public void forget(U holder) {
-        DenseMaps.requireAttributes(this, holder);
+    public void forget(U object) {
+        Maps.requireAttributes(this, object);
         
-        Set<T> attributers = attributes.get(holder);
+        Set<T> attributers = attributes.get(object);
         for (T attributer : attributers) {
-            properties.remove(attributer, holder);
+            attributions.remove(attributer, object);
         }
         
-        attributes.remove(holder);
+        attributes.remove(object);
     }
 }

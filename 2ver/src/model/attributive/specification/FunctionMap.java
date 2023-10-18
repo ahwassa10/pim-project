@@ -4,21 +4,21 @@ import java.util.Iterator;
 import java.util.Set;
 
 public interface FunctionMap<T, U> {
-    boolean hasProperties(T attributer);
+    boolean hasAttributions(T attributer);
     
-    U getProperty(T attributer);
+    U getAttribution(T attributer);
     
-    boolean hasAttributes(U holder);
+    boolean hasAttributes(U object);
     
-    Set<T> getAttributes(U holder);
+    Set<T> getAttributes(U object);
     
-    Iterator<T> iterateAttributes(U holder);
+    Iterator<T> iterateAttributes(U object);
     
-    void apply(T attributer, U holder);
+    void apply(T attributer, U object);
     
-    void remove(T attributer, U holder);
+    void remove(T attributer, U object);
     
     void remove(T attributer);
     
-    void forget(U holder);
+    void forget(U object);
 }

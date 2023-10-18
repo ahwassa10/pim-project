@@ -10,93 +10,93 @@ import java.util.Set;
 import model.attributive.specification.DenseMap;
 
 public final class HashDenseMap<T, U> implements DenseMap<T, U> {
-    private final Map<T, Set<U>> properties = new HashMap<>();
+    private final Map<T, Set<U>> attributions = new HashMap<>();
     
     private final Map<U, Set<T>> attributes = new HashMap<>();
     
-    public boolean hasProperties(T attributer) {
-        return properties.containsKey(attributer);
+    public boolean hasAttributions(T attributer) {
+        return attributions.containsKey(attributer);
     }
     
-    public Set<U> getProperties(T attributer) {
-        DenseMaps.requireProperties(this, attributer);
-        return Collections.unmodifiableSet(properties.get(attributer));
+    public Set<U> getAttributions(T attributer) {
+        Maps.requireAttributions(this, attributer);
+        return Collections.unmodifiableSet(attributions.get(attributer));
     }
     
-    public Iterator<U> iterateProperties(T attributer) {
-        if (properties.containsKey(attributer)) {
-            return properties.get(attributer).iterator();
+    public Iterator<U> iterateAttributions(T attributer) {
+        if (attributions.containsKey(attributer)) {
+            return attributions.get(attributer).iterator();
         } else {
             return Collections.emptyIterator();
         }
     }
     
-    public boolean hasAttributes(U holder) {
-        return attributes.containsKey(holder);
+    public boolean hasAttributes(U object) {
+        return attributes.containsKey(object);
     }
     
-    public Set<T> getAttributes(U holder) {
-        DenseMaps.requireAttributes(this, holder);
-        return Collections.unmodifiableSet(attributes.get(holder));
+    public Set<T> getAttributes(U object) {
+        Maps.requireAttributes(this, object);
+        return Collections.unmodifiableSet(attributes.get(object));
     }
     
-    public Iterator<T> iterateAttributes(U holder) {
-        if (attributes.containsKey(holder)) {
-            return attributes.get(holder).iterator();
+    public Iterator<T> iterateAttributes(U object) {
+        if (attributes.containsKey(object)) {
+            return attributes.get(object).iterator();
         } else {
             return Collections.emptyIterator();
         }
     }
     
-    public void apply(T attributer, U holder) {
-        properties.computeIfAbsent(attributer, a -> new HashSet<>()).add(holder);
-        attributes.computeIfAbsent(holder, h -> new HashSet<>()).add(attributer);
+    public void apply(T attributer, U object) {
+        attributions.computeIfAbsent(attributer, a -> new HashSet<>()).add(object);
+        attributes.computeIfAbsent(object, h -> new HashSet<>()).add(attributer);
     }
     
-    private void removeAttribution(T attributer, U holder) {
-        Set<U> attributerProperties = properties.get(attributer);
-        attributerProperties.remove(holder);
-        if (attributerProperties.size() == 0) {
-            properties.remove(attributer);
+    private void removeAttribution(T attributer, U object) {
+        Set<U> attributeHolders = attributions.get(attributer);
+        attributeHolders.remove(object);
+        if (attributeHolders.size() == 0) {
+            attributions.remove(attributer);
         }
     }
     
-    private void forgetPropertization(T attributer, U holder) {
-        Set<T> holderAttributes = attributes.get(holder);
-        holderAttributes.remove(attributer);
-        if (holderAttributes.size() == 0) {
-            attributes.remove(holder);
+    private void forgetAttribute(T attributer, U object) {
+        Set<T> attributers = attributes.get(object);
+        attributers.remove(attributer);
+        if (attributers.size() == 0) {
+            attributes.remove(object);
         }
     }
     
-    public void remove(T attributer, U holder) {
-        DenseMaps.requireProperties(this, attributer);
-        DenseMaps.requireAttributes(this, holder);
+    public void remove(T attributer, U object) {
+        Maps.requireAttributions(this, attributer);
+        Maps.requireAttributes(this, object);
         
-        removeAttribution(attributer, holder);
-        forgetPropertization(attributer, holder);
+        removeAttribution(attributer, object);
+        forgetAttribute(attributer, object);
     }
     
     public void remove(T attributer) {
-        DenseMaps.requireProperties(this, attributer);
+        Maps.requireAttributions(this, attributer);
         
-        Set<U> holders = properties.get(attributer);
-        for (U holder : holders) {
-            forgetPropertization(attributer, holder);
+        Set<U> objects = attributions.get(attributer);
+        for (U object : objects) {
+            forgetAttribute(attributer, object);
         }
         
-        properties.remove(attributer);
+        attributions.remove(attributer);
     }
     
-    public void forget(U holder) {
-        DenseMaps.requireAttributes(this, holder);
+    public void forget(U object) {
+        Maps.requireAttributes(this, object);
         
-        Set<T> attributers = attributes.get(holder);
+        Set<T> attributers = attributes.get(object);
         for (T attributer : attributers) {
-            removeAttribution(attributer, holder);
+            removeAttribution(attributer, object);
         }
         
-        attributes.remove(holder);
+        attributes.remove(object);
     }
     
 }
