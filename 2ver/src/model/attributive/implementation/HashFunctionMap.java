@@ -51,7 +51,7 @@ public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
     }
     
     public Set<T> getAttributes(U object) {
-        Maps.requireAttributes(this, object);
+        BiMaps.requireAttributes(this, object);
         return Collections.unmodifiableSet(attributes.get(object));
     }
     
@@ -64,7 +64,7 @@ public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
     }
     
     public void apply(T attributer, U object) {
-        Maps.requireNoAttributions(this, attributer);
+        BiMaps.requireNoAttributions(this, attributer);
         
         attributions.put(attributer, object);
         attributes.computeIfAbsent(object, h -> new HashSet<>()).add(attributer);
@@ -79,15 +79,15 @@ public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
     }
     
     public void remove(T attributer, U object) {
-        Maps.requireAttributions(this, attributer);
-        Maps.requireAttributes(this, object);
+        BiMaps.requireAttributions(this, attributer);
+        BiMaps.requireAttributes(this, object);
         
         attributions.remove(attributer, object);
         forgetAttribute(attributer, object);
     }
     
     public void remove(T attributer) {
-        Maps.requireAttributions(this, attributer);
+        BiMaps.requireAttributions(this, attributer);
         
         U object = attributions.get(attributer);
         forgetAttribute(attributer, object);
@@ -95,7 +95,7 @@ public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
     }
     
     public void forget(U object) {
-        Maps.requireAttributes(this, object);
+        BiMaps.requireAttributes(this, object);
         
         Set<T> attributers = attributes.get(object);
         for (T attributer : attributers) {
