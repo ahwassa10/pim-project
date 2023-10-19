@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import model.attributive.specification.FunctionMap;
@@ -20,6 +21,29 @@ public final class HashFunctionMap<T, U> implements FunctionMap<T, U> {
     
     public U getAttribution(T attributer) {
         return attributions.get(attributer);
+    }
+    
+    public Iterator<U> iterateAttributions(T attributer) {
+        if (attributions.containsKey(attributer)) {
+            return new Iterator<U>() {
+                private boolean hasNext = true;
+                
+                public boolean hasNext() {
+                    return hasNext;
+                }
+                
+                public U next() {
+                    if (hasNext) {
+                        hasNext = false;
+                        return attributions.get(attributer);
+                    } else {
+                        throw new NoSuchElementException();
+                    }
+                }
+            };
+        } else {
+            return Collections.emptyIterator();
+        }
     }
     
     public boolean hasAttributes(U object) {
