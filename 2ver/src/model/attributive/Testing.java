@@ -1,5 +1,8 @@
 package model.attributive;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import model.attributive.implementation.HashFunctionMap;
 import model.attributive.specification.FunctionMap;
 
@@ -21,6 +24,9 @@ public class Testing {
         System.out.println(map.getAttribution(10));
         System.out.println(map.getAttributes("hi"));
         System.out.println(map.getAttributes("hello"));
+        
+        Map<String, String> m = new HashMap<>();
+        m.con
         
     }
 }
