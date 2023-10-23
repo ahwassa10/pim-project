@@ -3,10 +3,10 @@ package model.attributive.specification;
 import java.util.Iterator;
 import java.util.Set;
 
-public interface View<X, Y> {
-    boolean hasMappings(X object);
+public interface View<K, V> {
+    boolean hasMappings(K key);
     
-    Set<Y> getMappings(X object);
+    Set<V> getMappings(K key);
     
-    Iterator<Y> iterateMappings(X object);
+    Iterator<V> iterateMappings(K key);
 }

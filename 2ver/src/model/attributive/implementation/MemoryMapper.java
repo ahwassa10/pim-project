@@ -10,100 +10,102 @@ import java.util.Set;
 import model.attributive.specification.Mapper;
 import model.attributive.specification.View;
 
-public class MemoryMapper<T, U> implements Mapper<T, U> {
-    private final Map<T, Set<U>> propertiesMap = new HashMap<>();
+public class MemoryMapper<K, V> implements Mapper<K, V> {
+    private final Map<K, Set<V>> forwardMap = new HashMap<>();
     
-    private final Map<U, Set<T>> attributesMap = new HashMap<>();
+    private final Map<V, Set<K>> backwardMap = new HashMap<>();
     
-    private static final class BasicView<X, Y> implements View<X, Y> {
-        private final Map<X, Set<Y>> map;
+    private final View<K, V> forwardView = new BasicView<>(forwardMap);
+    
+    private final View<V, K> backwardView = new BasicView<>(backwardMap);
+    
+    private static final class BasicView<K, V> implements View<K, V> {
+        private final Map<K, Set<V>> map;
         
-        public BasicView(Map<X, Set<Y>> map) {
+        public BasicView(Map<K, Set<V>> map) {
             this.map = map;
         }
         
-        public boolean hasMappings(X object) {
-            return map.containsKey(object);
+        public boolean hasMappings(K key) {
+            return map.containsKey(key);
         }
         
-        public Set<Y> getMappings(X object) {
-            if (!map.containsKey(object)) {
-                String msg = String.format("%s is not mapped to any object", object);
+        public Set<V> getMappings(K key) {
+            if (!map.containsKey(key)) {
+                String msg = String.format("%s is not mapped to any value", key);
                 throw new IllegalArgumentException(msg);
             }
-            return Collections.unmodifiableSet(map.get(object));
+            return Collections.unmodifiableSet(map.get(key));
         }
         
-        public Iterator<Y> iterateMappings(X object) {
-            if (map.containsKey(object)) {
-                return Collections.unmodifiableSet(map.get(object)).iterator();
+        public Iterator<V> iterateMappings(K key) {
+            if (map.containsKey(key)) {
+                return Collections.unmodifiableSet(map.get(key)).iterator();
             } else {
                 return Collections.emptyIterator();
             }
         }
     }
     
-    public View<T, U> attributions() {
-        return new BasicView<T, U>(propertiesMap);
+    public View<K, V> forward() {
+        return forwardView;
     }
     
-    public View<U, T> propertizations() {
-        return new BasicView<U, T>(attributesMap);
+    public View<V, K> backward() {
+        return backwardView;
     }
     
-    public void map(T attributer, U propertizer) {
-        Mappers.requireNoMapping(this, attributer, propertizer);
+    public void map(K key, V value) {
+        Mappers.requireNoMapping(this, key, value);
         
-        propertiesMap.computeIfAbsent(attributer, a -> new HashSet<>()).add(propertizer);
-        attributesMap.computeIfAbsent(propertizer, h -> new HashSet<>()).add(attributer);
+        forwardMap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
+        backwardMap.computeIfAbsent(value, v -> new HashSet<>()).add(key);
     }
     
-    private void removeProperty(U propertizer, T attributer) {
-        Set<U> properties = propertiesMap.get(attributer);
+    private void removeForward(K key, V value) {
+        Set<V> values = forwardMap.get(key);
         
-        properties.remove(propertizer);
-        if (properties.size() == 0) {
-            propertiesMap.remove(attributer);
-        }        
-    }
-    
-    private void removeAttribute(T attributer, U propertizer) {
-        Set<T> attributes = attributesMap.get(propertizer);
-        
-        attributes.remove(attributer);
-        if(attributes.size() == 0) {
-            attributesMap.remove(propertizer);
+        values.remove(value);
+        if (values.size() == 0) {
+            forwardMap.remove(key);
         }
     }
     
-    public void unmap(T attributer, U propertizer) {
-        Mappers.requireMapping(this, attributer, propertizer);
+    private void removeBackward(V value, K key) {
+        Set<K> keys = backwardMap.get(value);
         
-        removeProperty(propertizer, attributer);
-        removeAttribute(attributer, propertizer);
-    }
-    
-    public void delete(T attributer) {
-        Mappers.requireAttributions(this, attributer);
-        
-        // To delete an attributer, we remove all its properties.
-        Set<U> propertizers = propertiesMap.remove(attributer);
-        
-        // Then we have to remove all the references from the propertizers to the attributer.
-        for(U propertizer : propertizers) {
-            removeAttribute(attributer, propertizer);
+        keys.remove(key);
+        if(keys.size() == 0) {
+            backwardMap.remove(value);
         }
     }
     
-    public void forget(U propertizer) {
-        Mappers.requirePropertizations(this, propertizer);
+    public void unmap(K key, V value) {
+        Mappers.requireMapping(this, key, value);
         
-        // To forget about a propertizer, we remove all its attributes.
-        Set<T> attributes = attributesMap.remove(propertizer);
+        removeForward(key, value);
+        removeBackward(value, key);
+    }
+    
+    public void delete(K key) {
+        Mappers.requireValues(this, key);
         
-        // Then we have to remove all the references from the attributers to the propertizer.
-        for (T attribute : attributes) {
-            removeProperty(propertizer, attribute);
+        Set<V> values = forwardMap.remove(key);
+        
+        // To delete a key, we need to delete all the value->key back references.
+        for(V value : values) {
+            removeBackward(value, key);
+        }
+    }
+    
+    public void forget(V value) {
+        Mappers.requirePropertizations(this, value);
+        
+        Set<K> keys = backwardMap.remove(value);
+        
+        // To forget a value, we need to remove all the key-value forward references.
+        for (K key : keys) {
+            removeForward(key, value);
         }
     }
 }

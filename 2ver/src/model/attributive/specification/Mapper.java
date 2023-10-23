@@ -1,15 +1,15 @@
 package model.attributive.specification;
 
-public interface Mapper<T, U> {
-    View<T, U> attributions();
+public interface Mapper<K, V> {
+    View<K, V> forward();
     
-    View<U, T> propertizations();
+    View<V, K> backward();
     
-    void map(T attributer, U propertizer);
+    void map(K key, V value);
     
-    void unmap(T attributer, U propertizer);
+    void unmap(K key, V value);
     
-    void delete(T attributer);
+    void delete(K key);
     
-    void forget(U propertizer);
+    void forget(V value);
 }

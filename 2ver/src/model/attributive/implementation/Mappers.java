@@ -6,38 +6,38 @@ import model.attributive.specification.View;
 public final class Mappers {
     private Mappers() {}
     
-    public static <T> T requireAttributions(Mapper<T, ?> mapper, T attributer) {
-        if (!mapper.attributions().hasMappings(attributer)) {
-            String msg = String.format("%s has not been attributed to any other object under this mapper", attributer);
+    public static <K> K requireValues(Mapper<K, ?> mapper, K key) {
+        if (!mapper.forward().hasMappings(key)) {
+            String msg = String.format("%s has not been mapped to any values under this mapper", key);
             throw new IllegalArgumentException(msg);
         }
-        return attributer;
+        return key;
     }
     
-    public static <U> U requirePropertizations(Mapper<?, U> mapper, U propertizer) {
-        if (!mapper.propertizations().hasMappings(propertizer)) {
-            String msg = String.format("%s has not been propertized to any other object under this mapper", propertizer);
+    public static <V> V requirePropertizations(Mapper<?, V> mapper, V value) {
+        if (!mapper.backward().hasMappings(value)) {
+            String msg = String.format("No key maps to %s under this mapper", value);
             throw new IllegalArgumentException(msg);
         }
-        return propertizer;
+        return value;
     }
     
-    public static <T, U> void requireMapping(Mapper<T, U> mapper, T attributer, U propertizer) {
-        View<T, U> attributions = mapper.attributions();
+    public static <K, V> void requireMapping(Mapper<K, V> mapper, K key, V value) {
+        View<K, V> forward = mapper.forward();
         
-        if (attributions.hasMappings(attributer) && 
-                !attributions.getMappings(attributer).contains(propertizer)) {
-            String msg = String.format("%s is not mapped to %s under this mapper", attributer, propertizer);
+        if (forward.hasMappings(key) && 
+                !forward.getMappings(key).contains(value)) {
+            String msg = String.format("%s is not mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
     
-    public static <T, U> void requireNoMapping(Mapper<T, U> mapper, T attributer, U propertizer) {
-        View<T, U> attributions = mapper.attributions();
+    public static <K, V> void requireNoMapping(Mapper<K, V> mapper, K key, V value) {
+        View<K, V> forward = mapper.forward();
         
-        if (attributions.hasMappings(attributer) &&
-                attributions.getMappings(attributer).contains(propertizer)) {
-            String msg = String.format("%s is already mapped to %s under this mapper", attributer, propertizer);
+        if (forward.hasMappings(key) &&
+                forward.getMappings(key).contains(value)) {
+            String msg = String.format("%s is already mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }

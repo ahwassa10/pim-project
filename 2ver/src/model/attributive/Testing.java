@@ -12,8 +12,23 @@ public class Testing {
         m.map(2, "hello");
         m.map(3, "there");
         
-        System.out.println(m.attributions().getMappings(2));
-        System.out.println(m.propertizations().getMappings("hi"));
-        System.out.println(m.propertizations().getMappings("hello"));
+        System.out.println(m.forward().getMappings(2));
+        System.out.println(m.backward().getMappings("hi"));
+        System.out.println(m.backward().getMappings("hello"));
+        
+        m.unmap(3, "there");
+        System.out.println(m.forward().hasMappings(3));
+        System.out.println(m.backward().hasMappings("there"));
+        
+        m.delete(2);
+        System.out.println(m.forward().hasMappings(2));
+        System.out.println(m.backward().getMappings("hi"));
+        
+        m.forget("hi");
+        m.map(4, "hello");
+        System.out.println(m.forward().hasMappings(1));
+        System.out.println(m.backward().hasMappings("hi"));
+        System.out.println(m.backward().hasMappings("hello"));
+        
     }
 }
