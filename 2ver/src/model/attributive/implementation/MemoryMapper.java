@@ -7,57 +7,52 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import model.attributive.specification.Mapping;
+import model.attributive.specification.Mapper;
 import model.attributive.specification.View;
 
-public class HashMapping<T, U> implements Mapping<T, U> {
+public class MemoryMapper<T, U> implements Mapper<T, U> {
     private final Map<T, Set<U>> propertiesMap = new HashMap<>();
     
     private final Map<U, Set<T>> attributesMap = new HashMap<>();
     
+    private static final class BasicView<X, Y> implements View<X, Y> {
+        private final Map<X, Set<Y>> map;
+        
+        public BasicView(Map<X, Set<Y>> map) {
+            this.map = map;
+        }
+        
+        public boolean hasMappings(X object) {
+            return map.containsKey(object);
+        }
+        
+        public Set<Y> getMappings(X object) {
+            if (!map.containsKey(object)) {
+                String msg = String.format("%s is not mapped to any object", object);
+                throw new IllegalArgumentException(msg);
+            }
+            return Collections.unmodifiableSet(map.get(object));
+        }
+        
+        public Iterator<Y> iterateMappings(X object) {
+            if (map.containsKey(object)) {
+                return Collections.unmodifiableSet(map.get(object)).iterator();
+            } else {
+                return Collections.emptyIterator();
+            }
+        }
+    }
     
     public View<T, U> attributions() {
-        return new View<T, U>() {
-            public boolean hasMappings(T attributer) {
-                return propertiesMap.containsKey(attributer);
-            }
-            
-            public Set<U> getMappings(T attributer) {
-                return Collections.unmodifiableSet(propertiesMap.get(attributer));
-            }
-            
-            public Iterator<U> iterateMappings(T attributer) {
-                if (propertiesMap.containsKey(attributer)) {
-                    return propertiesMap.get(attributer).iterator();
-                } else {
-                    return Collections.emptyIterator();
-                }
-            }
-        };
+        return new BasicView<T, U>(propertiesMap);
     }
     
     public View<U, T> propertizations() {
-        return new View<U, T>() {
-            public boolean hasMappings(U propertizer) {
-                return attributesMap.containsKey(propertizer);
-            }
-            
-            public Set<T> getMappings(U propertizer) {
-                return Collections.unmodifiableSet(attributesMap.get(propertizer));
-            }
-            
-            public Iterator<T> iterateMappings(U propertizer) {
-                if (attributesMap.containsKey(propertizer)) {
-                    return attributesMap.get(propertizer).iterator();
-                } else {
-                    return Collections.emptyIterator();
-                }
-            }
-        };
+        return new BasicView<U, T>(attributesMap);
     }
     
-    public void apply(T attributer, U propertizer) {
-        Mappings.requireNoMapping(this, attributer, propertizer);
+    public void map(T attributer, U propertizer) {
+        Mappers.requireNoMapping(this, attributer, propertizer);
         
         propertiesMap.computeIfAbsent(attributer, a -> new HashSet<>()).add(propertizer);
         attributesMap.computeIfAbsent(propertizer, h -> new HashSet<>()).add(attributer);
@@ -81,15 +76,15 @@ public class HashMapping<T, U> implements Mapping<T, U> {
         }
     }
     
-    public void remove(T attributer, U propertizer) {
-        Mappings.requireMapping(this, attributer, propertizer);
+    public void unmap(T attributer, U propertizer) {
+        Mappers.requireMapping(this, attributer, propertizer);
         
         removeProperty(propertizer, attributer);
         removeAttribute(attributer, propertizer);
     }
     
     public void delete(T attributer) {
-        Mappings.requireAttributions(this, attributer);
+        Mappers.requireAttributions(this, attributer);
         
         // To delete an attributer, we remove all its properties.
         Set<U> propertizers = propertiesMap.remove(attributer);
@@ -101,7 +96,7 @@ public class HashMapping<T, U> implements Mapping<T, U> {
     }
     
     public void forget(U propertizer) {
-        Mappings.requirePropertizations(this, propertizer);
+        Mappers.requirePropertizations(this, propertizer);
         
         // To forget about a propertizer, we remove all its attributes.
         Set<T> attributes = attributesMap.remove(propertizer);

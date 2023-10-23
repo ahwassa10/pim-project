@@ -1,32 +1,19 @@
 package model.attributive;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import model.attributive.implementation.HashFunctionMap;
-import model.attributive.specification.FunctionMap;
+import model.attributive.implementation.MemoryMapper;
+import model.attributive.specification.Mapper;
 
 public class Testing {
     public static void main(String[] args) {
-        FunctionMap<Integer, String> map = new HashFunctionMap<>();
-        map.apply(1, "hi");
-        map.apply(2, "hi");
-        map.apply(3, "hi");
+        Mapper<Integer, String> m = new MemoryMapper<>();
         
-        map.remove(1, "hi");
+        m.map(1, "hi");
+        m.map(2, "hi");
+        m.map(2, "hello");
+        m.map(3, "there");
         
-        map.apply(1, "hello");
-        map.apply(10, "hello");
-        
-        System.out.println(map.getAttribution(1));
-        System.out.println(map.getAttribution(2));
-        System.out.println(map.getAttribution(3));
-        System.out.println(map.getAttribution(10));
-        System.out.println(map.getAttributes("hi"));
-        System.out.println(map.getAttributes("hello"));
-        
-        Map<String, String> m = new HashMap<>();
-        m.con
-        
+        System.out.println(m.attributions().getMappings(2));
+        System.out.println(m.propertizations().getMappings("hi"));
+        System.out.println(m.propertizations().getMappings("hello"));
     }
 }
