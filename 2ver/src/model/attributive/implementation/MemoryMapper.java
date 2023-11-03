@@ -8,51 +8,38 @@ import java.util.Map;
 import java.util.Set;
 
 import model.attributive.specification.Mapper;
-import model.attributive.specification.View;
 
 public class MemoryMapper<K, V> implements Mapper<K, V> {
-    private final Map<K, Set<V>> forwardMap = new HashMap<>();
+    private final Map<K, Set<V>> forwardMap;
     
-    private final Map<V, Set<K>> backwardMap = new HashMap<>();
+    private final Map<V, Set<K>> backwardMap;
     
-    private final View<K, V> forwardView = new BasicView<>(forwardMap);
-    
-    private final View<V, K> backwardView = new BasicView<>(backwardMap);
-    
-    private static final class BasicView<K, V> implements View<K, V> {
-        private final Map<K, Set<V>> map;
-        
-        public BasicView(Map<K, Set<V>> map) {
-            this.map = map;
-        }
-        
-        public boolean hasMappings(K key) {
-            return map.containsKey(key);
-        }
-        
-        public Set<V> getMappings(K key) {
-            if (!map.containsKey(key)) {
-                String msg = String.format("%s is not mapped to any value", key);
-                throw new IllegalArgumentException(msg);
-            }
-            return Collections.unmodifiableSet(map.get(key));
-        }
-        
-        public Iterator<V> iterateMappings(K key) {
-            if (map.containsKey(key)) {
-                return Collections.unmodifiableSet(map.get(key)).iterator();
-            } else {
-                return Collections.emptyIterator();
-            }
-        }
+    public MemoryMapper() {
+        this.forwardMap = new HashMap<>();
+        this.backwardMap = new HashMap<>();
     }
     
-    public View<K, V> forward() {
-        return forwardView;
+    private MemoryMapper(MemoryMapper<V, K> other) {
+        this.forwardMap = other.backwardMap;
+        this.backwardMap = other.forwardMap;
     }
     
-    public View<V, K> backward() {
-        return backwardView;
+    public boolean hasValues(K key) {
+        return forwardMap.containsKey(key);
+    }
+    
+    public Set<V> getValues(K key) {
+        Mappers.requireValues(this, key);
+        
+        return Collections.unmodifiableSet(forwardMap.get(key));
+    }
+    
+    public Iterator<V> iterateValues(K key) {
+        if (forwardMap.containsKey(key)) {
+            return forwardMap.get(key).iterator();
+        } else {
+            return Collections.emptyIterator();
+        }
     }
     
     public void map(K key, V value) {
@@ -87,7 +74,7 @@ public class MemoryMapper<K, V> implements Mapper<K, V> {
         removeBackward(value, key);
     }
     
-    public void delete(K key) {
+    public void unmapAll(K key) {
         Mappers.requireValues(this, key);
         
         Set<V> values = forwardMap.remove(key);
@@ -98,14 +85,7 @@ public class MemoryMapper<K, V> implements Mapper<K, V> {
         }
     }
     
-    public void forget(V value) {
-        Mappers.requirePropertizations(this, value);
-        
-        Set<K> keys = backwardMap.remove(value);
-        
-        // To forget a value, we need to remove all the key-value forward references.
-        for (K key : keys) {
-            removeForward(key, value);
-        }
+    public Mapper<V, K> reverse() {
+        return new MemoryMapper<>(this);
     }
 }
