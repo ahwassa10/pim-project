@@ -41,7 +41,8 @@ public class MemoryMapper<K, V> implements Mapper<K, V> {
     
     public Iterator<V> iterateValues(K key) {
         if (forwardMap.containsKey(key)) {
-            return forwardMap.get(key).iterator();
+            // Ensures that the iterator is also immutable.
+            return Collections.unmodifiableSet(forwardMap.get(key)).iterator();
         } else {
             return Collections.emptyIterator();
         }
