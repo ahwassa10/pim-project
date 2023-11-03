@@ -14,14 +14,19 @@ public class MemoryMapper<K, V> implements Mapper<K, V> {
     
     private final Map<V, Set<K>> backwardMap;
     
+    private final MemoryMapper<V, K> inverseMapper;
+    
     public MemoryMapper() {
         this.forwardMap = new HashMap<>();
         this.backwardMap = new HashMap<>();
+        this.inverseMapper = new MemoryMapper<>(this);
     }
     
+    // Used to create the inverse mapping
     private MemoryMapper(MemoryMapper<V, K> other) {
         this.forwardMap = other.backwardMap;
         this.backwardMap = other.forwardMap;
+        this.inverseMapper = other;
     }
     
     public boolean hasValues(K key) {
@@ -85,7 +90,7 @@ public class MemoryMapper<K, V> implements Mapper<K, V> {
         }
     }
     
-    public Mapper<V, K> reverse() {
-        return new MemoryMapper<>(this);
+    public Mapper<V, K> inverse() {
+        return this.inverseMapper;
     }
 }

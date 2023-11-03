@@ -16,5 +16,5 @@ public interface Mapper<K, V> {
     
     void unmapAll(K key);
     
-    Mapper<V, K> reverse();
+    Mapper<V, K> inverse();
 }

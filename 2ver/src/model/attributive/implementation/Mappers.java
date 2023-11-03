@@ -14,7 +14,7 @@ public final class Mappers {
     }
     
     public static <V> V requireKeys(Mapper<?, V> mapper, V value) {
-        if (!mapper.reverse().hasValues(value)) {
+        if (!mapper.inverse().hasValues(value)) {
             String msg = String.format("No keys map to %s under this mapper", value);
             throw new IllegalArgumentException(msg);
         }

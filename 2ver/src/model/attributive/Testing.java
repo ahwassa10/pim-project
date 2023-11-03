@@ -7,28 +7,19 @@ public class Testing {
     public static void main(String[] args) {
         Mapper<Integer, String> m = new MemoryMapper<>();
         
-        m.map(1, "hi");
-        m.map(2, "hi");
-        m.map(2, "hello");
-        m.map(3, "there");
+        m.map(1, "one");
+        m.map(2, "two");
+        m.map(3, "three");
         
-        System.out.println(m.forward().getMappings(2));
-        System.out.println(m.backward().getMappings("hi"));
-        System.out.println(m.backward().getMappings("hello"));
+        m.map(11, "one");
+        m.map(22, "two");
         
-        m.unmap(3, "there");
-        System.out.println(m.forward().hasMappings(3));
-        System.out.println(m.backward().hasMappings("there"));
+        m.map(1, "ONE");
+        m.map(1, "oNe");
         
-        m.delete(2);
-        System.out.println(m.forward().hasMappings(2));
-        System.out.println(m.backward().getMappings("hi"));
+        System.out.println(m.getValues(1));
+        System.out.println(m.inverse().getValues("one"));
         
-        m.forget("hi");
-        m.map(4, "hello");
-        System.out.println(m.forward().hasMappings(1));
-        System.out.println(m.backward().hasMappings("hi"));
-        System.out.println(m.backward().hasMappings("hello"));
         
     }
 }
