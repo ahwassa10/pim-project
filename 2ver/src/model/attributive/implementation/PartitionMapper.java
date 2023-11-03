@@ -9,24 +9,23 @@ import java.util.Set;
 
 import model.attributive.specification.Mapper;
 
-public final class MemoryMapper<K, V> implements Mapper<K, V> {
-    private final Map<K, Set<V>> forwardMap;
+public final class PartitionMapper<K, V> implements Mapper<K, V> {
+    final Map<K, Set<V>> forwardMap;
     
-    private final Map<V, Set<K>> backwardMap;
+    final Map<V, K> backwardMap;
     
-    private final MemoryMapper<V, K> inverseMapper;
+    private final FunctionMapper<V, K> functionMapper;
     
-    public MemoryMapper() {
+    public PartitionMapper() {
         this.forwardMap = new HashMap<>();
         this.backwardMap = new HashMap<>();
-        this.inverseMapper = new MemoryMapper<>(this);
+        this.functionMapper = new FunctionMapper<>(this);
     }
     
-    // Used to create the inverse mapping
-    private MemoryMapper(MemoryMapper<V, K> other) {
+    PartitionMapper(FunctionMapper<V, K> other) {
         this.forwardMap = other.backwardMap;
         this.backwardMap = other.forwardMap;
-        this.inverseMapper = other;
+        this.functionMapper = other;
     }
     
     public boolean hasValues(K key) {
@@ -41,7 +40,6 @@ public final class MemoryMapper<K, V> implements Mapper<K, V> {
     
     public Iterator<V> iterateValues(K key) {
         if (forwardMap.containsKey(key)) {
-            // Ensures that the iterator is also immutable.
             return Collections.unmodifiableSet(forwardMap.get(key)).iterator();
         } else {
             return Collections.emptyIterator();
@@ -49,10 +47,10 @@ public final class MemoryMapper<K, V> implements Mapper<K, V> {
     }
     
     public void map(K key, V value) {
-        Mappers.requireNoMapping(this, key, value);
+        Mappers.requireNoKeys(this, value);
         
         forwardMap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
-        backwardMap.computeIfAbsent(value, v -> new HashSet<>()).add(key);
+        backwardMap.put(value, key);
     }
     
     private void removeForward(K key, V value) {
@@ -64,20 +62,11 @@ public final class MemoryMapper<K, V> implements Mapper<K, V> {
         }
     }
     
-    private void removeBackward(V value, K key) {
-        Set<K> keys = backwardMap.get(value);
-        
-        keys.remove(key);
-        if(keys.size() == 0) {
-            backwardMap.remove(value);
-        }
-    }
-    
     public void unmap(K key, V value) {
         Mappers.requireMapping(this, key, value);
         
         removeForward(key, value);
-        removeBackward(value, key);
+        backwardMap.remove(value, key);
     }
     
     public void unmapAll(K key) {
@@ -87,11 +76,11 @@ public final class MemoryMapper<K, V> implements Mapper<K, V> {
         
         // To delete a key, we need to delete all the value->key back references.
         for(V value : values) {
-            removeBackward(value, key);
+            backwardMap.remove(value, key);
         }
     }
     
     public Mapper<V, K> inverse() {
-        return this.inverseMapper;
+        return this.functionMapper;
     }
 }
