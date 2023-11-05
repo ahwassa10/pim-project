@@ -2,7 +2,6 @@ package model.attributive.implementation;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -10,23 +9,23 @@ import java.util.Set;
 
 import model.attributive.specification.Mapper;
 
-public final class FunctionMapper<K, V> implements Mapper<K, V> {
-    final Map<K, V> forwardMap;
+public final class DirectMapper<K, V> implements Mapper<K, V> {
+    private final Map<K, V> forwardMap;
     
-    final Map<V, Set<K>> backwardMap;
+    private final Map<V, K> backwardMap;
     
-    private final PartitionMapper<V, K> partitionMapper;
+    private final DirectMapper<V, K> directMapper;
     
-    public FunctionMapper() {
-        forwardMap = new HashMap<>();
-        backwardMap = new HashMap<>();
-        partitionMapper = new PartitionMapper<>(this);
+    public DirectMapper() {
+        this.forwardMap = new HashMap<>();
+        this.backwardMap = new HashMap<>();
+        this.directMapper = new DirectMapper<>(this);
     }
     
-    FunctionMapper(PartitionMapper<V, K> other) {
+    private DirectMapper(DirectMapper<V, K> other) {
         this.forwardMap = other.backwardMap;
         this.backwardMap = other.forwardMap;
-        this.partitionMapper = other;
+        this.directMapper = other;
     }
     
     public boolean hasValues(K key) {
@@ -37,12 +36,6 @@ public final class FunctionMapper<K, V> implements Mapper<K, V> {
         Mappers.requireValues(this, key);
         
         return Set.of(forwardMap.get(key));
-    }
-    
-    public V getValue(K key) {
-        Mappers.requireValues(this, key);
-        
-        return forwardMap.get(key);
     }
     
     public Iterator<V> iterateValues(K key) {
@@ -70,35 +63,27 @@ public final class FunctionMapper<K, V> implements Mapper<K, V> {
     
     public void map(K key, V value) {
         Mappers.requireNoValues(this, key);
+        Mappers.requireNoKeys(this, value);
         
         forwardMap.put(key, value);
-        backwardMap.computeIfAbsent(value, v -> new HashSet<>()).add(key);
-    }
-    
-    private void removeBackward(V value, K key) {
-        Set<K> keys = backwardMap.get(value);
-        
-        keys.remove(key);
-        if(keys.size() == 0) {
-            backwardMap.remove(value);
-        }
+        backwardMap.put(value, key);
     }
     
     public void unmap(K key, V value) {
         Mappers.requireMapping(this, key, value);
         
         forwardMap.remove(key);
-        removeBackward(value, key);
+        backwardMap.remove(value);
     }
     
     public void unmapAll(K key) {
         Mappers.requireValues(this, key);
         
         V value = forwardMap.remove(key);
-        removeBackward(value, key);
+        backwardMap.remove(value);
     }
     
-    public PartitionMapper<V, K> inverse() {
-        return this.partitionMapper;
+    public DirectMapper<V, K> inverse() {
+        return this.directMapper;
     }
 }
