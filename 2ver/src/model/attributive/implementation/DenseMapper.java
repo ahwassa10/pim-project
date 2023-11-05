@@ -9,21 +9,21 @@ import java.util.Set;
 
 import model.attributive.specification.Mapper;
 
-public final class MemoryMapper<K, V> implements Mapper<K, V> {
+public final class DenseMapper<K, V> implements Mapper<K, V> {
     private final Map<K, Set<V>> forwardMap;
     
     private final Map<V, Set<K>> backwardMap;
     
-    private final MemoryMapper<V, K> inverseMapper;
+    private final DenseMapper<V, K> inverseMapper;
     
-    public MemoryMapper() {
+    public DenseMapper() {
         this.forwardMap = new HashMap<>();
         this.backwardMap = new HashMap<>();
-        this.inverseMapper = new MemoryMapper<>(this);
+        this.inverseMapper = new DenseMapper<>(this);
     }
     
     // Used to create the inverse mapping
-    private MemoryMapper(MemoryMapper<V, K> other) {
+    private DenseMapper(DenseMapper<V, K> other) {
         this.forwardMap = other.backwardMap;
         this.backwardMap = other.forwardMap;
         this.inverseMapper = other;

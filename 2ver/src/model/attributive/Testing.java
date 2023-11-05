@@ -1,7 +1,7 @@
 package model.attributive;
 
 import model.attributive.implementation.DirectMapper;
-import model.attributive.implementation.MemoryMapper;
+import model.attributive.implementation.DenseMapper;
 import model.attributive.specification.Mapper;
 
 public class Testing {
