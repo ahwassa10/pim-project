@@ -8,36 +8,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import model.attributive.specification.BasedMap;
 import model.attributive.specification.Mapper;
 
 public final class MemMappers {
-    private interface ValueMap<K, V> {
-        void map(K key, V value);
-        void unmap(K key, V value);
-        void unmapAll(K key);
-        
-        boolean hasValues(K key);
-        Set<V> getValues(K key);
-        Iterator<V> iterateValues(K key);
-    }
-    
-    private static final class SingleMap<K, V> implements ValueMap<K, V> {
+    private static final class SingleMap<K, V> implements BasedMap<K, V> {
         private final Map<K, V> map = new HashMap<>();
-        
-        public void map(K key, V value) {
-            map.put(key, value);
-        }
-        
-        public void unmap(K key, V value) {
-            map.remove(key);
-        }
-        
-        public void unmapAll(K key) {
-            map.remove(key);
-        }
         
         public boolean hasValues(K key) {
             return map.containsKey(key);
+        }
+        
+        public V anyValue(K key) {
+            return map.get(key);
         }
         
         public Set<V> getValues(K key) {
@@ -66,10 +49,38 @@ public final class MemMappers {
                 return Collections.emptyIterator();
             }
         }
+        
+        public void map(K key, V value) {
+            map.put(key, value);
+        }
+        
+        public void unmap(K key, V value) {
+            map.remove(key);
+        }
+        
+        public void unmapAll(K key) {
+            map.remove(key);
+        }
     }
     
-    private static final class ManyMap<K, V> implements ValueMap<K, V> {
+    private static final class ManyMap<K, V> implements BasedMap<K, V> {
         private final Map<K, Set<V>> map = new HashMap<>();
+        
+        public boolean hasValues(K key) {
+            return map.containsKey(key);
+        }
+        
+        public V anyValue(K key) {
+            return map.get(key).iterator().next();
+        }
+        
+        public Set<V> getValues(K key) {
+            return Collections.unmodifiableSet(map.get(key));
+        }
+        
+        public Iterator<V> iterateValues(K key) {
+            return Collections.unmodifiableSet(map.get(key)).iterator();
+        }
         
         public void map(K key, V value) {
             map.computeIfAbsent(key, k -> new HashSet<>()).add(value);
@@ -87,25 +98,13 @@ public final class MemMappers {
                 map.remove(key);
             }
         }
-        
-        public boolean hasValues(K key) {
-            return map.containsKey(key);
-        }
-        
-        public Set<V> getValues(K key) {
-            return Collections.unmodifiableSet(map.get(key));
-        }
-        
-        public Iterator<V> iterateValues(K key) {
-            return Collections.unmodifiableSet(map.get(key)).iterator();
-        }
     }
     
     private static abstract class AbstractMapper<K, V> implements Mapper<K, V> {
-        private final ValueMap<K, V> forwardMap;
-        private final ValueMap<V, K> backwardMap;
+        private final BasedMap<K, V> forwardMap;
+        private final BasedMap<V, K> backwardMap;
         
-        public AbstractMapper(ValueMap<K, V> forwardMap, ValueMap<V, K> backwardMap) {
+        public AbstractMapper(BasedMap<K, V> forwardMap, BasedMap<V, K> backwardMap) {
             this.forwardMap = forwardMap;
             this.backwardMap = backwardMap;
         }
@@ -117,6 +116,12 @@ public final class MemMappers {
         
         public boolean hasValues(K key) {
             return forwardMap.hasValues(key);
+        }
+        
+        public V anyValue(K key) {
+            Mappers.requireValues(this, key);
+            
+            return forwardMap.iterateValues(key).next();
         }
         
         public Set<V> getValues(K key) {
