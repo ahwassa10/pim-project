@@ -2,6 +2,7 @@ package model.attributive.implementation;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import model.attributive.implementation.MemMappers.FunctionMapper;
 import model.attributive.specification.Forest;
@@ -9,6 +10,96 @@ import model.attributive.specification.Tree;
 import model.attributive.specification.TreeNode;
 
 public final class HashForest<T> implements Forest<T> {
+    private final class NodeTree<U> implements TreeNode<T>, Tree<T> {
+        private final T object;
+        
+        NodeTree(T object) {
+            this.object = object;
+        }
+        
+        public T getObject() {
+            return object;
+        }
+        
+        public boolean hasParent() {
+            return HashForest.this.hasParent(object); 
+        }
+        
+        public TreeNode<T> getParent() {
+            return new NodeTree<T>(HashForest.this.getParent(object));
+        }
+        
+        public Iterator<TreeNode<T>> iterateParents() {
+            Iterator<T> i = HashForest.this.iterateParents(object);
+            
+            return new Iterator<TreeNode<T>>() {
+                public boolean hasNext() {
+                    return i.hasNext();
+                }
+                
+                public NodeTree<T> next() {
+                    return new NodeTree<T>(i.next());
+                }
+            };
+        }
+        
+        public TreeNode<T> getRoot() {
+            T root = object;
+            
+            while (HashForest.this.hasParent(root)) {
+                root = HashForest.this.getParent(root);
+            }
+            
+            return new NodeTree<T>(root);
+        }
+        
+        public boolean hasChildren() {
+            return HashForest.this.hasChildren(object);
+        }
+        
+        public Set<Tree<T>> getChildren() {
+            return HashForest.this.getChildren(object).stream()
+                    .map(child -> new NodeTree<T>(object))
+                    .collect(Collectors.toSet());
+        }
+        
+        public Iterator<Tree<T>> iterateBFS() {
+            Iterator<T> i = HashForest.this.iterateBFS(object);
+            
+            return new Iterator<Tree<T>>() {
+                public boolean hasNext() {
+                    return i.hasNext();
+                }
+                
+                public NodeTree<T> next() {
+                    return new NodeTree<T>(i.next());
+                }
+            };
+        }
+        
+        public Iterator<Tree<T>> iterateDFS() {
+            Iterator<T> i = HashForest.this.iterateDFS(object);
+            
+            return new Iterator<Tree<T>>() {
+                public boolean hasNext() {
+                    return i.hasNext();
+                }
+                
+                public NodeTree<T> next() {
+                    return new NodeTree<T>(i.next());
+                }
+            };
+        }
+        
+        public TreeNode<T> asNode() {
+            return this;
+        }
+        
+        public String toString() {
+            return object.toString();
+        }
+    }
+    
     // The parent of the key is the value.
     private final FunctionMapper<T, T> parents = MemMappers.functionMapper();
     
@@ -31,8 +122,8 @@ public final class HashForest<T> implements Forest<T> {
         }
     }
     
-    public boolean hasParent(T node) {
-        return parents.hasValues(node);
+    public boolean hasParent(T object) {
+        return parents.hasValues(object);
     }
     
     public T getParent(T node) {
@@ -52,11 +143,11 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public TreeNode<T> atNode(T node) {
-        return new NodeTree<T>(this, node);
+        return new NodeTree<T>(node);
     }
     
     public Tree<T> atTree(T node) {
-        return new NodeTree<T>(this, node);
+        return new NodeTree<T>(node);
     }
     
     public void attachRoot(T root, T parent) {
