@@ -50,8 +50,6 @@ public interface Forest<T> {
         };
     }
     
-    TreeNode<T> atNode(T node);
-    
     boolean hasChildren(T node);
     
     Set<T> getChildren(T node);
@@ -97,6 +95,8 @@ public interface Forest<T> {
             }
         };
     }
+    
+    TreeNode<T> atNode(T node);
     
     Tree<T> atTree(T node);
     
