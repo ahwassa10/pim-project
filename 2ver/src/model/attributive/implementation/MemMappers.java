@@ -12,25 +12,27 @@ import model.attributive.specification.BasedMap;
 import model.attributive.specification.Mapper;
 
 public final class MemMappers {
-    private static final class SingleMap<K, V> implements BasedMap<K, V> {
-        private final Map<K, V> map = new HashMap<>();
+    public static final class SingleMap<K, V> implements BasedMap<K, V> {
+        private final Map<K, V> imap = new HashMap<>();
         
         public boolean hasValues(K key) {
-            return map.containsKey(key);
+            return imap.containsKey(key);
         }
         
         public V anyValue(K key) {
-            return map.get(key);
+            Mappers.requireValues(this, key);
+            return imap.get(key);
         }
         
         public Set<V> getValues(K key) {
-            return Set.of(map.get(key));
+            Mappers.requireValues(this, key);
+            return Set.of(imap.get(key));
         }
         
         public Iterator<V> iterateValues(K key) {
-            if (map.containsKey(key)) {
+            if (imap.containsKey(key)) {
                 return new Iterator<V>() {
-                    private final V value = map.get(key);
+                    private final V value = imap.get(key);
                     private boolean hasNext = true;
                     
                     public boolean hasNext() {
@@ -51,51 +53,59 @@ public final class MemMappers {
         }
         
         public void map(K key, V value) {
-            map.put(key, value);
+            Mappers.requireNoValues(this, key);
+            imap.put(key, value);
         }
         
         public void unmap(K key, V value) {
-            map.remove(key);
+            Mappers.requireValues(this, key);
+            imap.remove(key);
         }
         
         public void unmapAll(K key) {
-            map.remove(key);
+            Mappers.requireValues(this, key);
+            imap.remove(key);
         }
     }
     
-    private static final class ManyMap<K, V> implements BasedMap<K, V> {
-        private final Map<K, Set<V>> map = new HashMap<>();
+    public static final class MultiMap<K, V> implements BasedMap<K, V> {
+        private final Map<K, Set<V>> imap = new HashMap<>();
         
         public boolean hasValues(K key) {
-            return map.containsKey(key);
+            return imap.containsKey(key);
         }
         
         public V anyValue(K key) {
-            return map.get(key).iterator().next();
+            Mappers.requireValues(this, key);
+            return imap.get(key).iterator().next();
         }
         
         public Set<V> getValues(K key) {
-            return Collections.unmodifiableSet(map.get(key));
+            Mappers.requireValues(this, key);
+            return Collections.unmodifiableSet(imap.get(key));
         }
         
         public Iterator<V> iterateValues(K key) {
-            return Collections.unmodifiableSet(map.get(key)).iterator();
+            return Collections.unmodifiableSet(imap.get(key)).iterator();
         }
         
         public void map(K key, V value) {
-            map.computeIfAbsent(key, k -> new HashSet<>()).add(value);
+            Mappers.requireNoMapping(this, key, value);
+            imap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
         }
         
         public void unmapAll(K key) {
-            map.remove(key);
+            Mappers.requireValues(this, key);
+            imap.remove(key);
         }
         
         public void unmap(K key, V value) {
-            Set<V> values = map.get(key);
+            Mappers.requireMapping(this, key, value);
             
+            Set<V> values = imap.get(key);
             values.remove(value);
             if (values.size() == 0) {
-                map.remove(key);
+                imap.remove(key);
             }
         }
     }
@@ -119,14 +129,10 @@ public final class MemMappers {
         }
         
         public V anyValue(K key) {
-            Mappers.requireValues(this, key);
-            
-            return forwardMap.iterateValues(key).next();
+            return forwardMap.anyValue(key);
         }
         
         public Set<V> getValues(K key) {
-            Mappers.requireValues(this, key);
-            
             return forwardMap.getValues(key);
         }
         
@@ -140,26 +146,23 @@ public final class MemMappers {
         }
         
         public void unmap(K key, V value) {
-            Mappers.requireMapping(this, key, value);
-            
             forwardMap.unmap(key, value);
             backwardMap.unmap(value, key);
         }
         
         public void unmapAll(K key) {
-            Mappers.requireValues(this, key);
-            
             Set<V> values = forwardMap.getValues(key);
             for (V value : values) {
                 backwardMap.unmap(value, key);
             }
+            forwardMap.unmapAll(key);
         }
     }
     
-    private static final class DirectMapper<K, V> extends AbstractMapper<K, V> {
+    public static final class DirectMapper<K, V> extends AbstractMapper<K, V> {
         private final DirectMapper<V, K> directMapper;
         
-        public DirectMapper() {
+        private DirectMapper() {
             super(new SingleMap<K, V>(), new SingleMap<V, K>());
             this.directMapper = new DirectMapper<>(this);
         }
@@ -181,11 +184,11 @@ public final class MemMappers {
         }
     }
     
-    private static final class FunctionMapper<K, V> extends AbstractMapper<K, V> {
+    public static final class FunctionMapper<K, V> extends AbstractMapper<K, V> {
         private final PartitionMapper<V, K> partitionMapper;
         
-        public FunctionMapper() {
-            super(new SingleMap<>(), new ManyMap<>());
+        private FunctionMapper() {
+            super(new SingleMap<>(), new MultiMap<>());
             partitionMapper = new PartitionMapper<>(this);
         }
         
@@ -205,11 +208,11 @@ public final class MemMappers {
         }
     }
     
-    private static final class PartitionMapper<K, V> extends AbstractMapper<K, V> {
+    public static final class PartitionMapper<K, V> extends AbstractMapper<K, V> {
         private final FunctionMapper<V, K> functionMapper;
         
-        public PartitionMapper() {
-            super(new ManyMap<>(), new SingleMap<>());
+        private PartitionMapper() {
+            super(new MultiMap<>(), new SingleMap<>());
             this.functionMapper = new FunctionMapper<>(this);
         }
         
@@ -229,11 +232,11 @@ public final class MemMappers {
         }
     };
     
-    private static final class DenseMapper<K, V> extends AbstractMapper<K, V> {
+    public static final class DenseMapper<K, V> extends AbstractMapper<K, V> {
         private final DenseMapper<V, K> inverseMapper;
         
-        public DenseMapper() {
-            super(new ManyMap<>(), new ManyMap<>());
+        private DenseMapper() {
+            super(new MultiMap<>(), new MultiMap<>());
             this.inverseMapper = new DenseMapper<>(this);
         }
         
@@ -253,19 +256,27 @@ public final class MemMappers {
         }
     }
     
-    public static <K, V> Mapper<K, V> directMapper() {
+    public static <K, V> SingleMap<K, V> singleMap() {
+        return new SingleMap<K, V>();
+    }
+    
+    public static <K, V> MultiMap<K, V> multiMap() {
+        return new MultiMap<K, V>();
+    }
+    
+    public static <K, V> DirectMapper<K, V> directMapper() {
         return new DirectMapper<K, V>();
     }
     
-    public static <K, V> Mapper<K, V> functionMapper() {
+    public static <K, V> FunctionMapper<K, V> functionMapper() {
         return new FunctionMapper<K, V>();
     }
     
-    public static <K, V> Mapper<K, V> partitonMapper() {
+    public static <K, V> PartitionMapper<K, V> partitonMapper() {
         return new PartitionMapper<K, V>();
     }
     
-    public static <K, V> Mapper<K, V> denseMapper() {
+    public static <K, V> DenseMapper<K, V> denseMapper() {
         return new DenseMapper<K, V>();
     }
 }
