@@ -10,6 +10,7 @@ public interface BasedMap<K, V> {
     Iterator<V> iterateValues(K key);
     
     boolean hasMapping(K key, V value);
+    boolean canMap(K key, V value);
     
     void map(K key, V value);
     void unmap(K key, V value);

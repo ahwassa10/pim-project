@@ -1,26 +1,9 @@
 package model.attributive.implementation;
 
 import model.attributive.specification.BasedMap;
-import model.attributive.specification.Mapper;
 
 public final class Mappers {
     private Mappers() {}
-   
-    public static <V> V requireKeys(Mapper<?, V> mapper, V value) {
-        if (!mapper.inverse().hasValues(value)) {
-            String msg = String.format("No keys map to %s under this mapper", value);
-            throw new IllegalArgumentException(msg);
-        }
-        return value;
-    }
-    
-    public static <V> V requireNoKeys(Mapper<?, V> mapper, V value) {
-        if (mapper.inverse().hasValues(value)) {
-            String msg = String.format("A key already maps to %s under this mapper", value);
-            throw new IllegalArgumentException(msg);
-        }
-        return value;
-    }
     
     public static <K> K requireValues(BasedMap<K, ?> mapper, K key) {
         if (!mapper.hasValues(key)) {
@@ -48,6 +31,13 @@ public final class Mappers {
     public static <K, V> void requireNoMapping(BasedMap<K, V> mapper, K key, V value) {
         if (mapper.hasMapping(key, value)) {
             String msg = String.format("%s is already mapped to %s under this mapper", key, value);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+    
+    public static <K, V> void requireCanMap(BasedMap<K,V> mapper, K key, V value) {
+        if (!mapper.canMap(key, value)) {
+            String msg = String.format("%s cannot be mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }

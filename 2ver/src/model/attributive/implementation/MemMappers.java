@@ -57,6 +57,10 @@ public final class MemMappers {
             return imap.containsKey(key) && Objects.equals(imap.get(key), value);
         }
         
+        public boolean canMap(K key, V value) {
+            return !imap.containsKey(key);
+        }
+        
         public void map(K key, V value) {
             Mappers.requireNoValues(this, key);
             imap.put(key, value);
@@ -96,6 +100,10 @@ public final class MemMappers {
         
         public boolean hasMapping(K key, V value) {
             return imap.containsKey(key) && imap.get(key).contains(value);
+        }
+        
+        public boolean canMap(K key, V value) {
+            return !imap.containsKey(key) || !imap.get(key).contains(value);
         }
         
         public void map(K key, V value) {
@@ -154,6 +162,8 @@ public final class MemMappers {
         }
         
         public void map(K key, V value) {
+            Mappers.requireCanMap(this, key, value);
+            
             forwardMap.map(key, value);
             backwardMap.map(value, key);
         }
@@ -185,11 +195,8 @@ public final class MemMappers {
             this.directMapper = other;
         }
         
-        public void map(K key, V value) {
-            Mappers.requireNoValues(this, key);
-            Mappers.requireNoKeys(this, value);
-            
-            super.map(key, value);
+        public boolean canMap(K key, V value) {
+            return !this.hasValues(key) && !this.inverse().hasValues(value);
         }
         
         public DirectMapper<V, K> inverse() {
@@ -210,10 +217,8 @@ public final class MemMappers {
             this.partitionMapper = other;
         }
         
-        public void map(K key, V value) {
-            Mappers.requireNoValues(this, key);
-            
-            super.map(key, value);
+        public boolean canMap(K key, V value) {
+            return !this.hasValues(key);
         }
         
         public PartitionMapper<V, K> inverse() {
@@ -234,10 +239,8 @@ public final class MemMappers {
             this.functionMapper = other;
         }
         
-        public void map(K key, V value) {
-            Mappers.requireNoKeys(this, value);
-            
-            super.map(key, value);
+        public boolean canMap(K key, V value) {
+            return !this.inverse().hasValues(value);
         }
         
         public FunctionMapper<V, K> inverse() {
@@ -258,10 +261,8 @@ public final class MemMappers {
             this.inverseMapper = other;
         }
         
-        public void map(K key, V value) {
-            Mappers.requireNoMapping(this, key, value);
-            
-            super.map(key, value);
+        public boolean canMap(K key, V value) {
+            return !this.hasMapping(key, value);
         }
         
         public Mapper<V, K> inverse() {
