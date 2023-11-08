@@ -39,14 +39,14 @@ public final class Mappers {
     }
     
     public static <K, V> void requireMapping(BasedMap<K, V> mapper, K key, V value) {
-        if (!(mapper.hasValues(key) && mapper.getValues(key).contains(value))) {
+        if (!mapper.hasMapping(key, value)) {
             String msg = String.format("%s is not mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
     
     public static <K, V> void requireNoMapping(BasedMap<K, V> mapper, K key, V value) {
-        if (mapper.hasValues(key) && mapper.getValues(key).contains(value)) {
+        if (mapper.hasMapping(key, value)) {
             String msg = String.format("%s is already mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }

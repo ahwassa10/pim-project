@@ -9,6 +9,8 @@ public interface BasedMap<K, V> {
     Set<V> getValues(K key);
     Iterator<V> iterateValues(K key);
     
+    boolean hasMapping(K key, V value);
+    
     void map(K key, V value);
     void unmap(K key, V value);
     void unmapAll(K key);

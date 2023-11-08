@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 import model.attributive.specification.BasedMap;
@@ -52,6 +53,10 @@ public final class MemMappers {
             }
         }
         
+        public boolean hasMapping(K key, V value) {
+            return imap.containsKey(key) && Objects.equals(imap.get(key), value);
+        }
+        
         public void map(K key, V value) {
             Mappers.requireNoValues(this, key);
             imap.put(key, value);
@@ -87,6 +92,10 @@ public final class MemMappers {
         
         public Iterator<V> iterateValues(K key) {
             return Collections.unmodifiableSet(imap.get(key)).iterator();
+        }
+        
+        public boolean hasMapping(K key, V value) {
+            return imap.containsKey(key) && imap.get(key).contains(value);
         }
         
         public void map(K key, V value) {
@@ -138,6 +147,10 @@ public final class MemMappers {
         
         public Iterator<V> iterateValues(K key) {
             return forwardMap.iterateValues(key);
+        }
+        
+        public boolean hasMapping(K key, V value) {
+            return forwardMap.hasMapping(key, value);
         }
         
         public void map(K key, V value) {
