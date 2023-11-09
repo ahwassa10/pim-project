@@ -1,11 +1,11 @@
 package model.attributive;
 
 import model.attributive.implementation.MemMappers;
-import model.attributive.specification.Mapper;
+import model.attributive.specification.BiMapper;
 
 public class Testing {
     public static void main(String[] args) {
-        Mapper<Integer, String> m = MemMappers.denseMapper();
+        BiMapper<Integer, String> m = MemMappers.denseMapper();
         
         m.map(1, "one");
         m.map(1, "ONE");

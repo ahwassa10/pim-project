@@ -9,11 +9,11 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-import model.attributive.specification.BasedMap;
 import model.attributive.specification.Mapper;
+import model.attributive.specification.BiMapper;
 
 public final class MemMappers {
-    public static final class SingleMap<K, V> implements BasedMap<K, V> {
+    public static final class SingleMapper<K, V> implements Mapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
         public boolean hasValues(K key) {
@@ -77,7 +77,7 @@ public final class MemMappers {
         }
     }
     
-    public static final class MultiMap<K, V> implements BasedMap<K, V> {
+    public static final class MultiMapper<K, V> implements Mapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
         public boolean hasValues(K key) {
@@ -127,11 +127,11 @@ public final class MemMappers {
         }
     }
     
-    private static abstract class AbstractMapper<K, V> implements Mapper<K, V> {
-        private final BasedMap<K, V> forwardMap;
-        private final BasedMap<V, K> backwardMap;
+    private static abstract class AbstractMapper<K, V> implements BiMapper<K, V> {
+        private final Mapper<K, V> forwardMap;
+        private final Mapper<V, K> backwardMap;
         
-        public AbstractMapper(BasedMap<K, V> forwardMap, BasedMap<V, K> backwardMap) {
+        public AbstractMapper(Mapper<K, V> forwardMap, Mapper<V, K> backwardMap) {
             this.forwardMap = forwardMap;
             this.backwardMap = backwardMap;
         }
@@ -186,7 +186,7 @@ public final class MemMappers {
         private final DirectMapper<V, K> directMapper;
         
         private DirectMapper() {
-            super(new SingleMap<K, V>(), new SingleMap<V, K>());
+            super(new SingleMapper<K, V>(), new SingleMapper<V, K>());
             this.directMapper = new DirectMapper<>(this);
         }
         
@@ -208,7 +208,7 @@ public final class MemMappers {
         private final PartitionMapper<V, K> partitionMapper;
         
         private FunctionMapper() {
-            super(new SingleMap<>(), new MultiMap<>());
+            super(new SingleMapper<>(), new MultiMapper<>());
             partitionMapper = new PartitionMapper<>(this);
         }
         
@@ -230,7 +230,7 @@ public final class MemMappers {
         private final FunctionMapper<V, K> functionMapper;
         
         private PartitionMapper() {
-            super(new MultiMap<>(), new SingleMap<>());
+            super(new MultiMapper<>(), new SingleMapper<>());
             this.functionMapper = new FunctionMapper<>(this);
         }
         
@@ -252,7 +252,7 @@ public final class MemMappers {
         private final DenseMapper<V, K> inverseMapper;
         
         private DenseMapper() {
-            super(new MultiMap<>(), new MultiMap<>());
+            super(new MultiMapper<>(), new MultiMapper<>());
             this.inverseMapper = new DenseMapper<>(this);
         }
         
@@ -265,17 +265,17 @@ public final class MemMappers {
             return !this.hasMapping(key, value);
         }
         
-        public Mapper<V, K> inverse() {
+        public BiMapper<V, K> inverse() {
             return this.inverseMapper;
         }
     }
     
-    public static <K, V> SingleMap<K, V> singleMap() {
-        return new SingleMap<K, V>();
+    public static <K, V> SingleMapper<K, V> singleMap() {
+        return new SingleMapper<K, V>();
     }
     
-    public static <K, V> MultiMap<K, V> multiMap() {
-        return new MultiMap<K, V>();
+    public static <K, V> MultiMapper<K, V> multiMap() {
+        return new MultiMapper<K, V>();
     }
     
     public static <K, V> DirectMapper<K, V> directMapper() {
