@@ -1,6 +1,6 @@
-package model.attributive.implementation;
+package model.mappers.implementation;
 
-import model.attributive.specification.Forest;
+import model.mappers.specification.Forest;
 
 public final class Forests {
     private Forests() {}

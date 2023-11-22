@@ -1,7 +1,7 @@
-package model.attributive;
+package model.mappers;
 
-import model.attributive.implementation.MemMappers;
-import model.attributive.specification.BiMapper;
+import model.mappers.implementation.MemMappers;
+import model.mappers.specification.BiMapper;
 
 public class Testing {
     public static void main(String[] args) {

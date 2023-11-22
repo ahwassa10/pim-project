@@ -1,6 +1,6 @@
-package model.attributive.implementation;
+package model.mappers.implementation;
 
-import model.attributive.specification.Mapper;
+import model.mappers.specification.Mapper;
 
 public final class Mappers {
     private Mappers() {}

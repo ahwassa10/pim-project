@@ -1,13 +1,13 @@
-package model.attributive.implementation;
+package model.mappers.implementation;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import model.attributive.implementation.MemMappers.FunctionMapper;
-import model.attributive.specification.Forest;
-import model.attributive.specification.Tree;
-import model.attributive.specification.TreeNode;
+import model.mappers.implementation.MemMappers.FunctionMapper;
+import model.mappers.specification.Forest;
+import model.mappers.specification.Tree;
+import model.mappers.specification.TreeNode;
 
 public final class HashForest<T> implements Forest<T> {
     private final class NodeTree<U> implements TreeNode<T>, Tree<T> {

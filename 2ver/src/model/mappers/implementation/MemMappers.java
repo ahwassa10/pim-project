@@ -1,4 +1,4 @@
-package model.attributive.implementation;
+package model.mappers.implementation;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,8 +9,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-import model.attributive.specification.Mapper;
-import model.attributive.specification.BiMapper;
+import model.mappers.specification.BiMapper;
+import model.mappers.specification.Mapper;
 
 public final class MemMappers {
     public static final class SingleMapper<K, V> implements Mapper<K, V> {
