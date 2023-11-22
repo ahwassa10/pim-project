@@ -95,7 +95,11 @@ public final class MemMappers {
         }
         
         public Iterator<V> iterateValues(K key) {
-            return Collections.unmodifiableSet(imap.get(key)).iterator();
+            if (imap.containsKey(key)) {
+                return Collections.unmodifiableSet(imap.get(key)).iterator();
+            } else {
+                return Collections.emptyIterator();
+            }
         }
         
         public boolean hasMapping(K key, V value) {
