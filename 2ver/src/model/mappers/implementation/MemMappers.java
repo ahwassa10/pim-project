@@ -20,6 +20,10 @@ public final class MemMappers {
             return imap.containsKey(key);
         }
         
+        public int countValues(K key) {
+            return imap.containsKey(key) ? 1 : 0;
+        }
+        
         public V anyValue(K key) {
             Mappers.requireValues(this, key);
             return imap.get(key);
@@ -84,6 +88,14 @@ public final class MemMappers {
             return imap.containsKey(key);
         }
         
+        public int countValues(K key) {
+            if (imap.containsKey(key)) {
+                return imap.get(key).size();
+            } else {
+                return 0;
+            }
+        }
+        
         public V anyValue(K key) {
             Mappers.requireValues(this, key);
             return imap.get(key).iterator().next();
@@ -115,11 +127,6 @@ public final class MemMappers {
             imap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
         }
         
-        public void unmapAll(K key) {
-            Mappers.requireValues(this, key);
-            imap.remove(key);
-        }
-        
         public void unmap(K key, V value) {
             Mappers.requireMapping(this, key, value);
             
@@ -128,6 +135,11 @@ public final class MemMappers {
             if (values.size() == 0) {
                 imap.remove(key);
             }
+        }
+        
+        public void unmapAll(K key) {
+            Mappers.requireValues(this, key);
+            imap.remove(key);
         }
     }
     
@@ -147,6 +159,10 @@ public final class MemMappers {
         
         public boolean hasValues(K key) {
             return forwardMap.hasValues(key);
+        }
+        
+        public int countValues(K key) {
+            return forwardMap.countValues(key);
         }
         
         public V anyValue(K key) {

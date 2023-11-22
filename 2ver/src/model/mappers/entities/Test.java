@@ -18,6 +18,9 @@ public class Test {
         
         Iterator<Object> i2 = e.iterateMetadata(UUID.randomUUID());
         i2.forEachRemaining(o -> System.out.println(o));
+        
+        System.out.println(e.countMetadata(ent));
+        System.out.println(e.countMetadata(UUID.randomUUID()));
     }
     
     

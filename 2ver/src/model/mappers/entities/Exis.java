@@ -29,6 +29,18 @@ public final class Exis {
         }
     }
     
+    public boolean hasMetadata(UUID content) {
+        return true;
+    }
+    
+    public int countMetadata(UUID content) {
+        return 1 + mapping.countValues(content);
+    }
+    
+    public Object anyMetadata(UUID content) {
+        return this;
+    }
+    
     public Set<Object> getMetadata(UUID content) {
         Set<Object> metadata = new HashSet<>();
         metadata.add(this);
