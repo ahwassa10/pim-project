@@ -297,11 +297,11 @@ public final class MemMappers {
         }
     }
     
-    public static <K, V> SingleMapper<K, V> singleMap() {
+    public static <K, V> SingleMapper<K, V> singleMapper() {
         return new SingleMapper<K, V>();
     }
     
-    public static <K, V> MultiMapper<K, V> multiMap() {
+    public static <K, V> MultiMapper<K, V> multiMapper() {
         return new MultiMapper<K, V>();
     }
     

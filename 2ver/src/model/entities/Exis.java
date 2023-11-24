@@ -14,7 +14,7 @@ public final class Exis {
     private final MultiMapper<UUID, Object> mapping;
     
     public Exis() {
-        mapping = MemMappers.multiMap();
+        mapping = MemMappers.multiMapper();
     }
     
     public void attach(UUID content, Object metadata) {
