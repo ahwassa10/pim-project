@@ -10,28 +10,18 @@ import java.util.Objects;
 import java.util.Set;
 
 import model.mappers.specification.BiMapper;
-import model.mappers.specification.Mapper;
+import model.mappers.specification.MutableMapper;
 
 public final class MemMappers {
-    public static final class SingleMapper<K, V> implements Mapper<K, V> {
+    public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
-        public boolean hasValues(K key) {
-            return imap.containsKey(key);
+        public boolean hasMapping(K key, V value) {
+            return imap.containsKey(key) && Objects.equals(imap.get(key), value);
         }
         
         public int countValues(K key) {
             return imap.containsKey(key) ? 1 : 0;
-        }
-        
-        public V anyValue(K key) {
-            Mappers.requireValues(this, key);
-            return imap.get(key);
-        }
-        
-        public Set<V> getValues(K key) {
-            Mappers.requireValues(this, key);
-            return Set.of(imap.get(key));
         }
         
         public Iterator<V> iterateValues(K key) {
@@ -57,21 +47,31 @@ public final class MemMappers {
             }
         }
         
-        public boolean hasMapping(K key, V value) {
-            return imap.containsKey(key) && Objects.equals(imap.get(key), value);
+        public boolean hasValues(K key) {
+            return imap.containsKey(key);
+        }
+        
+        public V anyValue(K key) {
+            Mappers.requireValues(this, key);
+            return imap.get(key);
+        }
+        
+        public Set<V> getValues(K key) {
+            Mappers.requireValues(this, key);
+            return Set.of(imap.get(key));
         }
         
         public boolean canMap(K key, V value) {
-            return !imap.containsKey(key);
+            return !hasValues(key);
         }
         
         public void map(K key, V value) {
-            Mappers.requireNoValues(this, key);
+            Mappers.requireCanMap(this, key, value);
             imap.put(key, value);
         }
         
         public void unmap(K key, V value) {
-            Mappers.requireValues(this, key);
+            Mappers.requireMapping(this, key, value);
             imap.remove(key);
         }
         
@@ -81,11 +81,11 @@ public final class MemMappers {
         }
     }
     
-    public static final class MultiMapper<K, V> implements Mapper<K, V> {
+    public static final class MultiMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
-        public boolean hasValues(K key) {
-            return imap.containsKey(key);
+        public boolean hasMapping(K key, V value) {
+            return imap.containsKey(key) && imap.get(key).contains(value);
         }
         
         public int countValues(K key) {
@@ -94,6 +94,18 @@ public final class MemMappers {
             } else {
                 return 0;
             }
+        }
+        
+        public Iterator<V> iterateValues(K key) {
+            if (imap.containsKey(key)) {
+                return Collections.unmodifiableSet(imap.get(key)).iterator();
+            } else {
+                return Collections.emptyIterator();
+            }
+        }
+        
+        public boolean hasValues(K key) {
+            return imap.containsKey(key);
         }
         
         public V anyValue(K key) {
@@ -106,24 +118,12 @@ public final class MemMappers {
             return Collections.unmodifiableSet(imap.get(key));
         }
         
-        public Iterator<V> iterateValues(K key) {
-            if (imap.containsKey(key)) {
-                return Collections.unmodifiableSet(imap.get(key)).iterator();
-            } else {
-                return Collections.emptyIterator();
-            }
-        }
-        
-        public boolean hasMapping(K key, V value) {
-            return imap.containsKey(key) && imap.get(key).contains(value);
-        }
-        
         public boolean canMap(K key, V value) {
             return !imap.containsKey(key) || !imap.get(key).contains(value);
         }
         
         public void map(K key, V value) {
-            Mappers.requireNoMapping(this, key, value);
+            Mappers.requireCanMap(this, key, value);
             imap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
         }
         
@@ -143,11 +143,11 @@ public final class MemMappers {
         }
     }
     
-    private static abstract class AbstractMapper<K, V> implements BiMapper<K, V> {
-        private final Mapper<K, V> forwardMap;
-        private final Mapper<V, K> backwardMap;
+    private static abstract class AbstractMapper<K, V> implements BiMapper<K, V>, MutableMapper<K, V> {
+        private final MutableMapper<K, V> forwardMap;
+        private final MutableMapper<V, K> backwardMap;
         
-        public AbstractMapper(Mapper<K, V> forwardMap, Mapper<V, K> backwardMap) {
+        public AbstractMapper(MutableMapper<K, V> forwardMap, MutableMapper<V, K> backwardMap) {
             this.forwardMap = forwardMap;
             this.backwardMap = backwardMap;
         }
@@ -157,12 +157,20 @@ public final class MemMappers {
             this.backwardMap = other.forwardMap;
         }
         
-        public boolean hasValues(K key) {
-            return forwardMap.hasValues(key);
+        public boolean hasMapping(K key, V value) {
+            return forwardMap.hasMapping(key, value);
         }
         
         public int countValues(K key) {
             return forwardMap.countValues(key);
+        }
+        
+        public Iterator<V> iterateValues(K key) {
+            return forwardMap.iterateValues(key);
+        }
+        
+        public boolean hasValues(K key) {
+            return forwardMap.hasValues(key);
         }
         
         public V anyValue(K key) {
@@ -173,13 +181,7 @@ public final class MemMappers {
             return forwardMap.getValues(key);
         }
         
-        public Iterator<V> iterateValues(K key) {
-            return forwardMap.iterateValues(key);
-        }
-        
-        public boolean hasMapping(K key, V value) {
-            return forwardMap.hasMapping(key, value);
-        }
+        public abstract boolean canMap(K key, V value);
         
         public void map(K key, V value) {
             Mappers.requireCanMap(this, key, value);
@@ -203,6 +205,8 @@ public final class MemMappers {
     }
     
     public static final class DirectMapper<K, V> extends AbstractMapper<K, V> {
+        // The inverse mapping.
+        // Note that the forward and inverse mappings share the same memory backing.
         private final DirectMapper<V, K> directMapper;
         
         private DirectMapper() {
@@ -225,6 +229,7 @@ public final class MemMappers {
     }
     
     public static final class FunctionMapper<K, V> extends AbstractMapper<K, V> {
+        // The inverse mapping.
         private final PartitionMapper<V, K> partitionMapper;
         
         private FunctionMapper() {
@@ -247,6 +252,7 @@ public final class MemMappers {
     }
     
     public static final class PartitionMapper<K, V> extends AbstractMapper<K, V> {
+        // The inverse mapping.
         private final FunctionMapper<V, K> functionMapper;
         
         private PartitionMapper() {
@@ -269,6 +275,7 @@ public final class MemMappers {
     };
     
     public static final class DenseMapper<K, V> extends AbstractMapper<K, V> {
+        // The inverse mapping.
         private final DenseMapper<V, K> inverseMapper;
         
         private DenseMapper() {
