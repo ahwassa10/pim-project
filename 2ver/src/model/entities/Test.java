@@ -11,16 +11,17 @@ public class Test {
         
         e.attach(ent, "Hello");
         
-        System.out.println(e.getMetadata(UUID.randomUUID()));
+        System.out.println(e.view().getValues(UUID.randomUUID()));
         
-        Iterator<Object> i = e.iterateMetadata(ent);
+        Iterator<Object> i = e.view().iterateValues(ent);
         i.forEachRemaining(o -> System.out.println(o));
         
-        Iterator<Object> i2 = e.iterateMetadata(UUID.randomUUID());
+        Iterator<Object> i2 = e.view().iterateValues(UUID.randomUUID());
         i2.forEachRemaining(o -> System.out.println(o));
         
-        System.out.println(e.countMetadata(ent));
-        System.out.println(e.countMetadata(UUID.randomUUID()));
+        System.out.println(e.view().countValues(ent));
+        System.out.println(e.view().countValues(UUID.randomUUID()));
+        System.out.println(e.view().hasMapping(UUID.randomUUID(), e));
     }
     
     
