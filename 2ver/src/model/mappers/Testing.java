@@ -1,11 +1,11 @@
 package model.mappers;
 
 import model.mappers.implementation.MemMappers;
-import model.mappers.specification.BiMapper;
+import model.mappers.implementation.MemMappers.DenseMapper;
 
 public class Testing {
     public static void main(String[] args) {
-        BiMapper<Integer, String> m = MemMappers.denseMapper();
+        DenseMapper<Integer, String> m = MemMappers.denseMapper();
         
         m.map(1, "one");
         m.map(1, "ONE");

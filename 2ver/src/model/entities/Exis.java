@@ -1,4 +1,4 @@
-package model.mappers.entities;
+package model.entities;
 
 import java.util.HashSet;
 import java.util.Iterator;

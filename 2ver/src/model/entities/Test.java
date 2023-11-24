@@ -1,4 +1,4 @@
-package model.mappers.entities;
+package model.entities;
 
 import java.util.Iterator;
 import java.util.UUID;
