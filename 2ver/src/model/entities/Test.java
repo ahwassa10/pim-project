@@ -3,18 +3,20 @@ package model.entities;
 import java.util.UUID;
 
 import model.entities.metadata.MemMetadata;
+import model.entities.metadata.Metadata;
 
 public class Test {
     public static void main(String[] args) {
         UUID entity = UUID.randomUUID();
         
         MemMetadata<String> name = new MemMetadata<>();
-        MemMetadata<String> description = new MemMetadata<>();
         
-        name.attach(entity, "Test Name");
-        description.attach(entity, "Basic Description");
+        UUID namedEntity = name.attach(entity, "Hello");
         
-        System.out.println(name.view().anyValue(entity));
-        System.out.println(description.view().getValues(entity));
+        System.out.println(entity);
+        System.out.println(namedEntity);
+        System.out.println(name.metadataID());
+        
+        System.out.println(MemMetadata.xorUUIDs(namedEntity, name.metadataID()));
     }
 }
