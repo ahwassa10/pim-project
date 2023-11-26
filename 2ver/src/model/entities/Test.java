@@ -1,28 +1,20 @@
 package model.entities;
 
-import java.util.Iterator;
 import java.util.UUID;
+
+import model.entities.metadata.MemMetadata;
 
 public class Test {
     public static void main(String[] args) {
-        Exis e = new Exis();
+        UUID entity = UUID.randomUUID();
         
-        UUID ent = UUID.randomUUID();
+        MemMetadata<String> name = new MemMetadata<>();
+        MemMetadata<String> description = new MemMetadata<>();
         
-        e.attach(ent, "Hello");
+        name.attach(entity, "Test Name");
+        description.attach(entity, "Basic Description");
         
-        System.out.println(e.view().getValues(UUID.randomUUID()));
-        
-        Iterator<Object> i = e.view().iterateValues(ent);
-        i.forEachRemaining(o -> System.out.println(o));
-        
-        Iterator<Object> i2 = e.view().iterateValues(UUID.randomUUID());
-        i2.forEachRemaining(o -> System.out.println(o));
-        
-        System.out.println(e.view().countValues(ent));
-        System.out.println(e.view().countValues(UUID.randomUUID()));
-        System.out.println(e.view().hasMapping(UUID.randomUUID(), e));
+        System.out.println(name.view().anyValue(entity));
+        System.out.println(description.view().getValues(entity));
     }
-    
-    
 }
