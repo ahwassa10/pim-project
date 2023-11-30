@@ -18,7 +18,7 @@ public final class MemMetadata {
             this.mapper = mapper;
         }
         
-        public UUID metadataID() {
+        public UUID getMetadataID() {
             return metadataID;
         }
         
