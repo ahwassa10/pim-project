@@ -16,6 +16,6 @@ public class Test {
         System.out.println(namedEntity);
         System.out.println(name.metadataID());
         
-        System.out.println(MemMetadata.xorUUIDs(namedEntity, name.metadataID()));
+        System.out.println(UUIDs.xorUUIDs(namedEntity, name.metadataID()));
     }
 }

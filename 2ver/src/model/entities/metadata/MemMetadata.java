@@ -2,6 +2,7 @@ package model.entities.metadata;
 
 import java.util.UUID;
 
+import model.entities.UUIDs;
 import model.mappers.implementation.MemMappers;
 import model.mappers.specification.Mapper;
 import model.mappers.specification.MutableMapper;
@@ -24,23 +25,10 @@ public class MemMetadata<T> implements Metadata<T> {
         return mapper;
     }
     
-    public static UUID xorUUIDs(UUID uuid1, UUID uuid2) {
-        long msb1 = uuid1.getMostSignificantBits();
-        long lsb1 = uuid1.getLeastSignificantBits();
-
-        long msb2 = uuid2.getMostSignificantBits();
-        long lsb2 = uuid2.getLeastSignificantBits();
-
-        long xorMsb = msb1 ^ msb2;
-        long xorLsb = lsb1 ^ lsb2;
-
-        return new UUID(xorMsb, xorLsb);
-    }
-    
     public UUID attach(UUID entity, T value) {
         mapper.map(entity, value);
         
-        return xorUUIDs(entity, metadataID);
+        return UUIDs.xorUUIDs(entity, metadataID);
     }
     
     public void detach(UUID entity, T value) {
