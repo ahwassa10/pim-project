@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import model.entities.metadata.MemMetadata;
 import model.entities.metadata.Metadata;
+import model.entities.metadata.Trait;
 
 public class Test {
     public static void main(String[] args) {
@@ -18,5 +19,8 @@ public class Test {
         System.out.println(name.getMetadataID());
         
         System.out.println(UUIDs.xorUUIDs(namedEntity, name.getMetadataID()));
+        
+        Trait<String> nameTrait = name.getTrait(entity);
+        System.out.println(nameTrait.anyValue());
     }
 }

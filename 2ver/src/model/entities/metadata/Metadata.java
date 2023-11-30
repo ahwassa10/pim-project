@@ -5,11 +5,12 @@ import java.util.UUID;
 import model.mappers.specification.Mapper;
 
 public interface Metadata<T> {
-    public UUID getMetadataID();
+    UUID getMetadataID();
     
-    public Mapper<UUID, T> view();
+    Mapper<UUID, T> view();
+    Trait<T> getTrait(UUID entity);
     
-    public UUID attach(UUID entity, T value);
-    public void detach(UUID entity, T value);
-    public void detachAll(UUID entity);
+    UUID attach(UUID entity, T value);
+    void detach(UUID entity, T value);
+    void detachAll(UUID entity);
 }
