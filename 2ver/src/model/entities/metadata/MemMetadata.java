@@ -7,35 +7,57 @@ import model.mappers.implementation.MemMappers;
 import model.mappers.specification.Mapper;
 import model.mappers.specification.MutableMapper;
 
-public class MemMetadata<T> implements Metadata<T> {
-    private final UUID metadataID;
-    
-    private final MutableMapper<UUID, T> mapper;
-    
-    public MemMetadata() {
-        this.metadataID = UUID.randomUUID();
-        this.mapper = MemMappers.multiMapper();
-    }
-    
-    public UUID metadataID() {
-        return metadataID;
-    }
-    
-    public Mapper<UUID, T> view() {
-        return mapper;
-    }
-    
-    public UUID attach(UUID entity, T value) {
-        mapper.map(entity, value);
+public final class MemMetadata {
+    private static abstract class AbstractMetadata<T> implements Metadata<T> {
+        private final UUID metadataID;
         
-        return UUIDs.xorUUIDs(entity, metadataID);
+        private final MutableMapper<UUID, T> mapper;
+        
+        private AbstractMetadata(UUID uuid, MutableMapper<UUID, T> mapper) {
+            this.metadataID = uuid;
+            this.mapper = mapper;
+        }
+        
+        public UUID metadataID() {
+            return metadataID;
+        }
+        
+        public Mapper<UUID, T> view() {
+            return mapper;
+        }
+        
+        public UUID attach(UUID entity, T value) {
+            mapper.map(entity, value);
+            
+            return UUIDs.xorUUIDs(metadataID, entity);
+        }
+        
+        public void detach(UUID entity, T value) {
+            mapper.unmap(entity, value);
+        }
+        
+        public void detachAll(UUID entity) {
+            mapper.unmapAll(entity);
+        }
     }
     
-    public void detach(UUID entity, T value) {
-        mapper.unmap(entity, value);
+    public static class SingleMetadata<T> extends AbstractMetadata<T> {
+        private SingleMetadata() {
+            super(UUID.randomUUID(), MemMappers.singleMapper());
+        }
     }
     
-    public void detachAll(UUID entity) {
-        mapper.unmapAll(entity);
+    public static class MultiMetadata<T> extends AbstractMetadata<T> {
+        private MultiMetadata() {
+            super(UUID.randomUUID(), MemMappers.multiMapper());
+        }
+    }
+    
+    public static <T> SingleMetadata<T> singleMetadata() {
+        return new SingleMetadata<T>();
+    }
+    
+    public static <T> MultiMetadata<T> multiMetadata() {
+        return new MultiMetadata<T>();
     }
 }

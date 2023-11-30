@@ -147,12 +147,12 @@ public final class MemMappers {
         private final MutableMapper<K, V> forwardMap;
         private final MutableMapper<V, K> backwardMap;
         
-        public AbstractMapper(MutableMapper<K, V> forwardMap, MutableMapper<V, K> backwardMap) {
+        private AbstractMapper(MutableMapper<K, V> forwardMap, MutableMapper<V, K> backwardMap) {
             this.forwardMap = forwardMap;
             this.backwardMap = backwardMap;
         }
         
-        public AbstractMapper(AbstractMapper<V, K> other) {
+        private AbstractMapper(AbstractMapper<V, K> other) {
             this.forwardMap = other.backwardMap;
             this.backwardMap = other.forwardMap;
         }

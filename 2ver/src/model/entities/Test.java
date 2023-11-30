@@ -8,7 +8,7 @@ public class Test {
     public static void main(String[] args) {
         UUID entity = UUID.randomUUID();
         
-        MemMetadata<String> name = new MemMetadata<>();
+        MemMetadata.MultiMetadata<String> name = MemMetadata.multiMetadata();
         
         UUID namedEntity = name.attach(entity, "Hello");
         
