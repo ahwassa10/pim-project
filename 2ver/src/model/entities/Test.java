@@ -3,7 +3,6 @@ package model.entities;
 import java.util.UUID;
 
 import model.entities.metadata.MemMetadata;
-import model.entities.metadata.Metadata;
 
 public class Test {
     public static void main(String[] args) {
