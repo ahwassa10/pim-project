@@ -2,8 +2,8 @@ package controller.programfsm;
 
 import controller.photofsm.PhotContext;
 import javafx.scene.layout.GridPane;
-import model.Group;
-import model.Photo;
+import model.old.Group;
+import model.old.Photo;
 import view.Messages;
 import view.MyAlerts;
 

@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import model.Tag;
+import model.old.Tag;
 
 /**
  * FXML controller for user view which sends events to photContext

@@ -1,7 +1,4 @@
-package model.mappers.implementation;
-
-import model.mappers.specification.Mapper;
-import model.mappers.specification.MutableMapper;
+package model.mappers;
 
 public final class Mappers {
     private Mappers() {}

@@ -1,4 +1,4 @@
-package model.mappers.specification;
+package model.forest;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -12,5 +12,5 @@ public interface Tree<T> {
     
     Iterator<Tree<T>> iterateDFS();
     
-    TreeNode<T> asNode();
+    Node<T> asNode();
 }

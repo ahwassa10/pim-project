@@ -1,7 +1,6 @@
 package model.mappers;
 
-import model.mappers.implementation.MemMappers;
-import model.mappers.implementation.MemMappers.DenseMapper;
+import model.mappers.MemMappers.DenseMapper;
 
 public class Testing {
     public static void main(String[] args) {

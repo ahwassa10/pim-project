@@ -1,6 +1,4 @@
-package model.mappers.implementation;
-
-import model.mappers.specification.Forest;
+package model.forest;
 
 public final class Forests {
     private Forests() {}

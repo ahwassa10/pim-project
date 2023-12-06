@@ -1,16 +1,14 @@
-package model.mappers.implementation;
+package model.forest;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import model.mappers.implementation.MemMappers.FunctionMapper;
-import model.mappers.specification.Forest;
-import model.mappers.specification.Tree;
-import model.mappers.specification.TreeNode;
+import model.mappers.MemMappers;
+import model.mappers.MemMappers.FunctionMapper;
 
 public final class HashForest<T> implements Forest<T> {
-    private final class NodeTree<U> implements TreeNode<T>, Tree<T> {
+    private final class NodeTree<U> implements Node<T>, Tree<T> {
         private final T object;
         
         NodeTree(T object) {
@@ -25,14 +23,14 @@ public final class HashForest<T> implements Forest<T> {
             return HashForest.this.hasParent(object); 
         }
         
-        public TreeNode<T> getParent() {
+        public Node<T> getParent() {
             return new NodeTree<T>(HashForest.this.getParent(object));
         }
         
-        public Iterator<TreeNode<T>> iterateParents() {
+        public Iterator<Node<T>> iterateParents() {
             Iterator<T> i = HashForest.this.iterateParents(object);
             
-            return new Iterator<TreeNode<T>>() {
+            return new Iterator<Node<T>>() {
                 public boolean hasNext() {
                     return i.hasNext();
                 }
@@ -43,7 +41,7 @@ public final class HashForest<T> implements Forest<T> {
             };
         }
         
-        public TreeNode<T> getRoot() {
+        public Node<T> getRoot() {
             T root = object;
             
             while (HashForest.this.hasParent(root)) {
@@ -91,7 +89,7 @@ public final class HashForest<T> implements Forest<T> {
             };
         }
         
-        public TreeNode<T> asNode() {
+        public Node<T> asNode() {
             return this;
         }
         
@@ -113,7 +111,7 @@ public final class HashForest<T> implements Forest<T> {
         
         // Iterate though all the other nodes in the tree.
         while (i.hasNext()) {
-            TreeNode<T> atNode = i.next().asNode();
+            Node<T> atNode = i.next().asNode();
             
             T object = atNode.getObject();
             T parent = atNode.getParent().getObject();
@@ -142,7 +140,7 @@ public final class HashForest<T> implements Forest<T> {
         return parents.inverse().getValues(node);
     }
     
-    public TreeNode<T> atNode(T node) {
+    public Node<T> atNode(T node) {
         return new NodeTree<T>(node);
     }
     

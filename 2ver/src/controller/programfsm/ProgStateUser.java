@@ -4,7 +4,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import model.Group;
+import model.old.Group;
 import view.ControllerGroupTile;
 import view.Messages;
 import view.MyAlerts;

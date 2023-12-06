@@ -8,10 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Group;
-import model.CircularIterator;
-import model.Garden;
-import model.Photo;
+import model.old.CircularIterator;
+import model.old.Garden;
+import model.old.Group;
+import model.old.Photo;
 import view.ControllerSlideshow;
 
 import java.io.File;

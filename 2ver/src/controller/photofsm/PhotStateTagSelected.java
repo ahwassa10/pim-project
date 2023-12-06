@@ -2,8 +2,8 @@ package controller.photofsm;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
-import model.Photo;
-import model.Tag;
+import model.old.Photo;
+import model.old.Tag;
 import view.Messages;
 import view.MyAlerts;
 

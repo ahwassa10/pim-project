@@ -8,10 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import model.Group;
-import model.Photo;
-import model.Tag;
-import model.Garden;
+import model.old.Garden;
+import model.old.Group;
+import model.old.Photo;
+import model.old.Tag;
 import view.ControllerPhoto;
 
 import java.io.File;

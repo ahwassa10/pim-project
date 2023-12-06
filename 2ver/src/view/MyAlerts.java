@@ -4,8 +4,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Stage;
-import model.Group;
-import model.Garden;
+import model.old.Garden;
+import model.old.Group;
 
 import java.util.ArrayList;
 import java.util.Iterator;

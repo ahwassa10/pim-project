@@ -1,10 +1,8 @@
-package model.entities;
+package model.metadata;
 
 import java.util.UUID;
 
-import model.entities.metadata.MemMetadata;
-import model.entities.metadata.Metadata;
-import model.entities.metadata.Trait;
+import model.util.UUIDs;
 
 public class Test {
     public static void main(String[] args) {

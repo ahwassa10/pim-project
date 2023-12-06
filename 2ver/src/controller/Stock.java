@@ -1,6 +1,10 @@
 package controller;
 
 import model.*;
+import model.old.Garden;
+import model.old.Group;
+import model.old.Photo;
+import model.old.Tag;
 
 import java.io.File;
 

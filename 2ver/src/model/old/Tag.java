@@ -1,4 +1,4 @@
-package model;
+package model.old;
 
 /**
  * The logical representation of a tag.

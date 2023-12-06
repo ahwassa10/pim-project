@@ -1,4 +1,4 @@
-package model.entities.metadata;
+package model.metadata;
 
 import java.util.Iterator;
 import java.util.Set;

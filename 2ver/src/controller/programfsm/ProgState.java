@@ -1,8 +1,8 @@
 package controller.programfsm;
 
-import model.Group;
-import model.PhotoFilter;
-import model.Garden;
+import model.old.Garden;
+import model.old.Group;
+import model.old.PhotoFilter;
 
 /**
  * The abstract representation of a state in the program.

@@ -1,8 +1,8 @@
-package model.entities.metadata;
+package model.metadata;
 
 import java.util.UUID;
 
-import model.mappers.specification.Mapper;
+import model.mappers.Mapper;
 
 public interface Metadata<T> {
     UUID getMetadataID();

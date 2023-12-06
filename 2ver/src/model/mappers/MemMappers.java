@@ -1,4 +1,4 @@
-package model.mappers.implementation;
+package model.mappers;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
-
-import model.mappers.specification.BiMapper;
-import model.mappers.specification.MutableMapper;
 
 public final class MemMappers {
     public static final class SingleMapper<K, V> implements MutableMapper<K, V> {

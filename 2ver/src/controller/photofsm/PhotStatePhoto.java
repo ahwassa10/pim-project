@@ -3,6 +3,10 @@ package controller.photofsm;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import model.*;
+import model.old.Group;
+import model.old.Photo;
+import model.old.Tag;
+import model.old.TagStore;
 import view.Messages;
 import view.MyAlerts;
 

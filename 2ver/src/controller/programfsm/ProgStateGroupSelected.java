@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
-import model.Group;
+import model.old.Group;
 import view.Messages;
 import view.MyAlerts;
 

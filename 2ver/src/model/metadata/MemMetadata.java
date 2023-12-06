@@ -1,14 +1,14 @@
-package model.entities.metadata;
+package model.metadata;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import model.entities.UUIDs;
-import model.mappers.implementation.Mappers;
-import model.mappers.implementation.MemMappers;
-import model.mappers.specification.Mapper;
-import model.mappers.specification.MutableMapper;
+import model.mappers.Mapper;
+import model.mappers.Mappers;
+import model.mappers.MemMappers;
+import model.mappers.MutableMapper;
+import model.util.UUIDs;
 
 public final class MemMetadata {
     private static abstract class AbstractMetadata<T> implements Metadata<T> {

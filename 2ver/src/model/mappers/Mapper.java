@@ -1,4 +1,4 @@
-package model.mappers.specification;
+package model.mappers;
 
 import java.util.Iterator;
 import java.util.Set;

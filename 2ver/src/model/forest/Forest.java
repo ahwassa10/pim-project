@@ -1,4 +1,4 @@
-package model.mappers.specification;
+package model.forest;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -96,7 +96,7 @@ public interface Forest<T> {
         };
     }
     
-    TreeNode<T> atNode(T node);
+    Node<T> atNode(T node);
     
     Tree<T> atTree(T node);
     
