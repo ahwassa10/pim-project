@@ -1,6 +1,7 @@
 package model.metadata;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -162,11 +163,117 @@ public final class MemMetadata {
         }
     }
     
+    public static class MarkingMetadata implements MarkedMetadata {
+        private final UUID metadataID = UUID.randomUUID();
+        
+        private Set<UUID> entities = new HashSet<>();
+        
+        public UUID getMetadataID() {
+            return metadataID;
+        }
+        
+        public Mapper<UUID, Boolean> viewAssociations() {
+            return new Mapper<UUID, Boolean>() {
+                public boolean hasMapping(UUID entityID, Boolean value) {
+                    if (entities.contains(entityID) && value) {
+                        return true;
+                    } else if (!entities.contains(entityID) && !value) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                
+                public int countValues(UUID entityID) {
+                    return 1;
+                }
+                
+                public Iterator<Boolean> iterateValues(UUID entityID) {
+                    return Set.of(entities.contains(entityID)).iterator();
+                }
+                
+                public boolean hasValues(UUID entityID) {
+                    return true;
+                }
+                
+                public Boolean anyValue(UUID entityID) {
+                    return entities.contains(entityID);
+                }
+                
+                public Set<Boolean> getValues(UUID entityID) {
+                    return Set.of(entities.contains(entityID));
+                }
+            };
+        }
+        
+        public Mapper<UUID, UUID> viewTraits() {
+            return new Mapper<UUID, UUID>() {
+                public boolean hasMapping(UUID entityID, UUID traitID) {
+                    return entities.contains(entityID) && Objects.equals(traitID, UUIDs.xorUUIDs(entityID, metadataID));
+                }
+                
+                public int countValues(UUID entityID) {
+                    return entities.contains(entityID) ? 1 : 0;
+                }
+                
+                public Iterator<UUID> iterateValues(UUID entityID) {
+                    if (entities.contains(entityID)) {
+                        return Set.of(UUIDs.xorUUIDs(entityID, metadataID)).iterator();
+                    } else {
+                        return Collections.emptyIterator();
+                    }
+                }
+                
+                public boolean hasValues(UUID entityID) {
+                    return entities.contains(entityID);
+                }
+                
+                public UUID anyValue(UUID entityID) {
+                    if (!entities.contains(entityID)) {
+                        throw new IllegalArgumentException("No association");
+                    }
+                    
+                    return UUIDs.xorUUIDs(entityID, metadataID);
+                }
+                
+                public Set<UUID> getValues(UUID entityID) {
+                    if (!entities.contains(entityID)) {
+                        throw new IllegalArgumentException("No association");
+                    }
+                    
+                    return Set.of(UUIDs.xorUUIDs(entityID, metadataID));
+                }
+            };
+        }
+        
+        public Trait asTrait(UUID entityID) {
+            return new Trait() {
+                public UUID getTraitID() {
+                    return UUIDs.xorUUIDs(entityID, metadataID);
+                }
+            };
+        }
+        
+        public UUID mark(UUID entityID) {
+            entities.add(entityID);
+            return UUIDs.xorUUIDs(entityID, metadataID);
+        }
+        
+        public UUID unmark(UUID entityID) {
+            entities.remove(entityID);
+            return UUIDs.xorUUIDs(entityID, metadataID);
+        }
+    }
+    
     public static <T> SingleMetadata<T> singleMetadata() {
         return new SingleMetadata<T>();
     }
     
     public static <T> MultiMetadata<T> multiMetadata() {
         return new MultiMetadata<T>();
+    }
+    
+    public static MarkingMetadata markingMetadata() {
+        return new MarkingMetadata();
     }
 }

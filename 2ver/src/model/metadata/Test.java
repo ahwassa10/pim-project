@@ -8,17 +8,20 @@ public class Test {
     public static void main(String[] args) {
         UUID entity = UUID.randomUUID();
         
-        ValueMetadata<String> name = MemMetadata.multiMetadata();
+        MarkedMetadata exis = MemMetadata.markingMetadata();
         
-        UUID namedEntity = name.attach(entity, "Hello");
+        UUID exisTrait = exis.mark(entity);
         
-        System.out.println(entity);
-        System.out.println(namedEntity);
-        System.out.println(name.getMetadataID());
+        System.out.println(exisTrait);
+        System.out.println(exis.asTrait(entity).getTraitID());
         
-        System.out.println(UUIDs.xorUUIDs(namedEntity, name.getMetadataID()));
+        ValueMetadata<String> name = MemMetadata.singleMetadata();
         
-        ValueTrait<String> nameTrait = name.asValueTrait(entity);
-        System.out.println(nameTrait.anyValue());
+        name.attach(exisTrait, "First Name");
+        
+       ValueTrait<String> entityName = name.asValueTrait(exisTrait);
+       System.out.println(entityName.anyValue());
+       System.out.println(entityName.getTraitID());
+        
     }
 }
