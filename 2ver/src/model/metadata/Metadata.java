@@ -4,13 +4,11 @@ import java.util.UUID;
 
 import model.mappers.Mapper;
 
-public interface Metadata<T> {
+public interface Metadata {
     UUID getMetadataID();
     
-    Mapper<UUID, T> view();
-    Trait<T> getTrait(UUID entity);
+    Mapper<UUID, Boolean> viewAssociations();
+    Mapper<UUID, UUID> viewTraits();
     
-    UUID attach(UUID entity, T value);
-    void detach(UUID entity, T value);
-    void detachAll(UUID entity);
+    Trait asTrait(UUID entityID);
 }

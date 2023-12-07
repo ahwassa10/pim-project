@@ -8,7 +8,7 @@ public class Test {
     public static void main(String[] args) {
         UUID entity = UUID.randomUUID();
         
-        Metadata<String> name = MemMetadata.multiMetadata();
+        ValueMetadata<String> name = MemMetadata.multiMetadata();
         
         UUID namedEntity = name.attach(entity, "Hello");
         
@@ -18,7 +18,7 @@ public class Test {
         
         System.out.println(UUIDs.xorUUIDs(namedEntity, name.getMetadataID()));
         
-        Trait<String> nameTrait = name.getTrait(entity);
+        ValueTrait<String> nameTrait = name.asValueTrait(entity);
         System.out.println(nameTrait.anyValue());
     }
 }
