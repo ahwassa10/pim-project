@@ -163,7 +163,7 @@ public final class MemMetadata {
         }
     }
     
-    public static class MarkingMetadata implements MarkedMetadata {
+    public static class MarkingMetadata implements Metadata {
         private final UUID metadataID = UUID.randomUUID();
         
         private Set<UUID> entities = new HashSet<>();
