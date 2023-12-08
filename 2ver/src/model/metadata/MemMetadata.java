@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import model.mappers.Mapper;
 import model.mappers.Mappers;
-import model.mappers.MemMappers;
 import model.mappers.MutableMapper;
 import model.util.UUIDs;
 
@@ -153,13 +152,13 @@ public final class MemMetadata {
     
     public static class SingleMetadata<T> extends AbstractMetadata<T> {
         private SingleMetadata() {
-            super(UUID.randomUUID(), MemMappers.singleMapper());
+            super(UUID.randomUUID(), Mappers.singleMapper());
         }
     }
     
     public static class MultiMetadata<T> extends AbstractMetadata<T> {
         private MultiMetadata() {
-            super(UUID.randomUUID(), MemMappers.multiMapper());
+            super(UUID.randomUUID(), Mappers.multiMapper());
         }
     }
     

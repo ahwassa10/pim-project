@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import model.mappers.MemMappers;
-import model.mappers.MemMappers.FunctionMapper;
+import model.bimappers.BiMappers;
+import model.bimappers.BiMappers.FunctionMapper;
 
 public final class HashForest<T> implements Forest<T> {
     private final class NodeTree<U> implements Node<T>, Tree<T> {
@@ -99,7 +99,7 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     // The parent of the key is the value.
-    private final FunctionMapper<T, T> parents = MemMappers.functionMapper();
+    private final FunctionMapper<T, T> parents = BiMappers.functionMapper();
     
     public HashForest() {}
     
