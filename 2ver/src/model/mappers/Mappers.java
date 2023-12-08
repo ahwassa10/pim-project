@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+
+import model.util.SingleIterators;
 
 public final class Mappers {
     public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
@@ -23,22 +24,7 @@ public final class Mappers {
         
         public Iterator<V> iterateValues(K key) {
             if (imap.containsKey(key)) {
-                return new Iterator<V>() {
-                    private final V value = imap.get(key);
-                    private boolean hasNext = true;
-                    
-                    public boolean hasNext() {
-                        return hasNext;
-                    }
-                    
-                    public V next() {
-                        if (!hasNext) {
-                            throw new NoSuchElementException();
-                        }
-                        hasNext = false;
-                        return value;
-                    }
-                };
+                return SingleIterators.of(imap.get(key));
             } else {
                 return Collections.emptyIterator();
             }

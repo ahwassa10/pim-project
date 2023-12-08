@@ -10,6 +10,7 @@ import java.util.UUID;
 import model.mappers.Mapper;
 import model.mappers.Mappers;
 import model.mappers.MutableMapper;
+import model.util.SingleIterators;
 import model.util.UUIDs;
 
 public final class MemMetadata {
@@ -44,7 +45,7 @@ public final class MemMetadata {
                 }
                 
                 public Iterator<Boolean> iterateValues(UUID entityID) {
-                    return Set.of(mapper.hasValues(entityID)).iterator();
+                    return SingleIterators.of(mapper.hasValues(entityID));
                 }
                 
                 public boolean hasValues(UUID entityID) {
@@ -73,7 +74,7 @@ public final class MemMetadata {
                 
                 public Iterator<UUID> iterateValues(UUID entityID) {
                     if (mapper.hasValues(entityID)) {
-                        return Set.of(UUIDs.xorUUIDs(entityID, metadataID)).iterator();
+                        return SingleIterators.of(UUIDs.xorUUIDs(entityID, metadataID));
                     } else {
                         return Collections.emptyIterator();
                     }
@@ -188,7 +189,7 @@ public final class MemMetadata {
                 }
                 
                 public Iterator<Boolean> iterateValues(UUID entityID) {
-                    return Set.of(entities.contains(entityID)).iterator();
+                    return SingleIterators.of(entities.contains(entityID));
                 }
                 
                 public boolean hasValues(UUID entityID) {
@@ -217,7 +218,7 @@ public final class MemMetadata {
                 
                 public Iterator<UUID> iterateValues(UUID entityID) {
                     if (entities.contains(entityID)) {
-                        return Set.of(UUIDs.xorUUIDs(entityID, metadataID)).iterator();
+                        return SingleIterators.of(UUIDs.xorUUIDs(entityID, metadataID));
                     } else {
                         return Collections.emptyIterator();
                     }
