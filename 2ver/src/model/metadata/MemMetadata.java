@@ -85,13 +85,13 @@ public final class MemMetadata {
                 }
                 
                 public UUID anyValue(UUID entityID) {
-                    Mappers.requireValues(mapper, entityID);
+                    Mappers.requireKey(mapper, entityID);
                     
                     return UUIDs.xorUUIDs(entityID, metadataID);
                 }
                 
                 public Set<UUID> getValues(UUID entityID) {
-                    Mappers.requireValues(mapper, entityID);
+                    Mappers.requireKey(mapper, entityID);
                     
                     return Set.of(UUIDs.xorUUIDs(entityID, metadataID));
                 }
@@ -99,7 +99,7 @@ public final class MemMetadata {
         }
         
         public Trait asTrait(UUID entity) {
-            Mappers.requireValues(mapper, entity);
+            Mappers.requireKey(mapper, entity);
             
             return new Trait() {
                 public UUID getTraitID() {

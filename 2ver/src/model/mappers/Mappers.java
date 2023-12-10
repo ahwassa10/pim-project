@@ -35,12 +35,12 @@ public final class Mappers {
         }
         
         public V anyValue(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             return imap.get(key);
         }
         
         public Set<V> getValues(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             return Set.of(imap.get(key));
         }
         
@@ -59,7 +59,7 @@ public final class Mappers {
         }
         
         public void unmapAll(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             imap.remove(key);
         }
     }
@@ -92,12 +92,12 @@ public final class Mappers {
         }
         
         public V anyValue(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             return imap.get(key).iterator().next();
         }
         
         public Set<V> getValues(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             return Collections.unmodifiableSet(imap.get(key));
         }
         
@@ -121,7 +121,7 @@ public final class Mappers {
         }
         
         public void unmapAll(K key) {
-            Mappers.requireValues(this, key);
+            Mappers.requireKey(this, key);
             imap.remove(key);
         }
     }
@@ -182,17 +182,17 @@ public final class Mappers {
         }
     }
 
-    public static <K> K requireValues(Mapper<K, ?> mapper, K key) {
+    public static <K> K requireKey(Mapper<K, ?> mapper, K key) {
         if (!mapper.hasKey(key)) {
-            String msg = String.format("%s has not been mapped to any values under this mapper", key);
+            String msg = String.format("%s is not a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }
         return key;
     }
 
-    public static <K> K requireNoValues(Mapper<K, ?> mapper, K key) {
+    public static <K> K requireNoKeys(Mapper<K, ?> mapper, K key) {
         if (mapper.hasKey(key)) {
-            String msg = String.format("%s already maps to a value under this mapper", key);
+            String msg = String.format("%s is a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }
         return key;
