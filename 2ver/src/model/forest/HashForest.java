@@ -121,7 +121,7 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public boolean hasParent(T object) {
-        return parents.hasValues(object);
+        return parents.hasKey(object);
     }
     
     public T getParent(T node) {
@@ -131,7 +131,7 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public boolean hasChildren(T node) {
-        return parents.inverse().hasValues(node);
+        return parents.inverse().hasKey(node);
     }
     
     public Set<T> getChildren(T node) {

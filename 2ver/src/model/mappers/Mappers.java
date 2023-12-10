@@ -30,7 +30,7 @@ public final class Mappers {
             }
         }
         
-        public boolean hasValues(K key) {
+        public boolean hasKey(K key) {
             return imap.containsKey(key);
         }
         
@@ -45,7 +45,7 @@ public final class Mappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !hasValues(key);
+            return !hasKey(key);
         }
         
         public void map(K key, V value) {
@@ -87,7 +87,7 @@ public final class Mappers {
             }
         }
         
-        public boolean hasValues(K key) {
+        public boolean hasKey(K key) {
             return imap.containsKey(key);
         }
         
@@ -147,7 +147,7 @@ public final class Mappers {
             return SingleIterators.of(set.contains(key));
         }
         
-        public boolean hasValues(K key) {
+        public boolean hasKey(K key) {
             return true;
         }
         
@@ -183,7 +183,7 @@ public final class Mappers {
     }
 
     public static <K> K requireValues(Mapper<K, ?> mapper, K key) {
-        if (!mapper.hasValues(key)) {
+        if (!mapper.hasKey(key)) {
             String msg = String.format("%s has not been mapped to any values under this mapper", key);
             throw new IllegalArgumentException(msg);
         }
@@ -191,7 +191,7 @@ public final class Mappers {
     }
 
     public static <K> K requireNoValues(Mapper<K, ?> mapper, K key) {
-        if (mapper.hasValues(key)) {
+        if (mapper.hasKey(key)) {
             String msg = String.format("%s already maps to a value under this mapper", key);
             throw new IllegalArgumentException(msg);
         }

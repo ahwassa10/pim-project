@@ -9,7 +9,7 @@ public interface Mapper<K, V> {
     int countValues(K key);
     Iterator<V> iterateValues(K key);
     
-    boolean hasValues(K key);
+    boolean hasKey(K key);
     V anyValue(K key);
     Set<V> getValues(K key);
 }

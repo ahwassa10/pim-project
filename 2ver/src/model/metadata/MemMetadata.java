@@ -14,12 +14,12 @@ import model.util.SingleIterators;
 import model.util.UUIDs;
 
 public final class MemMetadata {
-    private static abstract class AbstractMetadata<T> implements ValueMetadata<T> {
+    private static abstract class AbstractValueMetadata<T> implements ValueMetadata<T> {
         private final UUID metadataID;
         
         private final MutableMapper<UUID, T> mapper;
         
-        private AbstractMetadata(UUID uuid, MutableMapper<UUID, T> mapper) {
+        private AbstractValueMetadata(UUID uuid, MutableMapper<UUID, T> mapper) {
             this.metadataID = uuid;
             this.mapper = mapper;
         }
@@ -31,9 +31,9 @@ public final class MemMetadata {
         public Mapper<UUID, Boolean> viewAssociations() {
             return new Mapper<UUID, Boolean>() {
                 public boolean hasMapping(UUID entityID, Boolean value) {
-                    if (mapper.hasValues(entityID) && value) {
+                    if (mapper.hasKey(entityID) && value) {
                         return true;
-                    } else if (!mapper.hasValues(entityID) && !value) {
+                    } else if (!mapper.hasKey(entityID) && !value) {
                         return true;
                     } else {
                         return false;
@@ -45,19 +45,19 @@ public final class MemMetadata {
                 }
                 
                 public Iterator<Boolean> iterateValues(UUID entityID) {
-                    return SingleIterators.of(mapper.hasValues(entityID));
+                    return SingleIterators.of(mapper.hasKey(entityID));
                 }
                 
-                public boolean hasValues(UUID entityID) {
+                public boolean hasKey(UUID entityID) {
                     return true;
                 }
                 
                 public Boolean anyValue(UUID entityID) {
-                    return mapper.hasValues(entityID);
+                    return mapper.hasKey(entityID);
                 }
                 
                 public Set<Boolean> getValues(UUID entityID) {
-                    return Set.of(mapper.hasValues(entityID));
+                    return Set.of(mapper.hasKey(entityID));
                 }
             };
         }
@@ -65,7 +65,7 @@ public final class MemMetadata {
         public Mapper<UUID, UUID> viewTraits() {
             return new Mapper<UUID, UUID>() {
                 public boolean hasMapping(UUID entityID, UUID traitID) {
-                    return mapper.hasValues(entityID) && Objects.equals(traitID, UUIDs.xorUUIDs(entityID, metadataID));
+                    return mapper.hasKey(entityID) && Objects.equals(traitID, UUIDs.xorUUIDs(entityID, metadataID));
                 }
                 
                 public int countValues(UUID entityID) {
@@ -73,15 +73,15 @@ public final class MemMetadata {
                 }
                 
                 public Iterator<UUID> iterateValues(UUID entityID) {
-                    if (mapper.hasValues(entityID)) {
+                    if (mapper.hasKey(entityID)) {
                         return SingleIterators.of(UUIDs.xorUUIDs(entityID, metadataID));
                     } else {
                         return Collections.emptyIterator();
                     }
                 }
                 
-                public boolean hasValues(UUID entityID) {
-                    return mapper.hasValues(entityID);
+                public boolean hasKey(UUID entityID) {
+                    return mapper.hasKey(entityID);
                 }
                 
                 public UUID anyValue(UUID entityID) {
@@ -151,13 +151,13 @@ public final class MemMetadata {
         }
     }
     
-    public static class SingleMetadata<T> extends AbstractMetadata<T> {
+    public static class SingleMetadata<T> extends AbstractValueMetadata<T> {
         private SingleMetadata() {
             super(UUID.randomUUID(), Mappers.singleMapper());
         }
     }
     
-    public static class MultiMetadata<T> extends AbstractMetadata<T> {
+    public static class MultiMetadata<T> extends AbstractValueMetadata<T> {
         private MultiMetadata() {
             super(UUID.randomUUID(), Mappers.multiMapper());
         }
@@ -192,7 +192,7 @@ public final class MemMetadata {
                     return SingleIterators.of(entities.contains(entityID));
                 }
                 
-                public boolean hasValues(UUID entityID) {
+                public boolean hasKey(UUID entityID) {
                     return true;
                 }
                 
@@ -224,7 +224,7 @@ public final class MemMetadata {
                     }
                 }
                 
-                public boolean hasValues(UUID entityID) {
+                public boolean hasKey(UUID entityID) {
                     return entities.contains(entityID);
                 }
                 

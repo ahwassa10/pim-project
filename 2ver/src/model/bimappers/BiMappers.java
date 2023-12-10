@@ -37,8 +37,8 @@ public final class BiMappers {
             return forwardMap.iterateValues(key);
         }
         
-        public boolean hasValues(K key) {
-            return forwardMap.hasValues(key);
+        public boolean hasKey(K key) {
+            return forwardMap.hasKey(key);
         }
         
         public V anyValue(K key) {
@@ -88,7 +88,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.hasValues(key) && !this.inverse().hasValues(value);
+            return !this.hasKey(key) && !this.inverse().hasKey(value);
         }
         
         public DirectMapper<V, K> inverse() {
@@ -111,7 +111,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.hasValues(key);
+            return !this.hasKey(key);
         }
         
         public PartitionMapper<V, K> inverse() {
@@ -134,7 +134,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.inverse().hasValues(value);
+            return !this.inverse().hasKey(value);
         }
         
         public FunctionMapper<V, K> inverse() {
