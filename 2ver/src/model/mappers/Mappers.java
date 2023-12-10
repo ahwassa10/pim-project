@@ -126,40 +126,6 @@ public final class Mappers {
         }
     }
     
-    public static final class BooleanMapper<K> implements Mapper<K, Boolean> {
-        private final Set<K> set = new HashSet<>();
-        
-        public boolean hasMapping(K key, Boolean value) {
-            if (set.contains(key) && value) {
-                return true;
-            } else if (!set.contains(key) && !value) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        
-        public int countValues(K key) {
-            return 1;
-        }
-        
-        public Iterator<Boolean> iterateValues(K key) {
-            return SingleIterators.of(set.contains(key));
-        }
-        
-        public boolean hasKey(K key) {
-            return true;
-        }
-        
-        public Boolean anyValue(K key) {
-            return set.contains(key);
-        }
-        
-        public Set<Boolean> getValues(K key) {
-            return Set.of(set.contains(key));
-        }
-    }
-    
     public static <K, V> SingleMapper<K, V> singleMapper() {
         return new SingleMapper<K, V>();
     }

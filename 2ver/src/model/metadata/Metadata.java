@@ -2,13 +2,10 @@ package model.metadata;
 
 import java.util.UUID;
 
-import model.mappers.Mapper;
-
 public interface Metadata {
     UUID getMetadataID();
+    UUID computeTraitID(UUID entityID);
     
-    Mapper<UUID, Boolean> viewAssociations();
-    Mapper<UUID, UUID> viewTraits();
-    
+    boolean isAssociated(UUID entityID);
     Trait asTrait(UUID entityID);
 }
