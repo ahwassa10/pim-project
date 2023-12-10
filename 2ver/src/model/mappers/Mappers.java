@@ -81,7 +81,7 @@ public final class Mappers {
         
         public Iterator<V> iterateValues(K key) {
             if (imap.containsKey(key)) {
-                return Collections.unmodifiableSet(imap.get(key)).iterator();
+                return Set.copyOf(imap.get(key)).iterator();
             } else {
                 return Collections.emptyIterator();
             }
@@ -98,7 +98,7 @@ public final class Mappers {
         
         public Set<V> getValues(K key) {
             Mappers.requireKey(this, key);
-            return Collections.unmodifiableSet(imap.get(key));
+            return Set.copyOf(imap.get(key));
         }
         
         public boolean canMap(K key, V value) {
