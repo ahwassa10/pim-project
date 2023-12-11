@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import model.mapper.Mapper;
 import model.mapper.Mappers;
@@ -19,14 +20,14 @@ public final class Metadatas {
             return metadataID;
         }
         
-        public UUID computeTraitID(UUID entityID) {
+        public UUID computeID(UUID entityID) {
             return UUIDs.xorUUIDs(metadataID, entityID);
         }
         
         public Trait asTrait(UUID entityID) {
             if (isAssociated(entityID)) {
                 return new Trait() {
-                    private UUID traitID = computeTraitID(entityID);
+                    private UUID traitID = computeID(entityID);
                     
                     public UUID getTraitID() {
                         return traitID;
@@ -46,13 +47,17 @@ public final class Metadatas {
             return set.contains(entityID);
         }
         
+        public Stream<UUID> stream() {
+            return set.stream().map(entityID -> computeID(entityID));
+        }
+        
         public UUID mark(UUID entityID) {
             if (set.contains(entityID)) {
                 String msg = String.format("%s is already marked with this metadata", entityID);
                 throw new IllegalArgumentException(msg);
             } else {
                 set.add(entityID);
-                return computeTraitID(entityID);
+                return computeID(entityID);
             }
         }
         
@@ -62,7 +67,7 @@ public final class Metadatas {
                 throw new IllegalArgumentException(msg);
             } else {
                 set.remove(entityID);
-                return computeTraitID(entityID);
+                return computeID(entityID);
             }
         }
     }
@@ -103,7 +108,7 @@ public final class Metadatas {
         public ValueTrait<T> asValueTrait(UUID entityID) {
             if (isAssociated(entityID)) {
                 return new ValueTrait<T>() {
-                    private UUID traitID = computeTraitID(entityID);
+                    private UUID traitID = computeID(entityID);
                     private T value = viewValues().anyValue(entityID);
                     
                     public UUID getTraitID() {
@@ -141,7 +146,7 @@ public final class Metadatas {
         public ValueTrait<T> asValueTrait(UUID entityID) {
             if (isAssociated(entityID)) {
                 return new ValueTrait<T>() {
-                    private UUID traitID = computeTraitID(entityID);
+                    private UUID traitID = computeID(entityID);
                     private Set<T> values = viewValues().getValues(entityID);
                     
                     public UUID getTraitID() {

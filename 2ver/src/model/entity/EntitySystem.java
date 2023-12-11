@@ -2,6 +2,7 @@ package model.entity;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import model.metadata.Metadatas;
 import model.metadata.Metadatas.MarkedMetadata;
@@ -27,8 +28,12 @@ public final class EntitySystem {
         return exisID;
     }
     
-    public SysEntity get(UUID exisID) {
-        UUID entityID = exis.computeTraitID(exisID);
+    public Stream<SysEntity> stream() {
+        return exis.stream().map(exisID -> asEntity(exisID));
+    }
+    
+    public SysEntity asEntity(UUID exisID) {
+        UUID entityID = exis.computeID(exisID);
         
         if (!exis.isAssociated(entityID)) {
             String msg = String.format("%s is not a system entity", exisID);
@@ -69,7 +74,7 @@ public final class EntitySystem {
     }
     
     public void remove(UUID exisID) {
-        UUID entityID = exis.computeTraitID(exisID);
+        UUID entityID = exis.computeID(exisID);
         
         if (!exis.isAssociated(entityID)) {
             String msg = String.format("%s is not a system entity", exisID);
