@@ -1,6 +1,6 @@
-package model.bimappers;
+package model.bimapper;
 
-import model.mappers.Mapper;
+import model.mapper.Mapper;
 
 public interface BiMapper<K, V> extends Mapper<K, V> {
     BiMapper<V, K> inverse();

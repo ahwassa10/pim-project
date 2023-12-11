@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import model.mappers.Mapper;
-import model.mappers.Mappers;
-import model.mappers.MutableMapper;
+import model.mapper.Mapper;
+import model.mapper.Mappers;
+import model.mapper.MutableMapper;
 import model.util.SingleIterators;
 import model.util.UUIDs;
 

@@ -1,4 +1,4 @@
-package model.mappers;
+package model.mapper;
 
 public interface MutableMapper<K, V> extends Mapper<K, V> {
     boolean canMap(K key, V value);

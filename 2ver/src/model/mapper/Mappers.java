@@ -1,4 +1,4 @@
-package model.mappers;
+package model.mapper;
 
 import java.util.Collections;
 import java.util.HashMap;

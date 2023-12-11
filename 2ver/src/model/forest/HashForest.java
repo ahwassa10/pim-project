@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import model.bimappers.BiMappers;
-import model.bimappers.BiMappers.FunctionMapper;
+import model.bimapper.BiMappers;
+import model.bimapper.BiMappers.FunctionMapper;
 
 public final class HashForest<T> implements Forest<T> {
     private final class NodeTree<U> implements Node<T>, Tree<T> {

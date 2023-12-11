@@ -1,12 +1,12 @@
-package model.bimappers;
+package model.bimapper;
 
 import java.util.Iterator;
 import java.util.Set;
 
-import model.mappers.MutableMapper;
-import model.mappers.Mappers;
-import model.mappers.Mappers.MultiMapper;
-import model.mappers.Mappers.SingleMapper;
+import model.mapper.Mappers;
+import model.mapper.MutableMapper;
+import model.mapper.Mappers.MultiMapper;
+import model.mapper.Mappers.SingleMapper;
 
 public final class BiMappers {
     private BiMappers() {}
