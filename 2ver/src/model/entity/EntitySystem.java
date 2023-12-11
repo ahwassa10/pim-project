@@ -15,33 +15,33 @@ public final class EntitySystem {
     private final SingleMetadata<String> name = Metadatas.singleMetadata();
     private final SingleMetadata<String> description = Metadatas.singleMetadata();
     
-    public UUID create() {
-        UUID entityID = UUID.randomUUID();
+    private UUID create(UUID entityID, String entityName, String entityDescription) {
         UUID exisID = exis.mark(entityID);
-        
-        String blankName = "";
-        name.attach(exisID, blankName);
-        
-        String blankDescription = "";
-        description.attach(exisID, blankDescription);
+        name.attach(exisID, entityName);
+        description.attach(exisID, entityDescription);
         
         return exisID;
     }
     
-    public Stream<SysEntity> stream() {
-        return exis.stream().map(exisID -> asEntity(exisID));
+    public UUID create() {
+        return create(UUID.randomUUID(), "", "");
     }
     
-    public SysEntity asEntity(UUID exisID) {
-        UUID entityID = exis.computeID(exisID);
-        
-        if (!exis.isAssociated(entityID)) {
-            String msg = String.format("%s is not a system entity", exisID);
-            throw new IllegalArgumentException(msg);
-        }
-        
+    public UUID create(String entityName) {
+        return create(UUID.randomUUID(), entityName, "");
+    }
+    
+    public UUID create(String entityName, String entityDescription) {
+        return create(UUID.randomUUID(), entityName, entityDescription);
+    }
+    
+    private SysEntity buildEntity(UUID exisID) {
         return new SysEntity() {
-            private final Trait exisTrait = exis.asTrait(entityID);
+            private final Trait exisTrait = new Trait() {
+                public UUID getTraitID() {
+                    return exisID;
+                }
+            };
             private final ValueTrait<String> nameTrait = name.asValueTrait(exisID);
             private final ValueTrait<String> descriptionTrait = description.asValueTrait(exisID);
             
@@ -57,6 +57,21 @@ public final class EntitySystem {
                 return descriptionTrait;
             }
         };
+    }
+    
+    public Stream<SysEntity> stream() {
+        return exis.stream().map(exisID -> buildEntity(exisID));
+    }
+    
+    public SysEntity asEntity(UUID exisID) {
+        UUID entityID = exis.computeID(exisID);
+        
+        if (!exis.isAssociated(entityID)) {
+            String msg = String.format("%s is not a system entity", exisID);
+            throw new IllegalArgumentException(msg);
+        }
+        
+        return buildEntity(exisID);
     }
     
     public void setName(UUID exisID, String newName) {

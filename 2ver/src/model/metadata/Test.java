@@ -24,6 +24,11 @@ public class Test {
        ValueTrait<String> entityName = name.asValueTrait(exisTrait);
        System.out.println(entityName.anyValue());
        System.out.println(entityName.getTraitID());
-        
+       
+       System.out.println(entity.equals(exis.computeID(exisTrait)));
+       System.out.println(entity);
+       System.out.println(exis.computeID(exisTrait));
+       System.out.println(entity.variant());
+       System.out.println(exis.computeID(exisTrait).variant());
     }
 }
