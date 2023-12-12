@@ -7,36 +7,29 @@ import java.util.stream.Stream;
 import model.metadata.Metadatas;
 import model.metadata.Metadatas.MarkedMetadata;
 import model.metadata.Metadatas.SingleMetadata;
-import model.metadata.Trait;
-import model.metadata.ValueTrait;
 
 public final class ImageSystem {
     private final MarkedMetadata presence = Metadatas.markedMetadata();
-    private final SingleMetadata<Path> source = Metadatas.singleMetadata();
+    private final SingleMetadata<Path> sourceMetadata = Metadatas.singleMetadata();
     
-    public UUID create(UUID contentID, Path imageSource) {
-        UUID imageID = presence.mark(contentID);
-        source.attach(imageID, imageSource);
+    public UUID create(UUID rawID, Path imageSource) {
+        UUID imageID = presence.mark(rawID);
+        sourceMetadata.attach(imageID, imageSource);
         
         return imageID;
     }
     
     private ImageEntity buildEntity(UUID imageID) {
         return new ImageEntity() {
-            private final Trait imageTrait = new Trait() {
-                public UUID getTraitID() {
-                    return imageID;
-                }
-            };
+            private final UUID id = imageID;
+            private final Path source = sourceMetadata.viewValues().anyValue(imageID);
             
-            private final ValueTrait<Path> sourceTrait = source.asValueTrait(imageID);
-            
-            public Trait getImageTrait() {
-                return imageTrait;
+            public UUID getImageID() {
+                return id;
             }
             
-            public ValueTrait<Path> getSourceTrait() {
-                return sourceTrait;
+            public Path getSource() {
+                return source;
             }
         };
     }
@@ -46,9 +39,9 @@ public final class ImageSystem {
     }
     
     public ImageEntity asEntity(UUID imageID) {
-        UUID contentID = presence.computeID(imageID);
+        UUID rawID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(contentID)) {
+        if (!presence.isAssociated(rawID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
@@ -57,13 +50,13 @@ public final class ImageSystem {
     }
     
     public void remove(UUID imageID) {
-        UUID contentID = presence.computeID(imageID);
+        UUID rawID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(contentID)) {
+        if (!presence.isAssociated(rawID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
         
-        presence.unmark(contentID);
+        presence.unmark(rawID);
     }
 }

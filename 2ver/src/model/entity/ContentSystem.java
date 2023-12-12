@@ -7,8 +7,6 @@ import java.util.stream.Stream;
 import model.metadata.Metadatas;
 import model.metadata.Metadatas.MarkedMetadata;
 import model.metadata.Metadatas.SingleMetadata;
-import model.metadata.Trait;
-import model.metadata.ValueTrait;
 
 public final class ContentSystem {
     private final MarkedMetadata presence = Metadatas.markedMetadata();
@@ -37,24 +35,20 @@ public final class ContentSystem {
     
     private ContentEntity buildEntity(UUID contentID) {
         return new ContentEntity() {
-            private final Trait exisTrait = new Trait() {
-                public UUID getTraitID() {
-                    return contentID;
-                }
-            };
-            private final ValueTrait<String> nameTrait = nameMetadata.asValueTrait(contentID);
-            private final ValueTrait<String> descriptionTrait = descriptionMetadata.asValueTrait(contentID);
+            private final UUID id = contentID;
+            private final String name = nameMetadata.viewValues().anyValue(contentID);
+            private final String description = descriptionMetadata.viewValues().anyValue(contentID);
             
-            public Trait getExisTrait() {
-                return exisTrait;
+            public UUID getContentID() {
+                return id;
             }
             
-            public ValueTrait<String> getNameTrait() {
-                return nameTrait;
+            public String getName() {
+                return name;
             }
             
-            public ValueTrait<String> getDescriptionTrait() {
-                return descriptionTrait;
+            public String getDescription() {
+                return description;
             }
         };
     }
