@@ -14,8 +14,8 @@ public final class ImageSystem {
     private final MarkedMetadata presence = Metadatas.markedMetadata();
     private final SingleMetadata<Path> source = Metadatas.singleMetadata();
     
-    public UUID create(UUID exisID, Path imageSource) {
-        UUID imageID = presence.mark(exisID);
+    public UUID create(UUID contentID, Path imageSource) {
+        UUID imageID = presence.mark(contentID);
         source.attach(imageID, imageSource);
         
         return imageID;
@@ -46,9 +46,9 @@ public final class ImageSystem {
     }
     
     public ImageEntity asEntity(UUID imageID) {
-        UUID entityID = presence.computeID(imageID);
+        UUID contentID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(entityID)) {
+        if (!presence.isAssociated(contentID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
@@ -57,13 +57,13 @@ public final class ImageSystem {
     }
     
     public void remove(UUID imageID) {
-        UUID entityID = presence.computeID(imageID);
+        UUID contentID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(entityID)) {
+        if (!presence.isAssociated(contentID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
         
-        presence.unmark(entityID);
+        presence.unmark(contentID);
     }
 }

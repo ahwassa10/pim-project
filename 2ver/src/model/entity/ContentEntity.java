@@ -5,8 +5,8 @@ import java.util.UUID;
 import model.metadata.Trait;
 import model.metadata.ValueTrait;
 
-public interface SysEntity {
-    default UUID getExisID() {
+public interface ContentEntity {
+    default UUID getEntityID() {
         return getExisTrait().getTraitID();
     }
     
