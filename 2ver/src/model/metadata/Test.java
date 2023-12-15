@@ -15,13 +15,13 @@ public class Test {
         UUID exisTrait = exis.mark(entity);
         
         System.out.println(exisTrait);
-        System.out.println(exis.asTrait(entity).getTraitID());
+        System.out.println(exis.computeID(entity));
         
         SingleMetadata<String> name = Metadatas.singleMetadata();
         
         name.attach(exisTrait, "First Name");
         
-       ValueTrait<String> entityName = name.asValueTrait(exisTrait);
+       Trait<String> entityName = name.asTrait(exisTrait);
        System.out.println(entityName.get().any());
        System.out.println(entityName.getTraitID());
        

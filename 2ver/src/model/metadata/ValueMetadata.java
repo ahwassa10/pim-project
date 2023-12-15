@@ -8,7 +8,7 @@ import model.mapper.Mapper;
 public interface ValueMetadata<T> extends Metadata {
     Mapper<UUID, T> viewValues();
     
-    ValueTrait<T> asValueTrait(UUID entityID);
+    Trait<T> asTrait(UUID entityID);
     
-    Stream<ValueTrait<T>> traitStream();
+    Stream<Trait<T>> traitStream();
 }

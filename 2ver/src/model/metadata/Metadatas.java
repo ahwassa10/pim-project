@@ -23,21 +23,6 @@ public final class Metadatas {
         public UUID computeID(UUID entityID) {
             return UUIDs.xorUUIDs(metadataID, entityID);
         }
-        
-        public Trait asTrait(UUID entityID) {
-            if (isAssociated(entityID)) {
-                return new Trait() {
-                    private UUID traitID = computeID(entityID);
-                    
-                    public UUID getTraitID() {
-                        return traitID;
-                    }
-                };
-            } else {
-                String msg = String.format("%s is not associated with this metadata", entityID);
-                throw new IllegalArgumentException(msg);
-            }
-        }
     }
     
     public static class MarkedMetadata extends AbstractMetadata {
@@ -109,8 +94,8 @@ public final class Metadatas {
             super(Mappers.singleMapper());
         }
         
-        private ValueTrait<T> buildValueTrait(UUID entityID) {
-            return new ValueTrait<T>() {
+        private Trait<T> buildValueTrait(UUID entityID) {
+            return new Trait<T>() {
                 private UUID traitID = computeID(entityID);
                 private One<T> value = One.of(viewValues().get(entityID).any());
                 
@@ -124,11 +109,11 @@ public final class Metadatas {
             };
         }
         
-        public Stream<ValueTrait<T>> traitStream() {
+        public Stream<Trait<T>> traitStream() {
             return stream().map(entityID -> buildValueTrait(entityID));
         }
         
-        public ValueTrait<T> asValueTrait(UUID entityID) {
+        public Trait<T> asTrait(UUID entityID) {
             if (isAssociated(entityID)) {
                 return buildValueTrait(entityID);
             } else {
@@ -143,8 +128,8 @@ public final class Metadatas {
             super(Mappers.multiMapper());
         }
         
-        private ValueTrait<T> buildValueTrait(UUID entityID) {
-            return new ValueTrait<T>() {
+        private Trait<T> buildValueTrait(UUID entityID) {
+            return new Trait<T>() {
                 private UUID traitID = computeID(entityID);
                 private Some<T> values = Some.of(viewValues().get(entityID).asSet());
                 
@@ -158,11 +143,11 @@ public final class Metadatas {
             };
         }
         
-        public Stream<ValueTrait<T>> traitStream() {
+        public Stream<Trait<T>> traitStream() {
             return stream().map(entityID -> buildValueTrait(entityID));
         }
         
-        public ValueTrait<T> asValueTrait(UUID entityID) {
+        public Trait<T> asTrait(UUID entityID) {
             if (isAssociated(entityID)) {
                 return buildValueTrait(entityID);
             } else {

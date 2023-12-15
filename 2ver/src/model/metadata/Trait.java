@@ -2,6 +2,9 @@ package model.metadata;
 
 import java.util.UUID;
 
-public interface Trait {
+import model.presence.Some;
+
+public interface Trait<T> {
     UUID getTraitID();
+    Some<T> get();
 }
