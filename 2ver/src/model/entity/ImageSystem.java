@@ -22,7 +22,7 @@ public final class ImageSystem {
     private ImageEntity buildEntity(UUID imageID) {
         return new ImageEntity() {
             private final UUID id = imageID;
-            private final Path source = sourceMetadata.viewValues().anyValue(imageID);
+            private final Path source = sourceMetadata.viewValues().get(imageID).any();
             
             public UUID getImageID() {
                 return id;

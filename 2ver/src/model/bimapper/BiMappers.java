@@ -1,10 +1,11 @@
 package model.bimapper;
 
-import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import model.mapper.Mappers;
 import model.mapper.MutableMapper;
+import model.presence.MaybeSome;
 import model.mapper.Mappers.MultiMapper;
 import model.mapper.Mappers.SingleMapper;
 
@@ -25,28 +26,16 @@ public final class BiMappers {
             this.backwardMap = other.forwardMap;
         }
         
+        public Stream<K> keyStream() {
+            return forwardMap.keyStream();
+        }
+        
         public boolean hasMapping(K key, V value) {
             return forwardMap.hasMapping(key, value);
         }
         
-        public int countValues(K key) {
-            return forwardMap.countValues(key);
-        }
-        
-        public Iterator<V> iterateValues(K key) {
-            return forwardMap.iterateValues(key);
-        }
-        
-        public boolean hasKey(K key) {
-            return forwardMap.hasKey(key);
-        }
-        
-        public V anyValue(K key) {
-            return forwardMap.anyValue(key);
-        }
-        
-        public Set<V> getValues(K key) {
-            return forwardMap.getValues(key);
+        public MaybeSome<V> get(K key) {
+            return forwardMap.get(key);
         }
         
         public abstract boolean canMap(K key, V value);
@@ -64,7 +53,7 @@ public final class BiMappers {
         }
         
         public void unmapAll(K key) {
-            Set<V> values = forwardMap.getValues(key);
+            Set<V> values = forwardMap.get(key).asSet();
             for (V value : values) {
                 backwardMap.unmap(value, key);
             }
@@ -88,7 +77,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.hasKey(key) && !this.inverse().hasKey(value);
+            return !this.get(key).has() && !this.inverse().get(value).has();
         }
         
         public DirectMapper<V, K> inverse() {
@@ -111,7 +100,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.hasKey(key);
+            return !this.get(key).has();
         }
         
         public PartitionMapper<V, K> inverse() {
@@ -134,7 +123,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.inverse().hasKey(value);
+            return !this.inverse().get(value).has();
         }
         
         public FunctionMapper<V, K> inverse() {

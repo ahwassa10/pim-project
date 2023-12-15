@@ -36,8 +36,8 @@ public final class ContentSystem {
     private ContentEntity buildEntity(UUID contentID) {
         return new ContentEntity() {
             private final UUID id = contentID;
-            private final String name = nameMetadata.viewValues().anyValue(contentID);
-            private final String description = descriptionMetadata.viewValues().anyValue(contentID);
+            private final String name = nameMetadata.viewValues().get(contentID).any();
+            private final String description = descriptionMetadata.viewValues().get(contentID).any();
             
             public UUID getContentID() {
                 return id;

@@ -121,23 +121,23 @@ public final class HashForest<T> implements Forest<T> {
     }
     
     public boolean hasParent(T object) {
-        return parents.hasKey(object);
+        return parents.get(object).has();
     }
     
     public T getParent(T node) {
         Forests.requireParent(this, node);
         
-        return parents.anyValue(node);
+        return parents.get(node).any();
     }
     
     public boolean hasChildren(T node) {
-        return parents.inverse().hasKey(node);
+        return parents.inverse().get(node).has();
     }
     
     public Set<T> getChildren(T node) {
         Forests.requireChildren(this, node);
-        
-        return parents.inverse().getValues(node);
+       
+        return parents.inverse().get(node).asSet();
     }
     
     public Node<T> atNode(T node) {
@@ -164,7 +164,7 @@ public final class HashForest<T> implements Forest<T> {
     public T detach(T node) {
         Forests.requireParent(this, node);
         
-        T parent = parents.anyValue(node);
+        T parent = parents.get(node).any();
         parents.unmap(node, parent);
         
         return parent;

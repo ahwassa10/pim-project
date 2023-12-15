@@ -1,11 +1,7 @@
 package model.metadata;
 
-import java.util.Iterator;
-import java.util.Set;
+import model.presence.Some;
 
 public interface ValueTrait<T> extends Trait {
-    int countValues();
-    Iterator<T> iterateValues();
-    T anyValue();
-    Set<T> getValues();
+    Some<T> get();
 }

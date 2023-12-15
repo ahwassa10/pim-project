@@ -1,15 +1,12 @@
 package model.mapper;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.stream.Stream;
+
+import model.presence.MaybeSome;
 
 public interface Mapper<K, V> {
+    Stream<K> keyStream();
     boolean hasMapping(K key, V value);
     
-    int countValues(K key);
-    Iterator<V> iterateValues(K key);
-    
-    boolean hasKey(K key);
-    V anyValue(K key);
-    Set<V> getValues(K key);
+    MaybeSome<V> get(K key);
 }

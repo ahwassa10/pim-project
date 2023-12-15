@@ -1,51 +1,39 @@
 package model.mapper;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import model.util.SingleIterators;
+import model.presence.Maybe;
+import model.presence.MaybeSome;
+import model.presence.None;
+import model.presence.One;
 
 public final class Mappers {
     public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
+        public Stream<K> keyStream() {
+            return imap.keySet().stream();
+        }
+        
         public boolean hasMapping(K key, V value) {
             return imap.containsKey(key) && Objects.equals(imap.get(key), value);
         }
         
-        public int countValues(K key) {
-            return imap.containsKey(key) ? 1 : 0;
-        }
-        
-        public Iterator<V> iterateValues(K key) {
+        public Maybe<V> get(K key) {
             if (imap.containsKey(key)) {
-                return SingleIterators.of(imap.get(key));
+                return One.of(imap.get(key));
             } else {
-                return Collections.emptyIterator();
+                return None.of();
             }
         }
         
-        public boolean hasKey(K key) {
-            return imap.containsKey(key);
-        }
-        
-        public V anyValue(K key) {
-            Mappers.requireKey(this, key);
-            return imap.get(key);
-        }
-        
-        public Set<V> getValues(K key) {
-            Mappers.requireKey(this, key);
-            return Set.of(imap.get(key));
-        }
-        
         public boolean canMap(K key, V value) {
-            return !hasKey(key);
+            return !imap.containsKey(key);
         }
         
         public void map(K key, V value) {
@@ -67,38 +55,20 @@ public final class Mappers {
     public static final class MultiMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
+        public Stream<K> keyStream() {
+            return imap.keySet().stream();
+        }
+        
         public boolean hasMapping(K key, V value) {
             return imap.containsKey(key) && imap.get(key).contains(value);
         }
         
-        public int countValues(K key) {
+        public MaybeSome<V> get(K key) {
             if (imap.containsKey(key)) {
-                return imap.get(key).size();
+                return MaybeSome.of(imap.get(key));
             } else {
-                return 0;
+                return None.of();
             }
-        }
-        
-        public Iterator<V> iterateValues(K key) {
-            if (imap.containsKey(key)) {
-                return Set.copyOf(imap.get(key)).iterator();
-            } else {
-                return Collections.emptyIterator();
-            }
-        }
-        
-        public boolean hasKey(K key) {
-            return imap.containsKey(key);
-        }
-        
-        public V anyValue(K key) {
-            Mappers.requireKey(this, key);
-            return imap.get(key).iterator().next();
-        }
-        
-        public Set<V> getValues(K key) {
-            Mappers.requireKey(this, key);
-            return Set.copyOf(imap.get(key));
         }
         
         public boolean canMap(K key, V value) {
@@ -149,7 +119,7 @@ public final class Mappers {
     }
 
     public static <K> K requireKey(Mapper<K, ?> mapper, K key) {
-        if (!mapper.hasKey(key)) {
+        if (!mapper.get(key).has()) {
             String msg = String.format("%s is not a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }
@@ -157,7 +127,7 @@ public final class Mappers {
     }
 
     public static <K> K requireNoKeys(Mapper<K, ?> mapper, K key) {
-        if (mapper.hasKey(key)) {
+        if (mapper.get(key).has()) {
             String msg = String.format("%s is a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }

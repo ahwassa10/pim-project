@@ -22,7 +22,7 @@ public class Test {
         name.attach(exisTrait, "First Name");
         
        ValueTrait<String> entityName = name.asValueTrait(exisTrait);
-       System.out.println(entityName.anyValue());
+       System.out.println(entityName.get().any());
        System.out.println(entityName.getTraitID());
        
        System.out.println(entity.equals(exis.computeID(exisTrait)));

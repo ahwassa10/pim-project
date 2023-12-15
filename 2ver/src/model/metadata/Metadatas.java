@@ -1,7 +1,6 @@
 package model.metadata;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -9,7 +8,8 @@ import java.util.stream.Stream;
 import model.mapper.Mapper;
 import model.mapper.Mappers;
 import model.mapper.MutableMapper;
-import model.util.SingleIterators;
+import model.presence.One;
+import model.presence.Some;
 import model.util.UUIDs;
 
 public final class Metadatas {
@@ -80,7 +80,11 @@ public final class Metadatas {
         }
         
         public boolean isAssociated(UUID entityID) {
-            return mapper.hasKey(entityID);
+            return mapper.get(entityID).has();
+        }
+        
+        public Stream<UUID> stream() {
+            return mapper.keyStream();
         }
         
         public Mapper<UUID, T> viewValues() {
@@ -105,32 +109,28 @@ public final class Metadatas {
             super(Mappers.singleMapper());
         }
         
+        private ValueTrait<T> buildValueTrait(UUID entityID) {
+            return new ValueTrait<T>() {
+                private UUID traitID = computeID(entityID);
+                private One<T> value = One.of(viewValues().get(entityID).any());
+                
+                public UUID getTraitID() {
+                    return traitID;
+                }
+                
+                public Some<T> get() {
+                    return value;
+                }
+            };
+        }
+        
+        public Stream<ValueTrait<T>> traitStream() {
+            return stream().map(entityID -> buildValueTrait(entityID));
+        }
+        
         public ValueTrait<T> asValueTrait(UUID entityID) {
             if (isAssociated(entityID)) {
-                return new ValueTrait<T>() {
-                    private UUID traitID = computeID(entityID);
-                    private T value = viewValues().anyValue(entityID);
-                    
-                    public UUID getTraitID() {
-                        return traitID;
-                    }
-                    
-                    public int countValues() {
-                        return 1;
-                    }
-                    
-                    public Iterator<T> iterateValues() {
-                        return SingleIterators.of(value);
-                    }
-                    
-                    public T anyValue() {
-                        return value;
-                    }
-                    
-                    public Set<T> getValues() {
-                        return Set.of(value);
-                    }
-                };
+                return buildValueTrait(entityID);
             } else {
                 String msg = String.format("%s is not associated with this metadata", entityID);
                 throw new IllegalArgumentException(msg);
@@ -143,32 +143,28 @@ public final class Metadatas {
             super(Mappers.multiMapper());
         }
         
+        private ValueTrait<T> buildValueTrait(UUID entityID) {
+            return new ValueTrait<T>() {
+                private UUID traitID = computeID(entityID);
+                private Some<T> values = Some.of(viewValues().get(entityID).asSet());
+                
+                public UUID getTraitID() {
+                    return traitID;
+                }
+                
+               public Some<T> get() {
+                   return values;
+               }
+            };
+        }
+        
+        public Stream<ValueTrait<T>> traitStream() {
+            return stream().map(entityID -> buildValueTrait(entityID));
+        }
+        
         public ValueTrait<T> asValueTrait(UUID entityID) {
             if (isAssociated(entityID)) {
-                return new ValueTrait<T>() {
-                    private UUID traitID = computeID(entityID);
-                    private Set<T> values = viewValues().getValues(entityID);
-                    
-                    public UUID getTraitID() {
-                        return traitID;
-                    }
-                    
-                    public int countValues() {
-                        return values.size();
-                    }
-                    
-                    public Iterator<T> iterateValues() {
-                        return values.iterator();
-                    }
-                    
-                    public T anyValue() {
-                        return values.iterator().next();
-                    }
-                    
-                    public Set<T> getValues() {
-                        return values;
-                    }
-                };
+                return buildValueTrait(entityID);
             } else {
                 String msg = String.format("%s is not associated with this metadata", entityID);
                 throw new IllegalArgumentException(msg);
