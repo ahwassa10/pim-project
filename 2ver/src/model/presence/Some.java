@@ -7,9 +7,13 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public interface Some<T> extends MaybeSome<T> {
+    Some<T> certainly();
+    
     default boolean has() {
         return true;
     }
+    
+    T any();
     
     static <T> Some<T> of(Collection<T> values) {
         if (values.size() == 0) {
@@ -18,6 +22,10 @@ public interface Some<T> extends MaybeSome<T> {
         
         return new Some<T>() {
             private final Set<T> vals = Set.copyOf(values);
+            
+            public Some<T> certainly() {
+                return this;
+            }
             
             public int count() {
                 return vals.size();

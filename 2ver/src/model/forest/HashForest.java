@@ -127,7 +127,7 @@ public final class HashForest<T> implements Forest<T> {
     public T getParent(T node) {
         Forests.requireParent(this, node);
         
-        return parents.get(node).any();
+        return parents.get(node).certainly().any();
     }
     
     public boolean hasChildren(T node) {
@@ -164,7 +164,7 @@ public final class HashForest<T> implements Forest<T> {
     public T detach(T node) {
         Forests.requireParent(this, node);
         
-        T parent = parents.get(node).any();
+        T parent = parents.get(node).certainly().any();
         parents.unmap(node, parent);
         
         return parent;

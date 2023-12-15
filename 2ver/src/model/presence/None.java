@@ -8,18 +8,18 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public interface None<T> extends Maybe<T> {
-    static <T> Maybe<T> of() {
-        return new Maybe<T>() {
+    static <T> None<T> of() {
+        return new None<T>() {
+            public One<T> certainly() {
+                throw new NoSuchElementException();
+            }
+            
             public boolean has() {
                 return false;
             }
             
             public int count() {
                 return 0;
-            }
-            
-            public T any() {
-                throw new NoSuchElementException();
             }
             
             public Iterator<T> iterate() {

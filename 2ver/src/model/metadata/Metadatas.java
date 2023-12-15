@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import model.mapper.Mapper;
 import model.mapper.Mappers;
 import model.mapper.MutableMapper;
-import model.presence.One;
 import model.presence.Some;
 import model.util.UUIDs;
 
@@ -76,6 +75,34 @@ public final class Metadatas {
             return mapper;
         }
         
+        private Trait<T> buildValueTrait(UUID entityID) {
+            return new Trait<T>() {
+                private UUID traitID = computeID(entityID);
+                private Some<T> value = viewValues().get(entityID).certainly();
+                
+                public UUID getTraitID() {
+                    return traitID;
+                }
+                
+                public Some<T> get() {
+                    return value;
+                }
+            };
+        }
+        
+        public Trait<T> asTrait(UUID entityID) {
+            if (isAssociated(entityID)) {
+                return buildValueTrait(entityID);
+            } else {
+                String msg = String.format("%s is not associated with this metadata", entityID);
+                throw new IllegalArgumentException(msg);
+            }
+        }
+        
+        public Stream<Trait<T>> traitStream() {
+            return stream().map(entityID -> buildValueTrait(entityID));
+        }
+        
         public void attach(UUID entity, T value) {
             mapper.map(entity, value);
         }
@@ -93,67 +120,11 @@ public final class Metadatas {
         private SingleMetadata() {
             super(Mappers.singleMapper());
         }
-        
-        private Trait<T> buildValueTrait(UUID entityID) {
-            return new Trait<T>() {
-                private UUID traitID = computeID(entityID);
-                private One<T> value = One.of(viewValues().get(entityID).any());
-                
-                public UUID getTraitID() {
-                    return traitID;
-                }
-                
-                public Some<T> get() {
-                    return value;
-                }
-            };
-        }
-        
-        public Stream<Trait<T>> traitStream() {
-            return stream().map(entityID -> buildValueTrait(entityID));
-        }
-        
-        public Trait<T> asTrait(UUID entityID) {
-            if (isAssociated(entityID)) {
-                return buildValueTrait(entityID);
-            } else {
-                String msg = String.format("%s is not associated with this metadata", entityID);
-                throw new IllegalArgumentException(msg);
-            }
-        }
     }
     
     public static class MultiMetadata<T> extends AbstractValueMetadata<T> {
         private MultiMetadata() {
             super(Mappers.multiMapper());
-        }
-        
-        private Trait<T> buildValueTrait(UUID entityID) {
-            return new Trait<T>() {
-                private UUID traitID = computeID(entityID);
-                private Some<T> values = Some.of(viewValues().get(entityID).asSet());
-                
-                public UUID getTraitID() {
-                    return traitID;
-                }
-                
-               public Some<T> get() {
-                   return values;
-               }
-            };
-        }
-        
-        public Stream<Trait<T>> traitStream() {
-            return stream().map(entityID -> buildValueTrait(entityID));
-        }
-        
-        public Trait<T> asTrait(UUID entityID) {
-            if (isAssociated(entityID)) {
-                return buildValueTrait(entityID);
-            } else {
-                String msg = String.format("%s is not associated with this metadata", entityID);
-                throw new IllegalArgumentException(msg);
-            }
         }
     }
     

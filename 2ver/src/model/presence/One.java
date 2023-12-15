@@ -12,6 +12,10 @@ public interface One<T> extends Maybe<T>, Some<T> {
         return new One<T>() {
             private final T val = value;
             
+            public One<T> certainly() {
+                return this;
+            }
+            
             public int count() {
                 return 1;
             }
