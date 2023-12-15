@@ -53,30 +53,19 @@ public final class Metadatas {
         }
     }
     
-    public static class SingleMetadata<T> implements ValueMetadata<T> {
+    private static abstract class AbstractTable<T> implements ValueMetadata<T> {
         private final UUID metadataID = UUID.randomUUID();
-        private final SingleMapper<UUID, T> mapper = Mappers.singleMapper();
-        
-        private SingleMetadata() {}
         
         public UUID getID() {
             return metadataID;
         }
         
         public boolean contains(UUID entityID) {
-            return mapper.get(entityID).has();
+            return view().get(entityID).has();
         }
         
         public Stream<UUID> stream() {
-            return mapper.keyStream();
-        }
-        
-        public Mapper<UUID, T> view() {
-            return mapper;
-        }
-        
-        public Maybe<T> view(UUID entityID) {
-            return mapper.get(entityID);
+            return view().keyStream();
         }
         
         private Trait<T> buildValueTrait(UUID entityID) {
@@ -98,13 +87,28 @@ public final class Metadatas {
             if (contains(entityID)) {
                 return buildValueTrait(entityID);
             } else {
-                String msg = String.format("%s is not associated with this metadata", entityID);
+                String msg = String.format("%s is not contains in this (%s) table",
+                        entityID, getID());
                 throw new IllegalArgumentException(msg);
             }
         }
         
         public Stream<Trait<T>> traitStream() {
             return stream().map(entityID -> buildValueTrait(entityID));
+        }
+    }
+    
+    public static class SingleTable<T> extends AbstractTable<T> {
+        private final SingleMapper<UUID, T> mapper = Mappers.singleMapper();
+        
+        private SingleTable() {}
+        
+        public Mapper<UUID, T> view() {
+            return mapper;
+        }
+        
+        public Maybe<T> view(UUID entityID) {
+            return mapper.get(entityID);
         }
         
         public UUID attach(UUID entity, T value) {
@@ -121,23 +125,10 @@ public final class Metadatas {
         }
     }
     
-    public static class MultiMetadata<T> implements ValueMetadata<T> {
-        private final UUID metadataID = UUID.randomUUID();
+    public static class MultiTable<T> extends AbstractTable<T> {
         private final MultiMapper<UUID, T> mapper = Mappers.multiMapper();
         
-        private MultiMetadata() {}
-        
-        public UUID getID() {
-            return metadataID;
-        }
-        
-        public boolean contains(UUID entityID) {
-            return mapper.get(entityID).has();
-        }
-        
-        public Stream<UUID> stream() {
-            return mapper.keyStream();
-        }
+        private MultiTable() {}
         
         public Mapper<UUID, T> view() {
             return mapper;
@@ -145,34 +136,6 @@ public final class Metadatas {
         
         public MaybeSome<T> view(UUID entityID) {
             return mapper.get(entityID);
-        }
-        
-        private Trait<T> buildValueTrait(UUID entityID) {
-            return new Trait<T>() {
-                private UUID traitID = computeID(entityID);
-                private Some<T> value = view().get(entityID).certainly();
-                
-                public UUID getTraitID() {
-                    return traitID;
-                }
-                
-                public Some<T> get() {
-                    return value;
-                }
-            };
-        }
-        
-        public Trait<T> asTrait(UUID entityID) {
-            if (contains(entityID)) {
-                return buildValueTrait(entityID);
-            } else {
-                String msg = String.format("%s is not associated with this metadata", entityID);
-                throw new IllegalArgumentException(msg);
-            }
-        }
-        
-        public Stream<Trait<T>> traitStream() {
-            return stream().map(entityID -> buildValueTrait(entityID));
         }
         
         public UUID attach(UUID entity, T value) {
@@ -193,11 +156,11 @@ public final class Metadatas {
         return new Association();
     }
     
-    public static <T> SingleMetadata<T> singleMetadata() {
-        return new SingleMetadata<T>();
+    public static <T> SingleTable<T> singleMetadata() {
+        return new SingleTable<T>();
     }
     
-    public static <T> MultiMetadata<T> multiMetadata() {
-        return new MultiMetadata<T>();
+    public static <T> MultiTable<T> multiMetadata() {
+        return new MultiTable<T>();
     }
 }

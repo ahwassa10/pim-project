@@ -3,7 +3,7 @@ package model.metadata;
 import java.util.UUID;
 
 import model.metadata.Metadatas.Association;
-import model.metadata.Metadatas.SingleMetadata;
+import model.metadata.Metadatas.SingleTable;
 
 
 public class Test {
@@ -17,7 +17,7 @@ public class Test {
         System.out.println(exisTrait);
         System.out.println(exis.computeID(entity));
         
-        SingleMetadata<String> name = Metadatas.singleMetadata();
+        SingleTable<String> name = Metadatas.singleMetadata();
         
         name.attach(exisTrait, "First Name");
         

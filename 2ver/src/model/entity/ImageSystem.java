@@ -6,11 +6,11 @@ import java.util.stream.Stream;
 
 import model.metadata.Metadatas;
 import model.metadata.Metadatas.Association;
-import model.metadata.Metadatas.SingleMetadata;
+import model.metadata.Metadatas.SingleTable;
 
 public final class ImageSystem {
     private final Association presence = Metadatas.markedMetadata();
-    private final SingleMetadata<Path> sourceMetadata = Metadatas.singleMetadata();
+    private final SingleTable<Path> sourceMetadata = Metadatas.singleMetadata();
     
     public UUID create(UUID rawID, Path imageSource) {
         UUID imageID = presence.associate(rawID);

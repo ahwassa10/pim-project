@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import model.metadata.Metadatas;
-import model.metadata.Metadatas.SingleMetadata;
+import model.metadata.Metadatas.SingleTable;
 
 public final class ContentSystem {
     public static class Content {
@@ -25,7 +25,7 @@ public final class ContentSystem {
         }
     }
     
-    private final SingleMetadata<Content> contentMetadata = Metadatas.singleMetadata();
+    private final SingleTable<Content> contentMetadata = Metadatas.singleMetadata();
     
     public UUID create(UUID rawID, String name, String description) {
         Content content = new Content(name, description);
