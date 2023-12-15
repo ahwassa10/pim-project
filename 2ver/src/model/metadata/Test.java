@@ -2,7 +2,7 @@ package model.metadata;
 
 import java.util.UUID;
 
-import model.metadata.Metadatas.MarkedMetadata;
+import model.metadata.Metadatas.Association;
 import model.metadata.Metadatas.SingleMetadata;
 
 
@@ -10,9 +10,9 @@ public class Test {
     public static void main(String[] args) {
         UUID entity = UUID.randomUUID();
         
-        MarkedMetadata exis = Metadatas.markedMetadata();
+        Association exis = Metadatas.markedMetadata();
         
-        UUID exisTrait = exis.mark(entity);
+        UUID exisTrait = exis.associate(entity);
         
         System.out.println(exisTrait);
         System.out.println(exis.computeID(entity));

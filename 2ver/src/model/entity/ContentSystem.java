@@ -51,7 +51,7 @@ public final class ContentSystem {
         
         UUID rawID = contentMetadata.computeID(contentID);
         
-        String description = contentMetadata.viewValues().get(rawID).certainly().any().getDescription();
+        String description = contentMetadata.view().get(rawID).certainly().any().getDescription();
         contentMetadata.detachAll(rawID);
         contentMetadata.attach(rawID, new Content(newName, description));
     }
@@ -61,7 +61,7 @@ public final class ContentSystem {
         
         UUID rawID = contentMetadata.computeID(contentID);
         
-        String name = contentMetadata.viewValues().get(rawID).certainly().any().getName();
+        String name = contentMetadata.view().get(rawID).certainly().any().getName();
         contentMetadata.detachAll(rawID);
         contentMetadata.attach(rawID, new Content(name, newDescription));
     }
@@ -69,7 +69,7 @@ public final class ContentSystem {
     public void remove(UUID contentID) {
         UUID rawID = contentMetadata.computeID(contentID);
         
-        if (!contentMetadata.viewValues().get(rawID).has()) {
+        if (!contentMetadata.view().get(rawID).has()) {
             String msg = String.format("%s is not a system entity", contentID);
             throw new IllegalArgumentException(msg);
         }

@@ -3,11 +3,14 @@ package model.metadata;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import model.util.UUIDs;
+
 public interface Metadata {
-    UUID getMetadataID();
-    UUID computeID(UUID entityID);
-    
-    boolean isAssociated(UUID entityID);
-    
+    UUID getID();
+    boolean contains(UUID entityID);
     Stream<UUID> stream();
+    
+    default UUID computeID(UUID entityID) {
+        return UUIDs.xorUUIDs(getID(), entityID);
+    }
 }

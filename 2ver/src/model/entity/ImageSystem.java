@@ -5,15 +5,15 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import model.metadata.Metadatas;
-import model.metadata.Metadatas.MarkedMetadata;
+import model.metadata.Metadatas.Association;
 import model.metadata.Metadatas.SingleMetadata;
 
 public final class ImageSystem {
-    private final MarkedMetadata presence = Metadatas.markedMetadata();
+    private final Association presence = Metadatas.markedMetadata();
     private final SingleMetadata<Path> sourceMetadata = Metadatas.singleMetadata();
     
     public UUID create(UUID rawID, Path imageSource) {
-        UUID imageID = presence.mark(rawID);
+        UUID imageID = presence.associate(rawID);
         sourceMetadata.attach(imageID, imageSource);
         
         return imageID;
@@ -22,7 +22,7 @@ public final class ImageSystem {
     private ImageEntity buildEntity(UUID imageID) {
         return new ImageEntity() {
             private final UUID id = imageID;
-            private final Path source = sourceMetadata.viewValues().get(imageID).certainly().any();
+            private final Path source = sourceMetadata.view().get(imageID).certainly().any();
             
             public UUID getImageID() {
                 return id;
@@ -41,7 +41,7 @@ public final class ImageSystem {
     public ImageEntity asEntity(UUID imageID) {
         UUID rawID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(rawID)) {
+        if (!presence.contains(rawID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
@@ -52,7 +52,7 @@ public final class ImageSystem {
     public void remove(UUID imageID) {
         UUID rawID = presence.computeID(imageID);
         
-        if (!presence.isAssociated(rawID)) {
+        if (!presence.contains(rawID)) {
             String msg = String.format("%s is not an image entity", imageID);
             throw new IllegalArgumentException(msg);
         }
