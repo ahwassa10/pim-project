@@ -103,8 +103,9 @@ public final class Metadatas {
             return stream().map(entityID -> buildValueTrait(entityID));
         }
         
-        public void attach(UUID entity, T value) {
+        public UUID attach(UUID entity, T value) {
             mapper.map(entity, value);
+            return computeID(entity);
         }
         
         public void detach(UUID entity, T value) {

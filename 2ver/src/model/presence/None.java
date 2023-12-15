@@ -7,9 +7,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface None<T> extends Maybe<T> {
-    static <T> None<T> of() {
-        return new None<T>() {
+public interface None {
+    static <T> Maybe<T> of() {
+        return new Maybe<T>() {
             public One<T> certainly() {
                 throw new NoSuchElementException();
             }
