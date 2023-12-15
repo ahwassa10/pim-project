@@ -11,6 +11,7 @@ import model.presence.Maybe;
 import model.presence.MaybeSome;
 import model.presence.None;
 import model.presence.One;
+import model.presence.Some;
 
 public final class Mappers {
     public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
@@ -65,7 +66,7 @@ public final class Mappers {
         
         public MaybeSome<V> get(K key) {
             if (imap.containsKey(key)) {
-                return MaybeSome.of(imap.get(key));
+                return Some.of(imap.get(key));
             } else {
                 return None.of();
             }

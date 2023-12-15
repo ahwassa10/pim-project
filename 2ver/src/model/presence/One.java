@@ -16,6 +16,10 @@ public interface One<T> extends Maybe<T>, Some<T> {
                 return this;
             }
             
+            public boolean has() {
+                return true;
+            }
+            
             public int count() {
                 return 1;
             }

@@ -8,11 +8,6 @@ import java.util.stream.Stream;
 
 public interface Some<T> extends MaybeSome<T> {
     Some<T> certainly();
-    
-    default boolean has() {
-        return true;
-    }
-    
     T any();
     
     static <T> Some<T> of(Collection<T> values) {
@@ -25,6 +20,10 @@ public interface Some<T> extends MaybeSome<T> {
             
             public Some<T> certainly() {
                 return this;
+            }
+            
+            public boolean has() {
+                return true;
             }
             
             public int count() {
