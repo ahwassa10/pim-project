@@ -42,6 +42,16 @@ public final class BiMappers {
             backwardMap.map(value, key);
         }
         
+        public void remap(K key, V oldValue, V newValue) {
+            Mappers.requireMapping(this, key, oldValue);
+            
+            forwardMap.unmap(key, oldValue);
+            backwardMap.unmap(oldValue, key);
+            
+            forwardMap.map(key, newValue);
+            backwardMap.map(newValue, key);
+        }
+        
         public void unmap(K key, V value) {
             forwardMap.unmap(key, value);
             backwardMap.unmap(value, key);

@@ -12,7 +12,7 @@ import model.presence.One;
 import model.presence.Some;
 
 public final class Mappers {
-    public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
+    public static final class SingleMapper<K, V> implements MutableMaybeMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
         public MaybeSome<K> keys() {
@@ -40,8 +40,24 @@ public final class Mappers {
             imap.put(key, value);
         }
         
+        public void remap(K key, V oldValue, V newValue) {
+            Mappers.requireMapping(this, key, oldValue);
+            imap.remove(key);
+            imap.put(key, newValue);
+        }
+        
+        public void remap(K key, V value) {
+            Mappers.requireKey(this, key);
+            imap.put(key, value);
+        }
+        
         public void unmap(K key, V value) {
             Mappers.requireMapping(this, key, value);
+            imap.remove(key);
+        }
+        
+        public void unmap(K key) {
+            Mappers.requireKey(this, key);
             imap.remove(key);
         }
         
@@ -77,6 +93,14 @@ public final class Mappers {
         public void map(K key, V value) {
             Mappers.requireCanMap(this, key, value);
             imap.computeIfAbsent(key, k -> new HashSet<>()).add(value);
+        }
+        
+        public void remap(K key, V oldValue, V newValue) {
+            Mappers.requireMapping(this, key, oldValue);
+            
+            Set<V> values = imap.get(key);
+            values.remove(oldValue);
+            values.add(newValue);
         }
         
         public void unmap(K key, V value) {
