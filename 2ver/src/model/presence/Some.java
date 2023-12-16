@@ -22,8 +22,12 @@ public interface Some<T> extends MaybeSome<T> {
                 return this;
             }
             
-            public boolean has() {
+            public boolean hasAny() {
                 return true;
+            }
+            
+            public boolean has(T value) {
+                return vals.contains(value);
             }
             
             public int count() {

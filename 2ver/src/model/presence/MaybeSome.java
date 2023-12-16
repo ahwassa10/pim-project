@@ -8,7 +8,8 @@ import java.util.stream.Stream;
 public interface MaybeSome<T> {
     Some<T> certainly();
     
-    boolean has();
+    boolean hasAny();
+    boolean has(T value);
     int count();
     
     Iterator<T> iterate();

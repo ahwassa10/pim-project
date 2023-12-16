@@ -14,7 +14,11 @@ public interface None {
                 throw new NoSuchElementException();
             }
             
-            public boolean has() {
+            public boolean hasAny() {
+                return false;
+            }
+            
+            public boolean has(T value) {
                 return false;
             }
             

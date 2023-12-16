@@ -1,7 +1,6 @@
 package model.bimapper;
 
 import java.util.Set;
-import java.util.stream.Stream;
 
 import model.mapper.Mappers;
 import model.mapper.MutableMapper;
@@ -26,12 +25,8 @@ public final class BiMappers {
             this.backwardMap = other.forwardMap;
         }
         
-        public Stream<K> keyStream() {
-            return forwardMap.keyStream();
-        }
-        
-        public boolean hasMapping(K key, V value) {
-            return forwardMap.hasMapping(key, value);
+        public MaybeSome<K> keys() {
+            return forwardMap.keys();
         }
         
         public MaybeSome<V> get(K key) {
@@ -77,7 +72,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.get(key).has() && !this.inverse().get(value).has();
+            return !this.get(key).hasAny() && !this.inverse().get(value).hasAny();
         }
         
         public DirectMapper<V, K> inverse() {
@@ -100,7 +95,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.get(key).has();
+            return !this.get(key).hasAny();
         }
         
         public PartitionMapper<V, K> inverse() {
@@ -123,7 +118,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.inverse().get(value).has();
+            return !this.inverse().get(value).hasAny();
         }
         
         public FunctionMapper<V, K> inverse() {
@@ -146,7 +141,7 @@ public final class BiMappers {
         }
         
         public boolean canMap(K key, V value) {
-            return !this.hasMapping(key, value);
+            return !this.get(key).has(value);
         }
         
         public BiMapper<V, K> inverse() {

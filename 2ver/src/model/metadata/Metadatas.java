@@ -61,11 +61,11 @@ public final class Metadatas {
         }
         
         public boolean contains(UUID entityID) {
-            return view().get(entityID).has();
+            return view().get(entityID).hasAny();
         }
         
         public Stream<UUID> stream() {
-            return view().keyStream();
+            return view().keys().stream();
         }
         
         private Trait<T> buildValueTrait(UUID entityID) {

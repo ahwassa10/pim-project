@@ -2,6 +2,7 @@ package model.presence;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -16,8 +17,12 @@ public interface One<T> extends Maybe<T>, Some<T> {
                 return this;
             }
             
-            public boolean has() {
+            public boolean hasAny() {
                 return true;
+            }
+            
+            public boolean has(T value) {
+                return Objects.equals(val, value);
             }
             
             public int count() {

@@ -69,7 +69,7 @@ public final class ContentSystem {
     public void remove(UUID contentID) {
         UUID rawID = contentMetadata.computeID(contentID);
         
-        if (!contentMetadata.view().get(rawID).has()) {
+        if (!contentMetadata.view().get(rawID).hasAny()) {
             String msg = String.format("%s is not a system entity", contentID);
             throw new IllegalArgumentException(msg);
         }

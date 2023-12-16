@@ -3,9 +3,7 @@ package model.mapper;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import model.presence.Maybe;
 import model.presence.MaybeSome;
@@ -17,12 +15,12 @@ public final class Mappers {
     public static final class SingleMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
-        public Stream<K> keyStream() {
-            return imap.keySet().stream();
-        }
-        
-        public boolean hasMapping(K key, V value) {
-            return imap.containsKey(key) && Objects.equals(imap.get(key), value);
+        public MaybeSome<K> keys() {
+            if (imap.size() == 0) {
+                return None.of();
+            } else {
+                return Some.of(imap.keySet());
+            }
         }
         
         public Maybe<V> get(K key) {
@@ -56,12 +54,12 @@ public final class Mappers {
     public static final class MultiMapper<K, V> implements MutableMapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
-        public Stream<K> keyStream() {
-            return imap.keySet().stream();
-        }
-        
-        public boolean hasMapping(K key, V value) {
-            return imap.containsKey(key) && imap.get(key).contains(value);
+        public MaybeSome<K> keys() {
+            if (imap.size() == 0) {
+                return None.of();
+            } else {
+                return Some.of(imap.keySet());
+            }
         }
         
         public MaybeSome<V> get(K key) {
@@ -106,21 +104,21 @@ public final class Mappers {
     }
     
     public static <K, V> void requireMapping(Mapper<K, V> mapper, K key, V value) {
-        if (!mapper.hasMapping(key, value)) {
+        if (!mapper.get(key).has(value)) {
             String msg = String.format("%s is not mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
 
     public static <K, V> void requireNoMapping(Mapper<K, V> mapper, K key, V value) {
-        if (mapper.hasMapping(key, value)) {
+        if (mapper.get(key).has(value)) {
             String msg = String.format("%s is already mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
 
     public static <K> K requireKey(Mapper<K, ?> mapper, K key) {
-        if (!mapper.get(key).has()) {
+        if (!mapper.get(key).hasAny()) {
             String msg = String.format("%s is not a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }
@@ -128,7 +126,7 @@ public final class Mappers {
     }
 
     public static <K> K requireNoKeys(Mapper<K, ?> mapper, K key) {
-        if (mapper.get(key).has()) {
+        if (mapper.get(key).hasAny()) {
             String msg = String.format("%s is a key in this mapper", key);
             throw new IllegalArgumentException(msg);
         }
