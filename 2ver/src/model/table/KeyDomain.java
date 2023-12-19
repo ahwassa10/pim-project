@@ -1,4 +1,4 @@
-package model.table.spec;
+package model.table;
 
 import java.util.Objects;
 import java.util.UUID;
