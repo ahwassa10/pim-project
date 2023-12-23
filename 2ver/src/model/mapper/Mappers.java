@@ -12,7 +12,7 @@ import model.presence.One;
 import model.presence.Some;
 
 public final class Mappers {
-    public static final class SingleMapper<K, V> implements MutableMaybeMapper<K, V> {
+    private static final class ImpSingleMapper<K, V> implements MutableSingleMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
         public MaybeSome<K> keys() {
@@ -67,7 +67,7 @@ public final class Mappers {
         }
     }
     
-    public static final class MultiMapper<K, V> implements MutableMapper<K, V> {
+    private static final class ImpMultiMapper<K, V> implements MutableMultiMapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
         public MaybeSome<K> keys() {
@@ -119,29 +119,29 @@ public final class Mappers {
         }
     }
     
-    public static <K, V> SingleMapper<K, V> singleMapper() {
-        return new SingleMapper<K, V>();
+    public static <K, V> MutableSingleMapper<K, V> singleMapper() {
+        return new ImpSingleMapper<K, V>();
     }
     
-    public static <K, V> MultiMapper<K, V> multiMapper() {
-        return new MultiMapper<K, V>();
+    public static <K, V> MutableMultiMapper<K, V> multiMapper() {
+        return new ImpMultiMapper<K, V>();
     }
     
-    public static <K, V> void requireMapping(Mapper<K, V> mapper, K key, V value) {
+    public static <K, V> void requireMapping(MultiMapper<K, V> mapper, K key, V value) {
         if (!mapper.get(key).has(value)) {
             String msg = String.format("%s is not mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
 
-    public static <K, V> void requireNoMapping(Mapper<K, V> mapper, K key, V value) {
+    public static <K, V> void requireNoMapping(MultiMapper<K, V> mapper, K key, V value) {
         if (mapper.get(key).has(value)) {
             String msg = String.format("%s is already mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);
         }
     }
 
-    public static <K> K requireKey(Mapper<K, ?> mapper, K key) {
+    public static <K> K requireKey(MultiMapper<K, ?> mapper, K key) {
         if (!mapper.get(key).hasAny()) {
             String msg = String.format("%s is not a key in this mapper", key);
             throw new IllegalArgumentException(msg);
@@ -149,7 +149,7 @@ public final class Mappers {
         return key;
     }
 
-    public static <K> K requireNoKeys(Mapper<K, ?> mapper, K key) {
+    public static <K> K requireNoKeys(MultiMapper<K, ?> mapper, K key) {
         if (mapper.get(key).hasAny()) {
             String msg = String.format("%s is a key in this mapper", key);
             throw new IllegalArgumentException(msg);
@@ -157,7 +157,7 @@ public final class Mappers {
         return key;
     }
 
-    public static <K, V> void requireCanMap(MutableMapper<K,V> mapper, K key, V value) {
+    public static <K, V> void requireCanMap(MutableMultiMapper<K,V> mapper, K key, V value) {
         if (!mapper.canMap(key, value)) {
             String msg = String.format("%s cannot be mapped to %s under this mapper", key, value);
             throw new IllegalArgumentException(msg);

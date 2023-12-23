@@ -3,19 +3,17 @@ package model.bimapper;
 import java.util.Set;
 
 import model.mapper.Mappers;
-import model.mapper.MutableMapper;
+import model.mapper.MutableMultiMapper;
 import model.presence.MaybeSome;
-import model.mapper.Mappers.MultiMapper;
-import model.mapper.Mappers.SingleMapper;
 
 public final class BiMappers {
     private BiMappers() {}
     
-    private static abstract class AbstractBiMapper<K, V> implements BiMapper<K, V>, MutableMapper<K, V> {
-        private final MutableMapper<K, V> forwardMap;
-        private final MutableMapper<V, K> backwardMap;
+    private static abstract class AbstractBiMapper<K, V> implements BiMapper<K, V>, MutableMultiMapper<K, V> {
+        private final MutableMultiMapper<K, V> forwardMap;
+        private final MutableMultiMapper<V, K> backwardMap;
         
-        private AbstractBiMapper(MutableMapper<K, V> forwardMap, MutableMapper<V, K> backwardMap) {
+        private AbstractBiMapper(MutableMultiMapper<K, V> forwardMap, MutableMultiMapper<V, K> backwardMap) {
             this.forwardMap = forwardMap;
             this.backwardMap = backwardMap;
         }
@@ -72,7 +70,7 @@ public final class BiMappers {
         private final DirectMapper<V, K> directMapper;
         
         private DirectMapper() {
-            super(new SingleMapper<K, V>(), new SingleMapper<V, K>());
+            super(Mappers.singleMapper(), Mappers.singleMapper());
             this.directMapper = new DirectMapper<>(this);
         }
         
@@ -95,7 +93,7 @@ public final class BiMappers {
         private final PartitionMapper<V, K> partitionMapper;
         
         private FunctionMapper() {
-            super(new SingleMapper<>(), new MultiMapper<>());
+            super(Mappers.singleMapper(), Mappers.multiMapper());
             partitionMapper = new PartitionMapper<>(this);
         }
         
@@ -118,7 +116,7 @@ public final class BiMappers {
         private final FunctionMapper<V, K> functionMapper;
         
         private PartitionMapper() {
-            super(new MultiMapper<>(), new SingleMapper<>());
+            super(Mappers.multiMapper(), Mappers.singleMapper());
             this.functionMapper = new FunctionMapper<>(this);
         }
         
@@ -141,7 +139,7 @@ public final class BiMappers {
         private final DenseMapper<V, K> inverseMapper;
         
         private DenseMapper() {
-            super(new MultiMapper<>(), new MultiMapper<>());
+            super(Mappers.multiMapper(), Mappers.multiMapper());
             this.inverseMapper = new DenseMapper<>(this);
         }
         

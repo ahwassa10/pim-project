@@ -5,10 +5,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import model.mapper.Mapper;
+import model.mapper.MultiMapper;
 import model.mapper.Mappers;
-import model.mapper.MutableMapper;
-import model.mapper.MutableMaybeMapper;
+import model.mapper.MutableMultiMapper;
+import model.mapper.MutableSingleMapper;
 import model.presence.MaybeSome;
 import model.presence.One;
 import model.presence.Some;
@@ -20,9 +20,9 @@ public final class ValueTables {
     public static class MKMVTable<T> implements ValueTable<T> {
         private final UUID domainID;
         private final Some<KeyDomain> baseDomains;
-        private final MutableMapper<UUID, T> mapper;
+        private final MutableMultiMapper<UUID, T> mapper;
         
-        private MKMVTable(UUID domainID, Some<KeyDomain> baseDomains, MutableMapper<UUID, T> mapper) {
+        private MKMVTable(UUID domainID, Some<KeyDomain> baseDomains, MutableMultiMapper<UUID, T> mapper) {
             this.domainID = domainID;
             this.baseDomains = baseDomains;
             this.mapper = mapper;
@@ -40,7 +40,7 @@ public final class ValueTables {
             return mapper.keys();
         }
         
-        public Mapper<UUID, T> view() {
+        public MultiMapper<UUID, T> view() {
             return mapper;
         }
         
@@ -110,9 +110,9 @@ public final class ValueTables {
     public static class SKSVTable<T> implements ValueTable<T> {
         private final UUID domainID;
         private final KeyDomain baseDomain;
-        private final MutableMaybeMapper<UUID, T> mapper;
+        private final MutableSingleMapper<UUID, T> mapper;
         
-        private SKSVTable(UUID domainID, KeyDomain baseDomain, MutableMaybeMapper<UUID, T> mapper) {
+        private SKSVTable(UUID domainID, KeyDomain baseDomain, MutableSingleMapper<UUID, T> mapper) {
             this.domainID = domainID;
             this.baseDomain = baseDomain;
             this.mapper = mapper;
@@ -130,7 +130,7 @@ public final class ValueTables {
             return mapper.keys();
         }
         
-        public Mapper<UUID, T> view() {
+        public MultiMapper<UUID, T> view() {
             return mapper;
         }
         
