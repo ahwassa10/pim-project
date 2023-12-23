@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import model.mapper.Mapper;
 import model.mapper.Mappers;
-import model.mapper.MaybeMapper;
 import model.mapper.MutableMapper;
 import model.mapper.MutableMaybeMapper;
 import model.presence.MaybeSome;
