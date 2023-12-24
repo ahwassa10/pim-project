@@ -1,6 +1,7 @@
 package model.table;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import model.mapper.MultiMapper;
@@ -12,22 +13,61 @@ import model.presence.One;
 import model.presence.Some;
 import model.util.UUIDs;
 
-public final class ValueTables {
-    private ValueTables() {}
+public final class Tables {
+    private Tables() {}
     
-    public static class MKMVTable<T> implements KeyTable, ValueTable<T> {
-        private final UUID domainID;
-        private final Some<Table> baseDomains;
-        private final MutableMultiMapper<UUID, T> mapper;
+    private static abstract class AbstractTable implements Table {
+        private final UUID tableID;
         
-        private MKMVTable(UUID domainID, Some<Table> baseDomains, MutableMultiMapper<UUID, T> mapper) {
-            this.domainID = domainID;
-            this.baseDomains = baseDomains;
-            this.mapper = mapper;
+        private AbstractTable(UUID tableID) {
+            this.tableID = tableID;
         }
         
         public UUID getTableID() {
-            return this.domainID;
+            return tableID;
+        }
+    }
+    
+    public static class BaseTable extends AbstractTable implements Table {
+        private final Set<UUID> domain;
+        
+        private BaseTable(UUID tableID, Set<UUID> domain) {
+            super(tableID);
+            this.domain = domain;
+        }
+        
+        public MaybeSome<UUID> keys() {
+            return Some.of(domain);
+        }
+        
+        public UUID put() {
+            UUID tableKey = UUID.randomUUID();
+            domain.add(tableKey);
+            
+            return tableKey;
+        }
+        
+        public void remove(UUID tableKey) {
+            Objects.requireNonNull(tableKey);
+            
+            if (!domain.contains(tableKey)) {
+                String msg = String.format("This table (%s) does not contain %s",
+                        getTableID(), tableKey);
+                throw new IllegalArgumentException(msg);
+            }
+            
+            domain.remove(tableKey);
+        }
+    }
+    
+    public static class MKMVTable<T> extends AbstractTable implements KeyTable, ValueTable<T> {
+        private final Some<Table> baseDomains;
+        private final MutableMultiMapper<UUID, T> mapper;
+        
+        private MKMVTable(UUID tableID, Some<Table> baseDomains, MutableMultiMapper<UUID, T> mapper) {
+            super(tableID);
+            this.baseDomains = baseDomains;
+            this.mapper = mapper;
         }
         
         public Some<Table> baseDomains() {
@@ -50,19 +90,19 @@ public final class ValueTables {
             }
             
             UUID combinedKey = keys.stream().reduce((uuid1, uuid2) -> UUIDs.xorUUIDs(uuid1, uuid2)).get();
-            ValueTables.requireNoAssociation(this, combinedKey, value);
+            Tables.requireNoAssociation(this, combinedKey, value);
             mapper.map(combinedKey, value);
             
-            UUID tableKey = UUIDs.xorUUIDs(domainID, combinedKey);
+            UUID tableKey = UUIDs.xorUUIDs(getTableID(), combinedKey);
             return tableKey;
         }
         
         public void replace(UUID tableKey, T oldValue, T newValue) {
             Objects.requireNonNull(tableKey);
             
-            UUID key = UUIDs.xorUUIDs(domainID, tableKey);
-            ValueTables.requireAssociation(this, key, oldValue);
-            ValueTables.requireNoAssociation(this, key, newValue);
+            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
+            Tables.requireAssociation(this, key, oldValue);
+            Tables.requireNoAssociation(this, key, newValue);
             
             mapper.unmap(key, oldValue);
             mapper.map(key, newValue);
@@ -71,8 +111,8 @@ public final class ValueTables {
         public void remove(UUID tableKey, T value) {
             Objects.requireNonNull(tableKey);
             
-            UUID key = UUIDs.xorUUIDs(domainID, tableKey);
-            ValueTables.requireAssociation(this, key, value);
+            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
+            Tables.requireAssociation(this, key, value);
             
             mapper.unmap(key, value);
         }
@@ -80,27 +120,22 @@ public final class ValueTables {
         public void remove(UUID tableKey) {
             Objects.requireNonNull(tableKey);
             
-            UUID key = UUIDs.xorUUIDs(domainID, tableKey);
-            ValueTables.requireAnyAssociation(this, key);
+            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
+            Tables.requireAnyAssociation(this, key);
             
             mapper.unmapAll(key);
         }
         
     }
     
-    public static class SKSVTable<T> implements KeyTable, ValueTable<T> {
-        private final UUID domainID;
+    public static class SKSVTable<T> extends AbstractTable implements KeyTable, ValueTable<T> {
         private final Table baseDomain;
         private final MutableSingleMapper<UUID, T> mapper;
         
-        private SKSVTable(UUID domainID, Table baseDomain, MutableSingleMapper<UUID, T> mapper) {
-            this.domainID = domainID;
+        private SKSVTable(UUID tableID, Table baseDomain, MutableSingleMapper<UUID, T> mapper) {
+            super(tableID);
             this.baseDomain = baseDomain;
             this.mapper = mapper;
-        }
-        
-        public UUID getTableID() {
-            return this.domainID;
         }
         
         public Some<Table> baseDomains() {
@@ -124,15 +159,15 @@ public final class ValueTables {
             }
             
             mapper.map(key, value);
-            return UUIDs.xorUUIDs(domainID, key);
+            return UUIDs.xorUUIDs(getTableID(), key);
         }
         
         public void replace(UUID tableKey, T newValue) {
             Objects.requireNonNull(tableKey);
             
-            UUID key = UUIDs.xorUUIDs(domainID, tableKey);
-            ValueTables.requireAnyAssociation(this, key);
-            ValueTables.requireNoAssociation(this, key, newValue);
+            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
+            Tables.requireAnyAssociation(this, key);
+            Tables.requireNoAssociation(this, key, newValue);
             
             mapper.unmap(key);
             mapper.map(key, newValue);
@@ -141,8 +176,8 @@ public final class ValueTables {
         public void remove(UUID tableKey) {
             Objects.requireNonNull(tableKey);
             
-            UUID key = UUIDs.xorUUIDs(domainID, tableKey);
-            ValueTables.requireAnyAssociation(this, key);
+            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
+            Tables.requireAnyAssociation(this, key);
             
             mapper.unmap(key);
         }
