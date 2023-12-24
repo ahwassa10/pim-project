@@ -1,5 +1,6 @@
 package model.mapper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,12 +16,8 @@ public final class Mappers {
     private static final class ImpSingleMapper<K, V> implements MutableSingleMapper<K, V> {
         private final Map<K, V> imap = new HashMap<>();
         
-        public MaybeSome<K> keys() {
-            if (imap.size() == 0) {
-                return None.of();
-            } else {
-                return Some.of(imap.keySet());
-            }
+        public Set<K> keys() {
+            return Collections.unmodifiableSet(imap.keySet());
         }
         
         public Maybe<V> get(K key) {
@@ -70,12 +67,8 @@ public final class Mappers {
     private static final class ImpMultiMapper<K, V> implements MutableMultiMapper<K, V> {
         private final Map<K, Set<V>> imap = new HashMap<>();
         
-        public MaybeSome<K> keys() {
-            if (imap.size() == 0) {
-                return None.of();
-            } else {
-                return Some.of(imap.keySet());
-            }
+        public Set<K> keys() {
+            return Collections.unmodifiableSet(imap.keySet());
         }
         
         public MaybeSome<V> get(K key) {

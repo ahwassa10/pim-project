@@ -1,5 +1,7 @@
 package model.table;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -8,9 +10,6 @@ import model.mapper.MultiMapper;
 import model.mapper.Mappers;
 import model.mapper.MutableMultiMapper;
 import model.mapper.MutableSingleMapper;
-import model.presence.MaybeSome;
-import model.presence.One;
-import model.presence.Some;
 import model.util.UUIDs;
 
 public final class Tables {
@@ -36,8 +35,8 @@ public final class Tables {
             this.domain = domain;
         }
         
-        public MaybeSome<UUID> keys() {
-            return Some.of(domain);
+        public Set<UUID> keys() {
+            return Collections.unmodifiableSet(domain);
         }
         
         public UUID put() {
@@ -49,32 +48,27 @@ public final class Tables {
         
         public void remove(UUID tableKey) {
             Objects.requireNonNull(tableKey);
-            
-            if (!domain.contains(tableKey)) {
-                String msg = String.format("This table (%s) does not contain %s",
-                        getTableID(), tableKey);
-                throw new IllegalArgumentException(msg);
-            }
+            Tables.requireKeyPresence(this, tableKey);
             
             domain.remove(tableKey);
         }
     }
     
     public static class MKMVTable<T> extends AbstractTable implements KeyTable, ValueTable<T> {
-        private final Some<Table> baseDomains;
+        private final Set<Table> baseTables;
         private final MutableMultiMapper<UUID, T> mapper;
         
-        private MKMVTable(UUID tableID, Some<Table> baseDomains, MutableMultiMapper<UUID, T> mapper) {
+        private MKMVTable(UUID tableID, Set<Table> baseTables, MutableMultiMapper<UUID, T> mapper) {
             super(tableID);
-            this.baseDomains = baseDomains;
+            this.baseTables = baseTables;
             this.mapper = mapper;
         }
         
-        public Some<Table> baseDomains() {
-            return baseDomains;
+        public Set<Table> baseTables() {
+            return Collections.unmodifiableSet(baseTables);
         }
         
-        public MaybeSome<UUID> keys() {
+        public Set<UUID> keys() {
             return mapper.keys();
         }
         
@@ -82,67 +76,60 @@ public final class Tables {
             return mapper;
         }
         
-        public UUID put(Some<UUID> keys, T value) {
+        public UUID put(Set<UUID> keys, T value) {
             Objects.requireNonNull(keys);
-            if (!verifyKeys(keys)) {
+            if (!KeyTable.verifyKeys(baseTables, keys)) {
                 String msg = String.format("%s is an invalid combination of keys for this table", keys);
                 throw new IllegalArgumentException(msg);
             }
             
             UUID combinedKey = keys.stream().reduce((uuid1, uuid2) -> UUIDs.xorUUIDs(uuid1, uuid2)).get();
-            Tables.requireNoAssociation(this, combinedKey, value);
-            mapper.map(combinedKey, value);
-            
             UUID tableKey = UUIDs.xorUUIDs(getTableID(), combinedKey);
+            Tables.requireNoAssociation(this, tableKey, value);
+            mapper.map(tableKey, value);
+            
             return tableKey;
         }
         
         public void replace(UUID tableKey, T oldValue, T newValue) {
             Objects.requireNonNull(tableKey);
+            Tables.requireAssociation(this, tableKey, oldValue);
+            Tables.requireNoAssociation(this, tableKey, newValue);
             
-            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
-            Tables.requireAssociation(this, key, oldValue);
-            Tables.requireNoAssociation(this, key, newValue);
-            
-            mapper.unmap(key, oldValue);
-            mapper.map(key, newValue);
+            mapper.unmap(tableKey, oldValue);
+            mapper.map(tableKey, newValue);
         }
         
         public void remove(UUID tableKey, T value) {
             Objects.requireNonNull(tableKey);
+            Tables.requireAssociation(this, tableKey, value);
             
-            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
-            Tables.requireAssociation(this, key, value);
-            
-            mapper.unmap(key, value);
+            mapper.unmap(tableKey, value);
         }
         
         public void remove(UUID tableKey) {
             Objects.requireNonNull(tableKey);
+            Tables.requireKeyPresence(this, tableKey);
             
-            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
-            Tables.requireAnyAssociation(this, key);
-            
-            mapper.unmapAll(key);
+            mapper.unmapAll(tableKey);
         }
-        
     }
     
     public static class SKSVTable<T> extends AbstractTable implements KeyTable, ValueTable<T> {
-        private final Table baseDomain;
+        private final Table baseTable;
         private final MutableSingleMapper<UUID, T> mapper;
         
-        private SKSVTable(UUID tableID, Table baseDomain, MutableSingleMapper<UUID, T> mapper) {
+        private SKSVTable(UUID tableID, Table baseTable, MutableSingleMapper<UUID, T> mapper) {
             super(tableID);
-            this.baseDomain = baseDomain;
+            this.baseTable = baseTable;
             this.mapper = mapper;
         }
         
-        public Some<Table> baseDomains() {
-            return One.of(baseDomain);
+        public Set<Table> baseTables() {
+            return Set.of(baseTable);
         }
         
-        public MaybeSome<UUID> keys() {
+        public Set<UUID> keys() {
             return mapper.keys();
         }
         
@@ -153,44 +140,58 @@ public final class Tables {
         public UUID put(UUID key, T value) {
             Objects.requireNonNull(key);
             
-            if (baseDomain.keys().has(key)) {
-                String msg = String.format("%s is already contained in this table", key);
-                throw new IllegalArgumentException(msg);
-            }
+            UUID tableKey = UUIDs.xorUUIDs(getTableID(), key);
+            Tables.requireKeyAbsence(this, tableKey);
             
             mapper.map(key, value);
-            return UUIDs.xorUUIDs(getTableID(), key);
+            return tableKey;
         }
         
         public void replace(UUID tableKey, T newValue) {
             Objects.requireNonNull(tableKey);
+            Tables.requireKeyPresence(this, tableKey);
+            Tables.requireNoAssociation(this, tableKey, newValue);
             
-            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
-            Tables.requireAnyAssociation(this, key);
-            Tables.requireNoAssociation(this, key, newValue);
-            
-            mapper.unmap(key);
-            mapper.map(key, newValue);
+            mapper.unmap(tableKey);
+            mapper.map(tableKey, newValue);
         }
         
         public void remove(UUID tableKey) {
             Objects.requireNonNull(tableKey);
+            Tables.requireKeyPresence(this, tableKey);
             
-            UUID key = UUIDs.xorUUIDs(getTableID(), tableKey);
-            Tables.requireAnyAssociation(this, key);
-            
-            mapper.unmap(key);
+            mapper.unmap(tableKey);
         }
     }
     
-    public static <T> MKMVTable<T> multiKeyMultiValueTable(Some<Table> baseDomains) {
-        Objects.requireNonNull(baseDomains);
-        return new MKMVTable<T>(UUID.randomUUID(), baseDomains, Mappers.multiMapper());
+    public static <T> BaseTable baseTable() {
+        return new BaseTable(UUID.randomUUID(), new HashSet<>());
     }
     
-    public static <T> SKSVTable<T> singleKeySingleValueTAble(Table baseDomain) {
+    public static <T> MKMVTable<T> multiKeyMultiValueTable(Set<Table> baseDomains) {
+        Objects.requireNonNull(baseDomains);
+        return new MKMVTable<T>(UUID.randomUUID(), Set.copyOf(baseDomains), Mappers.multiMapper());
+    }
+    
+    public static <T> SKSVTable<T> singleKeySingleValueTable(Table baseDomain) {
         Objects.requireNonNull(baseDomain);
         return new SKSVTable<T>(UUID.randomUUID(), baseDomain, Mappers.singleMapper());
+    }
+    
+    public static <T> void requireKeyPresence(Table table, UUID key) {
+        if (!table.keys().contains(key)) {
+            String msg = String.format("The table (%s) does not contain %s",
+                    table, key);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+    
+    public static <T> void requireKeyAbsence(Table table, UUID key) {
+        if (table.keys().contains(key)) {
+            String msg = String.format("The table (%s) already contains %s",
+                    table, key);
+            throw new IllegalArgumentException(msg);
+        }
     }
     
     public static <T> void requireAssociation(ValueTable<T> table, UUID key, T value) {
@@ -205,22 +206,6 @@ public final class Tables {
         if (table.view().get(key).has(value)) {
             String msg = String.format("%s is associated with %s in this table (%s)",
                     key, value, table.getTableID());
-            throw new IllegalArgumentException(msg);
-        }
-    }
-    
-    public static <T> void requireAnyAssociation(ValueTable<T> table, UUID key) {
-        if (!table.view().get(key).hasAny()) {
-            String msg = String.format("%s is not associated with any value in this table (%s)",
-                    key, table.getTableID());
-            throw new IllegalArgumentException(msg);
-        }
-    }
-    
-    public static <T> void requireNoAssociations(ValueTable<T> table, UUID key) {
-        if (table.view().get(key).hasAny()) {
-            String msg = String.format("%s is associated with values in this table (%s)",
-                    key, table.getTableID());
             throw new IllegalArgumentException(msg);
         }
     }
