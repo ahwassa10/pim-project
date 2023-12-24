@@ -6,29 +6,24 @@ import java.util.Set;
 import java.util.UUID;
 
 import model.presence.MaybeSome;
-import model.presence.None;
 import model.presence.Some;
 import model.util.UUIDs;
 
-public final class BaseDomain implements KeyDomain {
+public final class BaseTable implements Table {
     private final UUID domainID;
     private final Set<UUID> domain;
     
-    public BaseDomain(UUID domainID, Set<UUID> domain) {
+    public BaseTable(UUID domainID, Set<UUID> domain) {
         this.domainID = domainID;
         this.domain = domain;
     }
     
-    public BaseDomain() {
+    public BaseTable() {
         this(UUID.randomUUID(), new HashSet<>());
     }
     
-    public UUID getDomainID() {
+    public UUID getTableID() {
         return this.domainID;
-    }
-    
-    public MaybeSome<KeyDomain> baseDomains() {
-        return None.of();
     }
     
     public MaybeSome<UUID> keys() {
