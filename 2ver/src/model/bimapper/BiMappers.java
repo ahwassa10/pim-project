@@ -23,7 +23,7 @@ public final class BiMappers {
             this.backwardMap = other.forwardMap;
         }
         
-        public MaybeSome<K> keys() {
+        public Set<K> keys() {
             return forwardMap.keys();
         }
         
