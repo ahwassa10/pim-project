@@ -1,4 +1,4 @@
-package model.program;
+package model.entity;
 
 public final class ContentCore {
     private final String name;

@@ -1,43 +1,52 @@
 package program;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
+/**
+ * FXML controller for user view which sends events to progContext
+ * 
+ * @see controller.programfsm.ProgContext
+ */
 public class Controller {
+    @FXML
+    public Button homeButton;
     
     @FXML
-    private ListView<String> list;
+    public VBox savedLocations;
     
     @FXML
-    private TilePane pane;
+    public Button contentButton;
     
-    private ObservableList<String> tags = FXCollections.observableArrayList("all", "tech", "car", "ai", "school");
+    @FXML
+    public Button tagsButton;
     
-    public void fillWithImages(Path imageDir) {
-        try (DirectoryStream<Path> images = Files.newDirectoryStream(imageDir)) {
-            for (Path imageFile : images) {
-                Image image = new Image(Files.newInputStream(imageFile), 100, 100, true, true);
-                ImageView view = new ImageView(image);
-                
-                pane.getChildren().add(view);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    @FXML
+    public GridPane topBar;
     
-    public void fillWithTags() {
-        list.setItems(tags);
-        list.getSelectionModel().selectFirst();
+    @FXML
+    public Button createContent;
+    
+    @FXML
+    public Button createTag;
+    
+    @FXML
+    public TextField textField;
+    
+    @FXML
+    public FlowPane entityPane;
+    
+    /**
+     * Event handler for actions in user state.
+     * @param event javafx Event to be handled
+     */
+    @FXML
+    public void handleEvent(Event event) {
+        System.out.println("Must handle event");
     }
 }

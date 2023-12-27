@@ -1,4 +1,4 @@
-package model.program;
+package model.entity;
 
 import java.util.UUID;
 

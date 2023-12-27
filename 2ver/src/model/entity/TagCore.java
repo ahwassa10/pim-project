@@ -1,4 +1,4 @@
-package model.program;
+package model.entity;
 
 public final class TagCore {
     private final String name;

@@ -1,9 +1,13 @@
-package model.program;
+package program;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import model.entity.Content;
+import model.entity.ContentCore;
+import model.entity.Tag;
+import model.entity.TagCore;
 import model.table.Tables;
 import model.table.Tables.NKSVTable;
 import model.table.Tables.TKNVTable;
