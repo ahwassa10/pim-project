@@ -19,6 +19,7 @@ public final class PIMLibrary extends Application {
         primaryStage.setTitle("PIM 2ver");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
     
     public void stop() {}

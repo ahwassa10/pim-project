@@ -22,11 +22,11 @@
         <Insets top="5" right="5" bottom="5" left="5"/>
     </padding>
     <columnConstraints>
-        <ColumnConstraints hgrow="NEVER" minWidth="100"/>
+        <ColumnConstraints hgrow="NEVER" prefWidth="100" minWidth="100" maxWidth="100"/>
         <ColumnConstraints hgrow="ALWAYS"/> 
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints vgrow="NEVER" minHeight="50"/>
+        <RowConstraints vgrow="NEVER" prefHeight="50" minHeight="50" maxHeight="50"/>
         <RowConstraints vgrow="ALWAYS"/>
     </rowConstraints>
           
@@ -66,12 +66,14 @@
         <Button fx:id="createContent"
                 text="Create Content"
                 GridPane.columnIndex="0"
-                maxHeight="Infinity">
+                maxHeight="Infinity"
+                prefWidth="100">
         </Button>
         <Button fx:id="createTag"
                 text="Create Tag"
                 GridPane.columnIndex="1"
-                maxHeight="Infinity">
+                maxHeight="Infinity"
+                prefWidth="100">
         </Button>
         <TextField fx:id="textField"
                    GridPane.columnIndex="2"
@@ -79,7 +81,7 @@
         </TextField>
     </GridPane>
     <ScrollPane GridPane.rowIndex="1" GridPane.columnIndex="1">
-        <FlowPane fx:id="entityPane" prefWidth="500" prefHeight="500"/>
+        <FlowPane fx:id="entityPane" prefWidth="600" prefHeight="400"/>
     </ScrollPane>
     
 </GridPane>
