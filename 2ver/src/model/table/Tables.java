@@ -47,7 +47,7 @@ public final class Tables {
             return Collections.unmodifiableSet(domain);
         }
         
-        public Some<BlankCore> get(UUID key) {
+        public One<BlankCore> get(UUID key) {
             Tables.requireKeyPresence(this, key);
             return BLANK_CORE;
         }
@@ -57,6 +57,56 @@ public final class Tables {
             domain.add(rowKey);
             
             return rowKey;
+        }
+        
+        public void remove(UUID rowKey) {
+            Objects.requireNonNull(rowKey);
+            Tables.requireKeyPresence(this, rowKey);
+            
+            domain.remove(rowKey);
+        }
+    }
+    
+    public static class TKNVTable extends AbstractTable<BlankCore> {
+        private final Table<?> baseTable;
+        private final Table<?> anotherBaseTable;
+        private final Set<UUID> domain;
+        
+        private TKNVTable(UUID tableID, Table<?> baseTable, Table<?> anotherBaseTable, Set<UUID> domain) {
+            super(tableID);
+            this.baseTable = baseTable;
+            this.anotherBaseTable = anotherBaseTable;
+            this.domain = domain;
+        }
+        
+        public Set<Table<?>> getBaseTables() {
+            return Set.of(baseTable, anotherBaseTable);
+        }
+        
+        public Set<UUID> keys() {
+            return Collections.unmodifiableSet(domain);
+        }
+        
+        public One<BlankCore> get(UUID rowKey) {
+            Tables.requireKeyPresence(this, rowKey);
+            return BLANK_CORE;
+        }
+        
+        public UUID add(UUID key1, UUID key2) {
+            Objects.requireNonNull(key1);
+            Objects.requireNonNull(key2);
+            
+            if ((baseTable.keys().contains(key1) && anotherBaseTable.keys().contains(key2))
+                    || (baseTable.keys().contains(key2) && anotherBaseTable.keys().contains(key1))) {
+                UUID rowKey = UUIDs.xorUUIDs(key1, key2);
+                Tables.requireKeyAbsence(this, rowKey);
+                domain.add(rowKey);
+                return rowKey;
+            } else {
+                String msg = String.format("%s, %s is an invalid combination of keys for this table",
+                        key1, key2);
+                throw new IllegalArgumentException(msg);
+            }
         }
         
         public void remove(UUID rowKey) {
@@ -151,18 +201,17 @@ public final class Tables {
             return mapper.get(key).certainly();
         }
         
-        public UUID add(UUID key, V value) {
-            Objects.requireNonNull(key);
-            if (!baseTable.keys().contains(key)) {
+        public UUID add(UUID rowKey, V value) {
+            Objects.requireNonNull(rowKey);
+            if (!baseTable.keys().contains(rowKey)) {
                 String msg = String.format("%s is not a valid key from the base table (%s)",
-                        key, baseTable.getTableKey());
+                        rowKey, baseTable.getTableKey());
                 throw new IllegalArgumentException(msg);
             }
             
-            UUID tableKey = UUIDs.xorUUIDs(getTableKey(), key);
-            Tables.requireKeyAbsence(this, tableKey);
-            mapper.map(key, value);
-            return tableKey;
+            Tables.requireKeyAbsence(this, rowKey);
+            mapper.map(rowKey, value);
+            return rowKey;
         }
         
         public void replace(UUID rowKey, V newValue) {
@@ -182,18 +231,71 @@ public final class Tables {
         }
     }
     
-    public static <T> BaseTable baseTable() {
+    public static class NKSVTable<V> extends AbstractTable<V> {
+        private final MutableSingleMapper<UUID, V> mapper;
+        
+        private NKSVTable(UUID tableID, MutableSingleMapper<UUID, V> mapper) {
+            super(tableID);
+            this.mapper = mapper;
+        }
+        
+        public Set<Table<?>> getBaseTables() {
+            return Collections.emptySet();
+        }
+        
+        public Set<UUID> keys() {
+            return mapper.keys();
+        }
+        
+        public One<V> get(UUID key) {
+            return mapper.get(key).certainly();
+        }
+        
+        public UUID add(V value) {
+            UUID rowKey = UUID.randomUUID();
+            mapper.map(rowKey, value);
+            return rowKey;
+        }
+        
+        public void replace(UUID rowKey, V newValue) {
+            Objects.requireNonNull(rowKey);
+            Tables.requireKeyPresence(this, rowKey);
+            Tables.requireNoAssociation(this, rowKey, newValue);
+            
+            mapper.unmap(rowKey);
+            mapper.map(rowKey, newValue);
+        }
+        
+        public void remove(UUID rowKey) {
+            Objects.requireNonNull(rowKey);
+            Tables.requireKeyPresence(this, rowKey);
+            
+            mapper.unmap(rowKey);
+        }
+    }
+    
+    public static BaseTable baseTable() {
         return new BaseTable(UUID.randomUUID(), new HashSet<>());
     }
     
-    public static <T> MKMVTable<T> multiKeyMultiValueTable(Set<Table<?>> baseDomains) {
-        Objects.requireNonNull(baseDomains);
-        return new MKMVTable<T>(UUID.randomUUID(), Set.copyOf(baseDomains), Mappers.multiMapper());
+    public static TKNVTable twoKeyNoValueTable(Table<?> baseTable, Table<?> anotherBaseTable) {
+        Objects.requireNonNull(baseTable);
+        Objects.requireNonNull(anotherBaseTable);
+        return new TKNVTable(UUID.randomUUID(), baseTable, anotherBaseTable, new HashSet<>());
     }
     
-    public static <T> SKSVTable<T> singleKeySingleValueTable(Table<?> baseDomain) {
+    public static <V> MKMVTable<V> multiKeyMultiValueTable(Set<Table<?>> baseDomains) {
+        Objects.requireNonNull(baseDomains);
+        return new MKMVTable<V>(UUID.randomUUID(), Set.copyOf(baseDomains), Mappers.multiMapper());
+    }
+    
+    public static <V> SKSVTable<V> singleKeySingleValueTable(Table<?> baseDomain) {
         Objects.requireNonNull(baseDomain);
-        return new SKSVTable<T>(UUID.randomUUID(), baseDomain, Mappers.singleMapper());
+        return new SKSVTable<V>(UUID.randomUUID(), baseDomain, Mappers.singleMapper());
+    }
+    
+    public static <V> NKSVTable<V> noKeySingleValueTable() {
+        return new NKSVTable<V>(UUID.randomUUID(), Mappers.singleMapper());
     }
     
     public static <T> void requireKeyPresence(Table<?> table, UUID key) {
