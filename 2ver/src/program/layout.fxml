@@ -59,6 +59,7 @@
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER"/>
             <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="NEVER"/>
             <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
         <rowConstraints>
@@ -79,8 +80,16 @@
                 prefWidth="100"
                 onAction="#handleCreateTag">
         </Button>
+        <Button fx:id="deleteButton"
+                text="Delete"
+                GridPane.columnIndex="2"
+                maxHeight="Infinity"
+                prefWidth="100"
+                onAction="#handleDelete"
+                disable="true">
+        </Button>
         <TextField fx:id="textField"
-                   GridPane.columnIndex="2"
+                   GridPane.columnIndex="3"
                    maxHeight="Infinity">
         </TextField>
     </GridPane>
