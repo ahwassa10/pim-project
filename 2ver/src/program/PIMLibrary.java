@@ -8,12 +8,16 @@ import javafx.stage.Stage;
 
 public final class PIMLibrary extends Application {
     public void start(Stage primaryStage) throws Exception {
+        Program program = new Program();
+        
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/program/layout.fxml"));
+        loader.setControllerFactory(controllerClass -> new Controller(program));
+        
         GridPane userRoot = loader.load();
         userRoot.setGridLinesVisible(true);
-        Controller controller = loader.getController();
         Scene scene = new Scene(userRoot);
+        
         
         
         primaryStage.setTitle("PIM 2ver");
@@ -21,6 +25,8 @@ public final class PIMLibrary extends Application {
         primaryStage.show();
         
     }
+    
+    
     
     public void stop() {}
     
