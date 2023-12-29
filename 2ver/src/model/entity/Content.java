@@ -1,5 +1,6 @@
 package model.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public final class Content {
@@ -21,5 +22,9 @@ public final class Content {
     
     public String getDescription() {
         return contentCore.getDescription();
+    }
+    
+    public Instant getDateCreated() {
+        return contentCore.getDateCreated();
     }
 }

@@ -1,21 +1,30 @@
 package model.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public final class Tag {
     private final UUID tagKey;
-    private final TagCore tagCore;
+    private final ContentCore contentCore;
     
-    public Tag(UUID tagKey, TagCore tagCore) {
+    public Tag(UUID tagKey, ContentCore contentCore) {
         this.tagKey = tagKey;
-        this.tagCore = tagCore;
+        this.contentCore = contentCore;
     }
     
     public UUID getTagKey() {
         return tagKey;
     }
     
-    public String getTagName() {
-        return tagCore.getName();
+    public String getName() {
+        return contentCore.getName();
+    }
+    
+    public String getDescription() {
+        return contentCore.getDescription();
+    }
+    
+    public Instant getDateCreated() {
+        return contentCore.getDateCreated();
     }
 }

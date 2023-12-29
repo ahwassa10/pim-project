@@ -1,5 +1,6 @@
 package program;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -7,19 +8,19 @@ import java.util.UUID;
 import model.entity.Content;
 import model.entity.ContentCore;
 import model.entity.Tag;
-import model.entity.TagCore;
 import model.table.Tables;
 import model.table.Tables.NKSVTable;
+import model.table.Tables.SKNVTable;
 import model.table.Tables.TKNVTable;
 import model.util.UUIDs;
 
 public final class Program {
     private final NKSVTable<ContentCore> contentTable = Tables.noKeySingleValueTable();
-    private final NKSVTable<TagCore> tagTable = Tables.noKeySingleValueTable();
+    private final SKNVTable tagTable = Tables.singleKeyNoValueTable(contentTable);
     private final TKNVTable tagApplicationTable = Tables.twoKeyNoValueTable(contentTable, tagTable);
     
     public void createContent() {
-        ContentCore contentCore = new ContentCore("Test name", "Test description");
+        ContentCore contentCore = new ContentCore("Test name", "Test description", Instant.now());
         contentTable.add(contentCore);
     }
     
@@ -42,14 +43,16 @@ public final class Program {
     }
     
     public void createTag() {
-        TagCore tagCore = new TagCore("Test tag name");
-        tagTable.add(tagCore);
+        ContentCore contentCore = new ContentCore("Tag", "Test Description", Instant.now());
+        UUID contentID = contentTable.add(contentCore);
+        tagTable.add(contentID);
     }
 
     public List<Tag> getTags() {
-        return tagTable.keys()
+        return contentTable.keys()
                 .stream()
-                .map(rowKey -> new Tag(rowKey, tagTable.get(rowKey).any()))
+                .filter(rowKey -> tagTable.keys().contains(rowKey))
+                .map(rowKey -> new Tag(rowKey, contentTable.get(rowKey).any()))
                 .toList();
     }
     
@@ -100,7 +103,7 @@ public final class Program {
         return tagTable.keys()
                 .stream()
                 .filter(tagKey -> tagApplicationTable.keys().contains(UUIDs.xorUUIDs(tagKey, contentKey)))
-                .map(tagKey -> new Tag(tagKey, tagTable.get(tagKey).any()))
+                .map(tagKey -> new Tag(tagKey, contentTable.get(tagKey).any()))
                 .toList();
     }
     

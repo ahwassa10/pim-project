@@ -150,7 +150,7 @@ public class Controller {
         
         List<Tag> tags = program.getTags();
         for (Tag tag : tags) {
-            Label label = new Label(tag.getTagName());
+            Label label = new Label(tag.getName());
             label.setMinHeight(100);
             label.setMaxHeight(100);
             label.setMinWidth(100);
