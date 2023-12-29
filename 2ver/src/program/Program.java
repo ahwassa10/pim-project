@@ -41,16 +41,16 @@ public final class Program {
         contentTable.remove(content.getContentKey());
     }
     
+    public void createTag() {
+        TagCore tagCore = new TagCore("Test tag name");
+        tagTable.add(tagCore);
+    }
+
     public List<Tag> getTags() {
         return tagTable.keys()
                 .stream()
                 .map(rowKey -> new Tag(rowKey, tagTable.get(rowKey).any()))
                 .toList();
-    }
-    
-    public void createTag() {
-        TagCore tagCore = new TagCore("Test tag name");
-        tagTable.add(tagCore);
     }
     
     public void removeTag(Tag tag) {
@@ -64,6 +64,30 @@ public final class Program {
         tagTable.remove(tag.getTagKey());
     }
     
+    public void createTagApplication(Content content, Tag tag) {
+        Objects.requireNonNull(content);
+        Objects.requireNonNull(tag);
+        
+        if (!contentTable.keys().contains(content.getContentKey())) {
+            String msg = "This content does not exist";
+            throw new IllegalArgumentException(msg);
+        }
+        
+        if (!tagTable.keys().contains(tag.getTagKey())) {
+            String msg = "This tag does not exist";
+            throw new IllegalArgumentException(msg);
+        }
+        
+        UUID applicationKey = UUIDs.xorUUIDs(content.getContentKey(), tag.getTagKey());
+        
+        if (tagApplicationTable.keys().contains(applicationKey)) {
+            String msg = "This content already has this tag";
+            throw new IllegalArgumentException(msg);
+        }
+        
+        tagApplicationTable.add(content.getContentKey(), tag.getTagKey());
+    }
+
     public List<Tag> getTagsFor(Content content) {
         Objects.requireNonNull(content);
         
@@ -94,30 +118,6 @@ public final class Program {
                 .filter(contentKey -> tagApplicationTable.keys().contains(UUIDs.xorUUIDs(contentKey, tagKey)))
                 .map(contentKey -> new Content(contentKey, contentTable.get(contentKey).any()))
                 .toList();
-    }
-    
-    public void createTagApplication(Content content, Tag tag) {
-        Objects.requireNonNull(content);
-        Objects.requireNonNull(tag);
-        
-        if (!contentTable.keys().contains(content.getContentKey())) {
-            String msg = "This content does not exist";
-            throw new IllegalArgumentException(msg);
-        }
-        
-        if (!tagTable.keys().contains(tag.getTagKey())) {
-            String msg = "This tag does not exist";
-            throw new IllegalArgumentException(msg);
-        }
-        
-        UUID applicationKey = UUIDs.xorUUIDs(content.getContentKey(), tag.getTagKey());
-        
-        if (tagApplicationTable.keys().contains(applicationKey)) {
-            String msg = "This content already has this tag";
-            throw new IllegalArgumentException(msg);
-        }
-        
-        tagApplicationTable.add(content.getContentKey(), tag.getTagKey());
     }
     
     public void removeTagApplication(Content content, Tag tag) {
