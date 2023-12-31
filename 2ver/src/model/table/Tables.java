@@ -330,6 +330,12 @@ public final class Tables {
         Objects.requireNonNull(baseTable);
         return new SKNVTable(UUID.randomUUID(), baseTable, new HashSet<>());
     }
+    
+    public static SKNVTable singleKeyNoValueTable(UUID tableKey, Table<?> baseTable) {
+        Objects.requireNonNull(tableKey);
+        Objects.requireNonNull(baseTable);
+        return new SKNVTable(tableKey, baseTable, new HashSet<>());
+    }
 
     public static <V> SKSVTable<V> singleKeySingleValueTable(Table<?> baseDomain) {
         Objects.requireNonNull(baseDomain);

@@ -145,6 +145,7 @@ public class Controller {
     
     public void handleTags(ActionEvent event) {
         entityPane.getChildren().clear();
+        unselectAll();
         
         Random r = new Random();
         

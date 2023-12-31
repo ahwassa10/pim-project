@@ -3,7 +3,7 @@ package model.entity;
 import java.time.Instant;
 import java.util.UUID;
 
-public final class Content {
+public class Content {
     private final UUID contentKey;
     private final ContentCore contentCore;
     
