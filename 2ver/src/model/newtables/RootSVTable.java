@@ -1,9 +1,9 @@
 package model.newtables;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -11,7 +11,7 @@ import model.mapper.Mappers;
 import model.mapper.MutableSingleMapper;
 
 public final class RootSVTable<T> extends AbstractSVTable<T> {
-    private RootSVTable(UUID tableID, Set<AbstractTable<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
+    private RootSVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
         super(tableID, subsequentTables, mapper);
     }
     
@@ -66,6 +66,6 @@ public final class RootSVTable<T> extends AbstractSVTable<T> {
         UUID tableID = UUID.randomUUID();
         MutableSingleMapper<UUID, T> mapper = Mappers.singleMapper();
         mapper.map(tableID, core);
-        return new RootSVTable<>(tableID, new HashSet<>(), mapper);
+        return new RootSVTable<>(tableID, new HashMap<>(), mapper);
     }
 }

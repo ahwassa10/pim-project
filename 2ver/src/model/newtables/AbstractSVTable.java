@@ -1,5 +1,6 @@
 package model.newtables;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -9,7 +10,7 @@ import model.mapper.MutableSingleMapper;
 abstract class AbstractSVTable<T> extends AbstractTable<T> {
     private final MutableSingleMapper<UUID, T> mapper;
     
-    AbstractSVTable(UUID tableID, Set<AbstractTable<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
+    AbstractSVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
         super(tableID, subsequentTables);
         this.mapper = mapper;
     }

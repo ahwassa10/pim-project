@@ -1,6 +1,6 @@
 package model.newtables;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,7 +10,7 @@ public final class SVTable<T> extends AbstractSVTable<T> {
     private final AbstractTable<?> baseTable;
     
     SVTable(UUID tableID, AbstractTable<?> baseTable) {
-        super(tableID, new HashSet<>(), Mappers.singleMapper());
+        super(tableID, new HashMap<>(), Mappers.singleMapper());
         this.baseTable = baseTable;
     }
     

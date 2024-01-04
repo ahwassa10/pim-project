@@ -1,7 +1,6 @@
 package program;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -10,23 +9,22 @@ import java.util.UUID;
 import model.entity.Content;
 import model.entity.ContentCore;
 import model.entity.Tag;
-import model.table.Tables;
-import model.table.Tables.NKSVTable;
-import model.table.Tables.SKNVTable;
+import model.newtables.RootSVTable;
 
 public final class Program {
-    private final NKSVTable<ContentCore> contentTable = Tables.noKeySingleValueTable();
-    private final Map<UUID, SKNVTable> regularTags = new HashMap<>();
+    private final RootSVTable<ContentCore> contentTable =
+            RootSVTable.create(new ContentCore("Content Table", "", Instant.now()));
     
     public void createContent() {
-        ContentCore contentCore = new ContentCore("Test name", "Test description", Instant.now());
-        contentTable.add(contentCore);
+        contentTable.add(key -> new ContentCore("Content " + key.toString().substring(9, 13),
+                                                "Test description",
+                                                Instant.now()));
     }
     
     public List<Content> getContent() {
         return contentTable.keys()
                 .stream()
-                .map(rowKey -> new Content(rowKey, contentTable.get(rowKey).any()))
+                .map(key -> new Content(key, contentTable.get(key)))
                 .toList();
     }
     
@@ -39,36 +37,32 @@ public final class Program {
         }
         
         contentTable.remove(content.getContentKey());
-        if (regularTags.containsKey(content.getContentKey())) {
-            regularTags.remove(content.getContentKey());
-        }
     }
     
     public void createTag() {
-        UUID newTag = contentTable.add(new ContentCore("Tag", "Tag Description", Instant.now()));
-        String newTagName = "Tag " + newTag.toString().substring(9, 13);
-        contentTable.replace(newTag, new ContentCore(newTagName, "Tag Description", Instant.now()));
+        UUID newTag = contentTable.add(key -> new ContentCore("Tag " + key.toString().substring(9, 13), "Tag description", Instant.now()));
         
-        SKNVTable tagTable = Tables.singleKeyNoValueTable(newTag, contentTable);
-        regularTags.put(newTag, tagTable);
+        contentTable.createNVTable(newTag);
     }
 
     public List<Tag> getTags() {
-        return regularTags.keySet().stream()
-            .map(tagKey -> new Tag(tagKey, contentTable.get(tagKey).any()))
-            .toList();
+        return contentTable.getSubsequentTables().values()
+                .stream()
+                .map(table -> new Tag(table.getTableID(), contentTable.get(table.getTableID())))
+                .toList();
     }
     
     public void removeTag(Tag tag) {
         Objects.requireNonNull(tag);
         
-        if (!regularTags.containsKey(tag.getContentKey())) {
+        UUID tagID = tag.getContentKey();
+        
+        if (!contentTable.keys().contains(tagID)) {
             String msg = "This tag does not exist";
             throw new IllegalArgumentException(msg);
         }
         
-        contentTable.remove(tag.getContentKey());
-        regularTags.remove(tag.getContentKey());
+        contentTable.remove(tagID);
     }
     
     public void createTagApplication(Content content, Tag tag) {
@@ -80,12 +74,14 @@ public final class Program {
             throw new IllegalArgumentException(msg);
         }
         
-        if (!regularTags.containsKey(tag.getContentKey())) {
+        if (!contentTable.keys().contains(tag.getContentKey())) {
             String msg = "This tag does not exist";
             throw new IllegalArgumentException(msg);
         }
         
-        regularTags.get(tag.getContentKey()).add(content.getContentKey());
+        UUID tagID = tag.getContentKey();
+        contentTable.getSubsequentNVTables().get(tagID).add(content.getContentKey());
+        
     }
 
     public List<Tag> getTagsFor(Content content) {
@@ -96,41 +92,24 @@ public final class Program {
             throw new IllegalArgumentException(msg);
         }
         
-        return regularTags.keySet()
-            .stream()
-            .filter(tagKey -> regularTags.get(tagKey).keys().contains(content.getContentKey()))
-            .map(tagKey -> new Tag(tagKey, contentTable.get(tagKey).any()))
-            .toList();
+        return contentTable.getSubsequentNVTables().values()
+                .stream()
+                .filter(table -> table.keys().contains(content.getContentKey()))
+                .map(table -> new Tag(table.getTableID(), contentTable.get(table.getTableID())))
+                .toList();
     }
     
     public List<Content> getContentFor(Tag tag) {
         Objects.requireNonNull(tag);
         
-        if (!regularTags.containsKey(tag.getContentKey())) {
+        if (!contentTable.keys().contains(tag.getContentKey())) {
             String msg = "This tag does not exist";
             throw new IllegalArgumentException(msg);
         }
         
-        return regularTags.get(tag.getContentKey())
-                .keys().stream()
-                .map(rowKey -> new Content(rowKey, contentTable.get(rowKey).any()))
+        return contentTable.getSubsequentNVTables().get(tag.getContentKey()).keys()
+                .stream()
+                .map(key -> new Content(key, contentTable.get(key)))
                 .toList();
-    }
-    
-    public void removeTagApplication(Content content, Tag tag) {
-        Objects.requireNonNull(content);
-        Objects.requireNonNull(tag);
-        
-        if (!regularTags.containsKey(tag.getContentKey())) {
-            String msg = "This tag does not exist";
-            throw new IllegalArgumentException(msg);
-        }
-        
-        if (!regularTags.get(tag.getContentKey()).keys().contains(content.getContentKey())) {
-            String msg = "This content is not tagged with this tag";
-            throw new IllegalArgumentException(msg);
-        }
-        
-        regularTags.get(tag.getContentKey()).remove(content.getContentKey());
     }
 }

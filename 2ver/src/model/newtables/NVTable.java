@@ -1,5 +1,6 @@
 package model.newtables;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
@@ -8,7 +9,7 @@ public final class NVTable extends AbstractNVTable {
     private final AbstractTable<?> baseTable;
     
     NVTable(UUID tableID, AbstractTable<?> baseTable) {
-        super(tableID, new HashSet<>(), new HashSet<>());
+        super(tableID, new HashMap<>(), new HashSet<>());
         this.baseTable = baseTable;
     }
     

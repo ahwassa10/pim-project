@@ -1,13 +1,15 @@
 package model.newtables;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 public final class RootNVTable extends AbstractNVTable {
-    private RootNVTable(UUID tableID, Set<AbstractTable<?>> subsequentTables, Set<UUID> domain) {
+    private RootNVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, Set<UUID> domain) {
         super(UUID.randomUUID(), subsequentTables, domain);
     }
     
@@ -49,6 +51,6 @@ public final class RootNVTable extends AbstractNVTable {
         Set<UUID> domain = new HashSet<>();
         domain.add(tableID);
         
-        return new RootNVTable(tableID, new HashSet<>(), domain);
+        return new RootNVTable(tableID, new HashMap<>(), domain);
     }
 }

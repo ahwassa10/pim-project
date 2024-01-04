@@ -2,15 +2,14 @@ package model.newtables;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import model.table.BlankCore;
 
 abstract class AbstractNVTable extends AbstractTable<BlankCore> {
     private final Set<UUID> domain;
     
-    AbstractNVTable(UUID tableID, Set<AbstractTable<?>> subsequentTables, Set<UUID> domain) {
+    AbstractNVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, Set<UUID> domain) {
         super(tableID, subsequentTables);
         this.domain = new HashSet<>();
     }
