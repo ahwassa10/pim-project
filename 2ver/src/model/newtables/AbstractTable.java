@@ -1,7 +1,9 @@
 package model.newtables;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -54,6 +56,7 @@ abstract class AbstractTable<T> implements Table<T> {
         AbstractTable.requireKeyPresence(this, key);
         
         removeKey(key);
+        List<UUID> deletedTables = new ArrayList<>();
         for (UUID tableID : subsequentTables.keySet()) {
             Table<?> table = subsequentTables.get(tableID);
             // Case to remove the table.
@@ -62,13 +65,16 @@ abstract class AbstractTable<T> implements Table<T> {
                 for (UUID subTableID : table.getSubsequentTables().keySet()) {
                     table.remove(subTableID);
                 }
-                subsequentTables.remove(tableID);
+                deletedTables.add(tableID);
             }
             
             // Case to remove regular content in the table.
             if (table.keys().contains(key)) {
                 table.remove(key);
             }
+        }
+        for (UUID tableID : deletedTables) {
+            subsequentTables.remove(tableID);
         }
     }
     

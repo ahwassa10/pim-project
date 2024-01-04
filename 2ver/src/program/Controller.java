@@ -115,7 +115,7 @@ public class Controller {
         
         List<Content> content = program.getContent();
         for (Content contentInstance : content) {
-            Label label = new Label(contentInstance.getName() + " " + contentInstance.getContentKey().toString().substring(9, 13));
+            Label label = new Label(contentInstance.getName());
             label.setUserData(contentInstance);
             label.setMinHeight(100);
             label.setMaxHeight(100);
