@@ -2,7 +2,6 @@ package program;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,8 +11,7 @@ import model.entity.Tag;
 import model.newtables.RootSVTable;
 
 public final class Program {
-    private final RootSVTable<ContentCore> contentTable =
-            RootSVTable.create(new ContentCore("Content Table", "", Instant.now()));
+    private final RootSVTable<ContentCore> contentTable = RootSVTable.create();
     
     public void createContent() {
         contentTable.add(key -> new ContentCore("Content " + key.toString().substring(9, 13),

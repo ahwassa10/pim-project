@@ -60,12 +60,7 @@ public final class RootSVTable<T> extends AbstractSVTable<T> {
         };
     }
     
-    public static <T> RootSVTable<T> create(T core) {
-        Objects.requireNonNull(core);
-        
-        UUID tableID = UUID.randomUUID();
-        MutableSingleMapper<UUID, T> mapper = Mappers.singleMapper();
-        mapper.map(tableID, core);
-        return new RootSVTable<>(tableID, new HashMap<>(), mapper);
+    public static <T> RootSVTable<T> create() {
+        return new RootSVTable<>(UUID.randomUUID(), new HashMap<>(), Mappers.singleMapper());
     }
 }

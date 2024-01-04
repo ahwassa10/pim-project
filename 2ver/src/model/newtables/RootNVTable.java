@@ -47,10 +47,6 @@ public final class RootNVTable extends AbstractNVTable {
     }
     
     public static RootNVTable create() {
-        UUID tableID = UUID.randomUUID();
-        Set<UUID> domain = new HashSet<>();
-        domain.add(tableID);
-        
-        return new RootNVTable(tableID, new HashMap<>(), domain);
+        return new RootNVTable(UUID.randomUUID(), new HashMap<>(), new HashSet<>());
     }
 }
