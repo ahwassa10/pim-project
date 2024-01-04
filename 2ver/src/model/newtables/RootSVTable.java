@@ -1,6 +1,7 @@
 package model.newtables;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,33 @@ public final class RootSVTable<T> extends AbstractSVTable<T> {
         Objects.requireNonNull(core);
         addKeyValue(key, core);
         return key;
+    }
+    
+    public Drop asDrop(UUID key) {
+        Objects.requireNonNull(key);
+        AbstractTable.requireKeyPresence(this, key);
+        
+        return new Drop() {
+            public UUID getKey() {
+                return key;
+            }
+            
+            public UUID getTableID() {
+                return RootSVTable.this.getTableID();
+            }
+            
+            public Object getCore() {
+                return RootSVTable.this.get(key);
+            }
+            
+            public boolean hasNextDrop() {
+                return false;
+            }
+            
+            public Drop nextDrop() {
+                throw new NoSuchElementException();
+            }
+        };
     }
     
     public static <T> RootSVTable<T> create(T core) {

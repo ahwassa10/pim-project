@@ -23,4 +23,31 @@ public final class SVTable<T> extends AbstractSVTable<T> {
         
         addKeyValue(key, core);
     }
+    
+    public Drop asDrop(UUID key) {
+        Objects.requireNonNull(key);
+        AbstractTable.requireKeyPresence(this, key);
+        
+        return new Drop() {
+            public UUID getKey() {
+                return key;
+            }
+            
+            public UUID getTableID() {
+                return SVTable.this.getTableID();
+            }
+            
+            public Object getCore() {
+                return SVTable.this.get(key);
+            }
+            
+            public boolean hasNextDrop() {
+                return true;
+            }
+            
+            public Drop nextDrop() {
+                return baseTable.asDrop(key);
+            }
+        };
+    }
 }

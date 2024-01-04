@@ -9,4 +9,5 @@ public interface Table<T> {
     
     Set<UUID> keys();
     T get(UUID key);
+    Drop asDrop(UUID key);
 }

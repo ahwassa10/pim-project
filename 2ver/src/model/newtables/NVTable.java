@@ -20,4 +20,31 @@ public final class NVTable extends AbstractNVTable {
         
         addKey(key);
     }
+    
+    public Drop asDrop(UUID key) {
+        Objects.requireNonNull(key);
+        AbstractTable.requireKeyPresence(this, key);
+        
+        return new Drop() {
+            public UUID getKey() {
+                return key;
+            }
+            
+            public UUID getTableID() {
+                return NVTable.this.getTableID();
+            }
+            
+            public Object getCore() {
+                return NVTable.this.get(key);
+            }
+            
+            public boolean hasNextDrop() {
+                return true;
+            }
+            
+            public Drop nextDrop() {
+                return baseTable.asDrop(key);
+            }
+        };
+    }
 }
