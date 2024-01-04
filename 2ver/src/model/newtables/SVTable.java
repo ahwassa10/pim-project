@@ -9,8 +9,8 @@ import model.mapper.Mappers;
 public final class SVTable<T> extends AbstractSVTable<T> {
     private final AbstractTable<?> baseTable;
     
-    SVTable(AbstractTable<?> baseTable) {
-        super(UUID.randomUUID(), new HashSet<>(), Mappers.singleMapper());
+    SVTable(UUID tableID, AbstractTable<?> baseTable) {
+        super(tableID, new HashSet<>(), Mappers.singleMapper());
         this.baseTable = baseTable;
     }
     
@@ -19,14 +19,8 @@ public final class SVTable<T> extends AbstractSVTable<T> {
         Objects.requireNonNull(core);
         AbstractTable.requireKeyPresence(baseTable, key);
         AbstractTable.requireKeyAbsence(this, key);
+        AbstractTable.requireUniqueKey(this, key);
         
         addKeyValue(key, core);
-    }
-    
-    public void delete() {
-        for (AbstractTable<?> table : getSubsequentTables()) {
-            table.delete();
-        }
-        baseTable.removeSubsquentTable(this);
     }
 }

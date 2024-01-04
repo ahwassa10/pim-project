@@ -2,14 +2,16 @@ package model.newtables;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
 import model.mapper.Mappers;
+import model.mapper.MutableSingleMapper;
 
-public final class BaseSVTable<T> extends AbstractSVTable<T> {
-    public BaseSVTable() {
-        super(UUID.randomUUID(), new HashSet<>(), Mappers.singleMapper());
+public final class RootSVTable<T> extends AbstractSVTable<T> {
+    private RootSVTable(UUID tableID, Set<AbstractTable<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
+        super(tableID, subsequentTables, mapper);
     }
     
     public UUID add(T core) {
@@ -30,9 +32,12 @@ public final class BaseSVTable<T> extends AbstractSVTable<T> {
         return key;
     }
     
-    public void delete() {
-        for (AbstractTable<?> table : getSubsequentTables()) {
-            table.delete();
-        }
+    public static <T> RootSVTable<T> create(T core) {
+        Objects.requireNonNull(core);
+        
+        UUID tableID = UUID.randomUUID();
+        MutableSingleMapper<UUID, T> mapper = Mappers.singleMapper();
+        mapper.map(tableID, core);
+        return new RootSVTable<>(tableID, new HashSet<>(), mapper);
     }
 }
