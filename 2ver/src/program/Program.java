@@ -55,7 +55,7 @@ public final class Program {
         
         UUID tagID = tag.getContentKey();
         
-        if (!contentTable.keys().contains(tagID)) {
+        if (!contentTable.getSubsequentTables().containsKey(tagID)) {
             String msg = "This tag does not exist";
             throw new IllegalArgumentException(msg);
         }

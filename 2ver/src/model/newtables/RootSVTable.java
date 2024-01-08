@@ -7,8 +7,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
-import model.mapper.Mappers;
-import model.mapper.MutableSingleMapper;
+import base.mapper.Mappers;
+import base.mapper.MutableSingleMapper;
 
 public final class RootSVTable<T> extends AbstractSVTable<T> {
     private RootSVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {

@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import model.mapper.MutableSingleMapper;
+import base.mapper.MutableSingleMapper;
 
 abstract class AbstractSVTable<T> extends AbstractTable<T> {
     private final MutableSingleMapper<UUID, T> mapper;

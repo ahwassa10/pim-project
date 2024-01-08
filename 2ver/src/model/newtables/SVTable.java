@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-import model.mapper.Mappers;
+import base.mapper.Mappers;
 
 public final class SVTable<T> extends AbstractSVTable<T> {
     private final AbstractTable<?> baseTable;
