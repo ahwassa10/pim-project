@@ -1,17 +1,18 @@
-package model.table;
+package model.memtable;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import base.mapper.MutableSingleMapper;
+import model.table.BaseTable;
 
 public final class SVTable<T> extends AbstractSubsequentTable<T> {
     private final MutableSingleMapper<UUID, T> mapper;
     
-    SVTable(UUID tableID, Table<?> baseTable, MutableSingleMapper<UUID, T> mapper) {
-        super(tableID, new HashMap<>(), baseTable);
+    SVTable(UUID tableID, Map<UUID, BaseTable<?>> subTables, BaseTable<?> baseTable, MutableSingleMapper<UUID, T> mapper) {
+        super(tableID, subTables, baseTable);
         this.mapper = mapper;
     }
     
@@ -21,7 +22,7 @@ public final class SVTable<T> extends AbstractSubsequentTable<T> {
     
     public T get(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         return mapper.get(key).certainly().any();
     }
@@ -30,9 +31,9 @@ public final class SVTable<T> extends AbstractSubsequentTable<T> {
     public void add(UUID key, T core) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(core);
-        AbstractTable.requireKeyPresence(baseTable, key);
-        AbstractTable.requireKeyAbsence(this, key);
-        AbstractTable.requireUniqueKey(this, key);
+        AbstractBaseTable.requireKeyPresence(baseTable, key);
+        AbstractBaseTable.requireKeyAbsence(this, key);
+        AbstractBaseTable.requireUniqueKey(this, key);
         
         mapper.map(key, core);
     }

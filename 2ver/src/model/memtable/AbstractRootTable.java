@@ -1,18 +1,21 @@
-package model.table;
+package model.memtable;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
 
-abstract class AbstractRootTable<T> extends AbstractTable<T> {
-    AbstractRootTable(UUID tableID, Map<UUID, Table<?>> subTables) {
+import model.table.BaseTable;
+import model.table.Drop;
+
+abstract class AbstractRootTable<T> extends AbstractBaseTable<T> {
+    AbstractRootTable(UUID tableID, Map<UUID, BaseTable<?>> subTables) {
         super(tableID, subTables);
     }
     
     public Drop asDrop(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         return new Drop() {
             public UUID getKey() {

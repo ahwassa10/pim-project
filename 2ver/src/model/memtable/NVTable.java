@@ -1,16 +1,19 @@
-package model.table;
+package model.memtable;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import model.table.BaseTable;
+import model.table.BlankCore;
+
 public final class NVTable extends AbstractSubsequentTable<BlankCore> {
     private final Set<UUID> domain;
     
-    NVTable(UUID tableID, Table<?> baseTable, Set<UUID> domain) {
-        super(tableID, new HashMap<>(), baseTable);
+    NVTable(UUID tableID, Map<UUID, BaseTable<?>> subTables, BaseTable<?> baseTable, Set<UUID> domain) {
+        super(tableID, subTables, baseTable);
         this.domain = domain;
     }
     
@@ -20,7 +23,7 @@ public final class NVTable extends AbstractSubsequentTable<BlankCore> {
     
     public BlankCore get(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         return BlankCore.BLANK_CORE;
     }
@@ -31,9 +34,9 @@ public final class NVTable extends AbstractSubsequentTable<BlankCore> {
     
     public void add(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(baseTable, key);
-        AbstractTable.requireKeyAbsence(this, key);
-        AbstractTable.requireUniqueKey(this, key);
+        AbstractBaseTable.requireKeyPresence(baseTable, key);
+        AbstractBaseTable.requireKeyAbsence(this, key);
+        AbstractBaseTable.requireUniqueKey(this, key);
         
         domain.add(key);
     }

@@ -1,13 +1,10 @@
 package model.table;
 
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
-public interface BaseTable<T> {
-    UUID getTableID();
-    BaseTable<?> getBaseTable();
-    
-    Set<UUID> keys();
-    T get(UUID key);
+public interface BaseTable<T> extends Table<T> {
+    Map<UUID, BaseTable<?>> getSubTables();
     Drop asDrop(UUID key);
+    void remove(UUID key);
 }

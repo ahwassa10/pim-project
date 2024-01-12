@@ -1,4 +1,4 @@
-package model.table;
+package model.memtable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,11 +9,12 @@ import java.util.function.Function;
 
 import base.mapper.Mappers;
 import base.mapper.MutableSingleMapper;
+import model.table.BaseTable;
 
 public final class RootSVTable<T> extends AbstractRootTable<T> {
     private final MutableSingleMapper<UUID, T> mapper;
     
-    private RootSVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
+    private RootSVTable(UUID tableID, Map<UUID, BaseTable<?>> subsequentTables, MutableSingleMapper<UUID, T> mapper) {
         super(tableID, subsequentTables);
         this.mapper = mapper;
     }
@@ -24,7 +25,7 @@ public final class RootSVTable<T> extends AbstractRootTable<T> {
     
     public T get(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         return mapper.get(key).certainly().any();
     }

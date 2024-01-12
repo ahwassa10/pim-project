@@ -1,23 +1,24 @@
-package model.table;
+package model.memtable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import base.mapper.Mappers;
+import model.table.BaseTable;
+import model.table.Table;
 
-abstract class AbstractTable<T> implements Table<T> {
+abstract class AbstractBaseTable<T> implements BaseTable<T> {
     private final UUID tableID;
-    private final Map<UUID, Table<?>> subTables;
+    private final Map<UUID, BaseTable<?>> subTables;
     
-    AbstractTable(UUID tableID, Map<UUID, Table<?>> subsequentTables) {
+    AbstractBaseTable(UUID tableID, Map<UUID, BaseTable<?>> subTables) {
         this.tableID = tableID;
-        this.subTables = subsequentTables;
+        this.subTables = subTables;
     }
     
     abstract void removeKey(UUID key);
@@ -26,7 +27,7 @@ abstract class AbstractTable<T> implements Table<T> {
         return tableID;
     }
     
-    public Map<UUID, Table<?>> getSubTables() {
+    public Map<UUID, BaseTable<?>> getSubTables() {
         return Collections.unmodifiableMap(subTables);
     }
     
@@ -56,45 +57,42 @@ abstract class AbstractTable<T> implements Table<T> {
    
     public void remove(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         removeKey(key);
-        List<UUID> deletedTables = new ArrayList<>();
-        for (UUID tableID : subTables.keySet()) {
-            Table<?> table = subTables.get(tableID);
-            // Case to remove the table.
-            if (tableID.equals(key)) {
-                // Triggers a cascading delete that removes all subsequent, subsequent tables.
-                for (UUID subTableID : table.getSubTables().keySet()) {
-                    table.remove(subTableID);
-                }
-                deletedTables.add(tableID);
+        for (UUID subTableID : subTables.keySet()) {
+            BaseTable<?> subTable = subTables.get(subTableID);
+            
+            // Case where the presence of a key in a subtable needs to be deleted.
+            if (subTable.keys().contains(key)) {
+                subTable.remove(key);
             }
             
-            // Case to remove regular content in the table.
-            if (table.keys().contains(key)) {
-                table.remove(key);
+            // Case where a subtable needs to be deleted.
+            if (key.equals(subTableID)) {
+                // This is a cascading delete that removes all subtables from the subtable.
+                // copyOf is needed to prevent a concurrent modification exception.
+                for (UUID subSubTableID : Set.copyOf(subTable.getSubTables().keySet())) {
+                    subTable.remove(subSubTableID);
+                }
             }
-        }
-        for (UUID tableID : deletedTables) {
-            subTables.remove(tableID);
         }
     }
     
     public <U> SVTable<U> createSVTable(UUID newTableID) {
         Objects.requireNonNull(newTableID);
-        AbstractTable.requireKeyPresence(this, newTableID);
+        AbstractBaseTable.requireKeyPresence(this, newTableID);
         
-        SVTable<U> newTable = new SVTable<>(newTableID, this, Mappers.singleMapper());
+        SVTable<U> newTable = new SVTable<>(newTableID, new HashMap<>(), this, Mappers.singleMapper());
         subTables.put(newTable.getTableID(), newTable);
         return newTable;
     }
     
     public NVTable createNVTable(UUID newTableID) {
         Objects.requireNonNull(newTableID);
-        AbstractTable.requireKeyPresence(this, newTableID);
+        AbstractBaseTable.requireKeyPresence(this, newTableID);
         
-        NVTable newTable = new NVTable(newTableID, this, new HashSet<>());
+        NVTable newTable = new NVTable(newTableID, new HashMap<>(), this, new HashSet<>());
         subTables.put(newTable.getTableID(), newTable);
         return newTable;
     }

@@ -1,20 +1,25 @@
-package model.table;
+package model.memtable;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-abstract class AbstractSubsequentTable<T> extends AbstractTable<T> {
-    final Table<?> baseTable;
+import model.table.BaseTable;
+import model.table.Drop;
+import model.table.SubTable;
+import model.table.Table;
+
+abstract class AbstractSubsequentTable<T> extends AbstractBaseTable<T> implements SubTable<T> {
+    final BaseTable<?> baseTable;
     
-    AbstractSubsequentTable(UUID tableID, Map<UUID, Table<?>> subTables, Table<?> baseTable) {
+    AbstractSubsequentTable(UUID tableID, Map<UUID, BaseTable<?>> subTables, BaseTable<?> baseTable) {
         super(tableID, subTables);
         this.baseTable = baseTable;
     }
     
     public Drop asDrop(UUID key) {
         Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         
         return new Drop() {
             public UUID getKey() {
@@ -37,5 +42,9 @@ abstract class AbstractSubsequentTable<T> extends AbstractTable<T> {
                 return baseTable.asDrop(key);
             }
         };
+    }
+    
+    public Table<?> getBaseTable() {
+        return baseTable;
     }
 }

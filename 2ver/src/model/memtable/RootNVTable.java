@@ -1,4 +1,4 @@
-package model.table;
+package model.memtable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,11 +7,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import model.table.BaseTable;
+import model.table.BlankCore;
+
 public final class RootNVTable extends AbstractRootTable<BlankCore> {
     private final Set<UUID> domain;
     
-    private RootNVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, Set<UUID> domain) {
-        super(UUID.randomUUID(), subsequentTables);
+    private RootNVTable(UUID tableID, Map<UUID, BaseTable<?>> subsequentTables, Set<UUID> domain) {
+        super(tableID, subsequentTables);
         this.domain = domain;
     }
     
@@ -20,7 +23,7 @@ public final class RootNVTable extends AbstractRootTable<BlankCore> {
     }
     
     public BlankCore get(UUID key) {
-        AbstractTable.requireKeyPresence(this, key);
+        AbstractBaseTable.requireKeyPresence(this, key);
         return BlankCore.BLANK_CORE;
     }
     
