@@ -3,18 +3,21 @@ package model.table;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import base.mapper.Mappers;
+
 abstract class AbstractTable<T> implements Table<T> {
     private final UUID tableID;
-    private final Map<UUID, Table<?>> subsequentTables;
+    private final Map<UUID, Table<?>> subTables;
     
     AbstractTable(UUID tableID, Map<UUID, Table<?>> subsequentTables) {
         this.tableID = tableID;
-        this.subsequentTables = subsequentTables;
+        this.subTables = subsequentTables;
     }
     
     abstract void removeKey(UUID key);
@@ -23,14 +26,14 @@ abstract class AbstractTable<T> implements Table<T> {
         return tableID;
     }
     
-    public Map<UUID, Table<?>> getSubsequentTables() {
-        return Collections.unmodifiableMap(subsequentTables);
+    public Map<UUID, Table<?>> getSubTables() {
+        return Collections.unmodifiableMap(subTables);
     }
     
-    public Map<UUID, NVTable> getSubsequentNVTables() {
+    public Map<UUID, NVTable> getSubNVTables() {
         Map<UUID, NVTable> map = new HashMap<>();
         
-        for (UUID tableID : subsequentTables.keySet()) {
+        for (UUID tableID : subTables.keySet()) {
             Table<?> table = map.get(tableID);
             if (table instanceof NVTable) {
                 map.put(tableID, (NVTable) table);
@@ -39,10 +42,10 @@ abstract class AbstractTable<T> implements Table<T> {
         return map;
     }
     
-    public Map<UUID, SVTable<?>> getSubsequentSVTables() {
+    public Map<UUID, SVTable<?>> getSubSVTables() {
         Map<UUID, SVTable<?>> map = new HashMap<>();
         
-        for (UUID tableID : subsequentTables.keySet()) {
+        for (UUID tableID : subTables.keySet()) {
             Table<?> table = map.get(tableID);
             if (table instanceof SVTable) {
                 map.put(tableID, (SVTable<?>) table);
@@ -57,12 +60,12 @@ abstract class AbstractTable<T> implements Table<T> {
         
         removeKey(key);
         List<UUID> deletedTables = new ArrayList<>();
-        for (UUID tableID : subsequentTables.keySet()) {
-            Table<?> table = subsequentTables.get(tableID);
+        for (UUID tableID : subTables.keySet()) {
+            Table<?> table = subTables.get(tableID);
             // Case to remove the table.
             if (tableID.equals(key)) {
                 // Triggers a cascading delete that removes all subsequent, subsequent tables.
-                for (UUID subTableID : table.getSubsequentTables().keySet()) {
+                for (UUID subTableID : table.getSubTables().keySet()) {
                     table.remove(subTableID);
                 }
                 deletedTables.add(tableID);
@@ -74,7 +77,7 @@ abstract class AbstractTable<T> implements Table<T> {
             }
         }
         for (UUID tableID : deletedTables) {
-            subsequentTables.remove(tableID);
+            subTables.remove(tableID);
         }
     }
     
@@ -82,8 +85,8 @@ abstract class AbstractTable<T> implements Table<T> {
         Objects.requireNonNull(newTableID);
         AbstractTable.requireKeyPresence(this, newTableID);
         
-        SVTable<U> newTable = new SVTable<>(newTableID, this);
-        subsequentTables.put(newTable.getTableID(), newTable);
+        SVTable<U> newTable = new SVTable<>(newTableID, this, Mappers.singleMapper());
+        subTables.put(newTable.getTableID(), newTable);
         return newTable;
     }
     
@@ -91,8 +94,8 @@ abstract class AbstractTable<T> implements Table<T> {
         Objects.requireNonNull(newTableID);
         AbstractTable.requireKeyPresence(this, newTableID);
         
-        NVTable newTable = new NVTable(newTableID, this);
-        subsequentTables.put(newTable.getTableID(), newTable);
+        NVTable newTable = new NVTable(newTableID, this, new HashSet<>());
+        subTables.put(newTable.getTableID(), newTable);
         return newTable;
     }
 

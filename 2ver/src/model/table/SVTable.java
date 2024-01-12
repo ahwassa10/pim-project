@@ -2,17 +2,30 @@ package model.table;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
-import base.mapper.Mappers;
+import base.mapper.MutableSingleMapper;
 
-public final class SVTable<T> extends AbstractSVTable<T> {
-    private final AbstractTable<?> baseTable;
+public final class SVTable<T> extends AbstractSubsequentTable<T> {
+    private final MutableSingleMapper<UUID, T> mapper;
     
-    SVTable(UUID tableID, AbstractTable<?> baseTable) {
-        super(tableID, new HashMap<>(), Mappers.singleMapper());
-        this.baseTable = baseTable;
+    SVTable(UUID tableID, Table<?> baseTable, MutableSingleMapper<UUID, T> mapper) {
+        super(tableID, new HashMap<>(), baseTable);
+        this.mapper = mapper;
     }
+    
+    public Set<UUID> keys() {
+        return mapper.keys();
+    }
+    
+    public T get(UUID key) {
+        Objects.requireNonNull(key);
+        AbstractTable.requireKeyPresence(this, key);
+        
+        return mapper.get(key).certainly().any();
+    }
+    
     
     public void add(UUID key, T core) {
         Objects.requireNonNull(key);
@@ -21,33 +34,10 @@ public final class SVTable<T> extends AbstractSVTable<T> {
         AbstractTable.requireKeyAbsence(this, key);
         AbstractTable.requireUniqueKey(this, key);
         
-        addKeyValue(key, core);
+        mapper.map(key, core);
     }
     
-    public Drop asDrop(UUID key) {
-        Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
-        
-        return new Drop() {
-            public UUID getKey() {
-                return key;
-            }
-            
-            public UUID getTableID() {
-                return SVTable.this.getTableID();
-            }
-            
-            public Object getCore() {
-                return SVTable.this.get(key);
-            }
-            
-            public boolean hasNextDrop() {
-                return true;
-            }
-            
-            public Drop nextDrop() {
-                return baseTable.asDrop(key);
-            }
-        };
+    void removeKey(UUID key) {
+        mapper.unmap(key);
     }
 }

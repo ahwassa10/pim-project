@@ -1,49 +1,37 @@
 package model.table;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-public final class RootNVTable extends AbstractNVTable {
+public final class RootNVTable extends AbstractRootTable<BlankCore> {
+    private final Set<UUID> domain;
+    
     private RootNVTable(UUID tableID, Map<UUID, Table<?>> subsequentTables, Set<UUID> domain) {
-        super(UUID.randomUUID(), subsequentTables, domain);
+        super(UUID.randomUUID(), subsequentTables);
+        this.domain = domain;
+    }
+    
+    public Set<UUID> keys() {
+        return Collections.unmodifiableSet(domain);
+    }
+    
+    public BlankCore get(UUID key) {
+        AbstractTable.requireKeyPresence(this, key);
+        return BlankCore.BLANK_CORE;
     }
     
     public UUID add() {
         UUID key = UUID.randomUUID();
-        addKey(key);
+        domain.add(key);
         return key;
     }
     
-    public Drop asDrop(UUID key) {
-        Objects.requireNonNull(key);
-        AbstractTable.requireKeyPresence(this, key);
-        
-        return new Drop() {
-            public UUID getKey() {
-                return key;
-            }
-            
-            public UUID getTableID() {
-                return RootNVTable.this.getTableID();
-            }
-            
-            public Object getCore() {
-                return RootNVTable.this.get(key);
-            }
-            
-            public boolean hasNextDrop() {
-                return false;
-            }
-            
-            public Drop nextDrop() {
-                throw new NoSuchElementException();
-            }
-        };
+    void removeKey(UUID key) {
+        domain.remove(key);
     }
     
     public static RootNVTable create() {

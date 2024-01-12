@@ -44,7 +44,7 @@ public final class Program {
     }
 
     public List<Tag> getTags() {
-        return contentTable.getSubsequentTables().values()
+        return contentTable.getSubTables().values()
                 .stream()
                 .map(table -> new Tag(table.getTableID(), contentTable.get(table.getTableID())))
                 .toList();
@@ -55,7 +55,7 @@ public final class Program {
         
         UUID tagID = tag.getContentKey();
         
-        if (!contentTable.getSubsequentTables().containsKey(tagID)) {
+        if (!contentTable.getSubTables().containsKey(tagID)) {
             String msg = "This tag does not exist";
             throw new IllegalArgumentException(msg);
         }
@@ -78,7 +78,7 @@ public final class Program {
         }
         
         UUID tagID = tag.getContentKey();
-        contentTable.getSubsequentNVTables().get(tagID).add(content.getContentKey());
+        contentTable.getSubNVTables().get(tagID).add(content.getContentKey());
         
     }
 
@@ -90,7 +90,7 @@ public final class Program {
             throw new IllegalArgumentException(msg);
         }
         
-        return contentTable.getSubsequentNVTables().values()
+        return contentTable.getSubNVTables().values()
                 .stream()
                 .filter(table -> table.keys().contains(content.getContentKey()))
                 .map(table -> new Tag(table.getTableID(), contentTable.get(table.getTableID())))
@@ -105,7 +105,7 @@ public final class Program {
             throw new IllegalArgumentException(msg);
         }
         
-        return contentTable.getSubsequentNVTables().get(tag.getContentKey()).keys()
+        return contentTable.getSubNVTables().get(tag.getContentKey()).keys()
                 .stream()
                 .map(key -> new Content(key, contentTable.get(key)))
                 .toList();
