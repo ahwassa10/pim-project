@@ -8,7 +8,7 @@ import java.util.UUID;
 import model.entity.Content;
 import model.entity.ContentCore;
 import model.entity.Tag;
-import model.newtables.RootSVTable;
+import model.table.RootSVTable;
 
 public final class Program {
     private final RootSVTable<ContentCore> contentTable = RootSVTable.create();

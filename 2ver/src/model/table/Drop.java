@@ -1,4 +1,4 @@
-package model.newtables;
+package model.table;
 
 import java.util.UUID;
 
